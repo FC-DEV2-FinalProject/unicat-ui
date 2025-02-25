@@ -1,0 +1,21 @@
+# 📌 PR 자동 할당 설정
+
+# PR 작성자를 자동으로 Assignee(담당자)로 지정
+addAssignees: author
+
+# PR에 자동으로 리뷰어 추가
+addReviewers: true
+
+# 팀원 목록 (GitHub 사용자명)
+teamMembers:
+  - sjgaru-dev
+  - yulsanoh
+  - whwjdan
+
+# PR 작성자를 제외한 나머지 2명을 리뷰어로 자동 지정
+numberOfReviewers: 2
+
+# 특정 키워드(WIP, Draft 등)가 포함된 PR은 자동 할당 제외
+skipKeywords:
+  - wip
+  - draft
