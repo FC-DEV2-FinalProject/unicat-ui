@@ -18,7 +18,7 @@ jobs:
       - name: Load Team Members from Config
         id: load-config
         run: |
-          TEAM_MEMBERS=$(yq e '.teamMembers[]' .github/auto_assign.yml | grep -v "^${{ github.actor }}$")
+          TEAM_MEMBERS=$(yq eval '.teamMembers[]' .github/auto_assign.yml | grep -v "^${{ github.actor }}$")
           echo "REVIEWERS=$(echo $TEAM_MEMBERS | tr '\n' ' ')" >> $GITHUB_ENV
 
       - name: Assign PR Creator as Assignee
