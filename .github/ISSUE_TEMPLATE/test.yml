@@ -1,0 +1,36 @@
+name: 🧪 Test
+description: 테스트 코드 작성 및 리팩토링을 수행하는 이슈입니다.
+title: "[🧪 Test] "
+labels: ["🧪 test"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 📄 설명  
+        테스트할 기능을 설명해 주세요.
+
+  - type: textarea
+    id: test-description
+    attributes:
+      label: "테스트 내용"
+      placeholder: |
+        예:
+        - 로그인 API 테스트 추가
+        - Redux 상태 관리 테스트 코드 작성
+        - React 컴포넌트 유닛 테스트 추가
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ## 📝 추가 정보  
+        추가로 공유하고 싶은 내용이 있다면 작성해 주세요.
+
+  - type: textarea
+    id: test-more
+    attributes:
+      label: "추가 정보"
+      placeholder: "예: 기존 테스트 코드와의 연관성, 테스트 도구 정보 등"
+    validations:
+      required: false
