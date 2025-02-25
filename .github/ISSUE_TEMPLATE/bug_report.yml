@@ -1,0 +1,105 @@
+name: 🐞 Bug Report
+description: 발견한 버그를 신고하고 문제를 해결하기 위한 이슈입니다.
+title: "[🐞 Bug] "
+labels: ["🐞 bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 📄 설명  
+        버그에 대한 설명을 자세히 작성해 주세요.
+
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: "버그 설명"
+      placeholder: |
+        예:
+        - 로그인 버튼이 클릭되지 않음
+        - 특정 페이지에서 오류 메시지가 나타남 (`TypeError: undefined is not a function`)
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ## 🐾 재현 방법  
+        버그를 재현할 수 있는 단계를 작성해 주세요.
+
+  - type: textarea
+    id: bug-steps
+    attributes:
+      label: "재현 방법"
+      placeholder: |
+        1. 로그인 페이지로 이동
+        2. 이메일과 비밀번호 입력 후 로그인 버튼 클릭
+        3. 버튼이 반응하지 않음 (에러 메시지 없음)
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ## 🛠 관련 로그  
+        콘솔, 네트워크, 서버 로그 등 오류와 관련된 로그를 첨부해 주세요.
+
+  - type: textarea
+    id: bug-logs
+    attributes:
+      label: "관련 로그"
+      placeholder: |
+        예:
+        ```
+        Uncaught TypeError: Cannot read properties of undefined
+            at Login.js:42
+        ```
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        ## 🖥 환경 정보  
+        어떤 환경에서 문제가 발생했나요?
+
+  - type: dropdown
+    id: bug-environment
+    attributes:
+      label: "환경 정보"
+      multiple: true
+      options:
+        - "Windows"
+        - "MacOS"
+        - "Linux"
+        - "iOS"
+        - "Android"
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ## 🌐 브라우저 및 버전  
+        브라우저 및 버전 정보를 입력해 주세요. (해당하는 경우)
+
+  - type: textarea
+    id: browser-version
+    attributes:
+      label: "브라우저 및 버전"
+      placeholder: "예: Chrome 112.0.5615.138 / Firefox 98.0"
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        ## 📝 추가 정보  
+        추가로 공유하고 싶은 내용이 있다면 작성해 주세요.
+
+  - type: textarea
+    id: bug-more
+    attributes:
+      label: "추가 정보"
+      placeholder: "예: 특정 시간대에서만 발생함, 특정 계정 유형에서만 오류 발생"
+    validations:
+      required: false
