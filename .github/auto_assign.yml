@@ -1,21 +1,24 @@
-# 📌 PR 자동 할당 설정
-
-# PR 작성자를 자동으로 Assignee(담당자)로 지정
-addAssignees: author
-
-# PR에 자동으로 리뷰어 추가
+# Set to true to add reviewers to pull requests
 addReviewers: true
 
-# 팀원 목록 (GitHub 사용자명)
-teamMembers:
+# Set to true to add assignees to pull requests
+addAssignees: author
+
+# A list of reviewers to be added to pull requests (GitHub user name)
+reviewers:
   - sjgaru-dev
   - yulsanoh
   - whwjdan
 
-# PR 작성자를 제외한 나머지 2명을 리뷰어로 자동 지정
-numberOfReviewers: 2
+# A number of reviewers added to the pull request
+# Set 0 to add all the reviewers (default: 0)
+numberOfReviewers: 0
 
-# 특정 키워드(WIP, Draft 등)가 포함된 PR은 자동 할당 제외
+# A number of assignees to add to the pull request
+# Set to 0 to add all of the assignees.
+# Uses numberOfReviewers if unset.
+numberOfAssignees: 0
+
+# A list of keywords to be skipped the process that add reviewers if pull requests include it
 skipKeywords:
   - wip
-  - draft
