@@ -1,6 +1,27 @@
+'use client';
+
+import { useState } from 'react';
+import axios from 'axios';
 import Image from "next/image";
 
 export default function Home() {
+  const [response, setResponse] = useState<string>('');
+  const [error, setError] = useState<string>('');
+
+  const testBackendConnection = async () => {
+    try {
+      setError('');
+      const result = await axios.get('https://localhost:8080/api/test', {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      setResponse(JSON.stringify(result.data, null, 2));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '알 수 없는 에러가 발생했습니다.');
+    }
+  };
+
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
@@ -48,6 +69,27 @@ export default function Home() {
             Read our docs
           </a>
         </div>
+
+        <button
+          onClick={testBackendConnection}
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+        >
+          테스트 요청 보내기
+        </button>
+
+        {response && (
+          <div className="mt-4 p-4 bg-green-100 rounded">
+            <h2 className="font-bold mb-2">응답:</h2>
+            <pre className="whitespace-pre-wrap">{response}</pre>
+          </div>
+        )}
+
+        {error && (
+          <div className="mt-4 p-4 bg-red-100 rounded">
+            <h2 className="font-bold mb-2">에러:</h2>
+            <p className="text-red-600">{error}</p>
+          </div>
+        )}
       </main>
       <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
         <a
