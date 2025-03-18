@@ -1,3 +1,5 @@
+"use client"; // ✅ 클라이언트 컴포넌트 지정
+
 import {
     NavigationMenu,
     NavigationMenuItem,
@@ -7,7 +9,6 @@ import {
 import React, { JSX } from "react";
 import Image from "next/image";
 
-// Define navigation items for better maintainability
 const navigationItems = [
     { id: "dashboard", label: "대시보드", active: true },
     { id: "statistics", label: "통계", active: false },
@@ -20,7 +21,13 @@ const Header = (): JSX.Element => {
                 <div className="container flex items-center justify-between h-full max-w-[1200px] mx-auto px-4">
                     <div className="flex items-center gap-11">
                         {/* Logo */}
-                        <Image className="h-[23.22px] text-purple-1" alt="AINEWS" src="/images/logo.png" width={127} height={24} />
+                        <Image
+                            alt="AINEWS"
+                            src="/images/logo.png"
+                            width={127}
+                            height={24}
+                            priority
+                        />
 
                         {/* Navigation */}
                         <NavigationMenu>
@@ -29,7 +36,7 @@ const Header = (): JSX.Element => {
                                     <NavigationMenuItem key={item.id} className="relative">
                                         <NavigationMenuLink
                                             href={`#${item.id}`}
-                                            className="text-gray-5 font-bold text-[24px] font-bold"
+                                            className="text-gray-5 font-bold text-[24px]"
                                         >
                                             {item.label}
                                         </NavigationMenuLink>
@@ -39,7 +46,7 @@ const Header = (): JSX.Element => {
                         </NavigationMenu>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-8">
                         {/* Subscribe Button */}
                         <div
                             id="버튼 영역 추후 변경"
@@ -50,7 +57,13 @@ const Header = (): JSX.Element => {
 
                         {/* User Avatar */}
                         <div className="p-1">
-                            <div id="Avatar layer" className="w-9 h-9"></div>
+                            <Image
+                                alt="avatar"
+                                src="/images/avatar.png"
+                                width={36}
+                                height={36}
+                                className="w-[36px] h-[36px] rounded-full object-cover"
+                            />
                         </div>
                     </div>
                 </div>
