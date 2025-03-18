@@ -20,7 +20,7 @@ const Header = (): JSX.Element => {
                 <div className="container flex items-center justify-between h-full max-w-[1200px] mx-auto px-4">
                     <div className="flex items-center gap-11">
                         {/* Logo */}
-                        <Image className="h-[23.22px] text-purple-1" alt="AINEWS" src="/images/LOGO.png" width={127} height={24} />
+                        <Image className="h-[23.22px] text-purple-1" alt="AINEWS" src="/images/logo.png" width={127} height={24} />
 
                         {/* Navigation */}
                         <NavigationMenu>
