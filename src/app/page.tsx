@@ -6,9 +6,12 @@ export default function OAuthLogin() {
   const [oauthLinks, setOauthLinks] = useState([]);
 
   useEffect(() => {
-    fetch("api/auth") // API 요청
+    // Router 요청
+    fetch("api/auth/oauth-links", {
+      method: "GET"  // 기본값이 GET이라 생략 가능
+    })
       .then((response) => response.json())
-      .then((data) => setOauthLinks(data)) // API 응답 저장
+      .then((data) => setOauthLinks(data))
       .catch((error) => console.error("Error fetching OAuth links:", error));
   }, []);
 
