@@ -1,0 +1,275 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .all-\[unset\] {
+        all: unset;
+    }
+}
+
+:root {
+    --black: rgba(0, 0, 0, 1);
+    --bold-12-font-family: "Pretendard", Helvetica;
+    --bold-12-font-size: 12px;
+    --bold-12-font-style: normal;
+    --bold-12-font-weight: 700;
+    --bold-12-letter-spacing: 0px;
+    --bold-12-line-height: normal;
+    --bold-14-font-family: "Pretendard", Helvetica;
+    --bold-14-font-size: 14px;
+    --bold-14-font-style: normal;
+    --bold-14-font-weight: 700;
+    --bold-14-letter-spacing: 0px;
+    --bold-14-line-height: normal;
+    --bold-16-font-family: "Pretendard", Helvetica;
+    --bold-16-font-size: 16px;
+    --bold-16-font-style: normal;
+    --bold-16-font-weight: 700;
+    --bold-16-letter-spacing: 0px;
+    --bold-16-line-height: normal;
+    --bold-18-font-family: "Pretendard", Helvetica;
+    --bold-18-font-size: 18px;
+    --bold-18-font-style: normal;
+    --bold-18-font-weight: 700;
+    --bold-18-letter-spacing: 0px;
+    --bold-18-line-height: normal;
+    --bold-20-font-family: "Pretendard", Helvetica;
+    --bold-20-font-size: 20px;
+    --bold-20-font-style: normal;
+    --bold-20-font-weight: 700;
+    --bold-20-letter-spacing: 0px;
+    --bold-20-line-height: normal;
+    --bold-24-font-family: "Pretendard", Helvetica;
+    --bold-24-font-size: 24px;
+    --bold-24-font-style: normal;
+    --bold-24-font-weight: 700;
+    --bold-24-letter-spacing: 0px;
+    --bold-24-line-height: normal;
+    --bold-32-font-family: "Pretendard", Helvetica;
+    --bold-32-font-size: 32px;
+    --bold-32-font-style: normal;
+    --bold-32-font-weight: 700;
+    --bold-32-letter-spacing: 0px;
+    --bold-32-line-height: normal;
+    --bold-40-font-family: "Pretendard", Helvetica;
+    --bold-40-font-size: 40px;
+    --bold-40-font-style: normal;
+    --bold-40-font-weight: 700;
+    --bold-40-letter-spacing: 0px;
+    --bold-40-line-height: normal;
+    --bold-42-font-family: "Pretendard", Helvetica;
+    --bold-42-font-size: 42px;
+    --bold-42-font-style: normal;
+    --bold-42-font-weight: 700;
+    --bold-42-letter-spacing: 0px;
+    --bold-42-line-height: normal;
+    --gray-0: rgba(246, 246, 246, 1);
+    --gray-1: rgba(234, 234, 234, 1);
+    --gray-2: rgba(199, 199, 199, 1);
+    --gray-3: rgba(138, 138, 138, 1);
+    --gray-4: rgba(86, 86, 86, 1);
+    --gray-5: rgba(58, 58, 58, 1);
+    --green: rgba(103, 180, 114, 1);
+    --medium-12-font-family: "Pretendard", Helvetica;
+    --medium-12-font-size: 12px;
+    --medium-12-font-style: normal;
+    --medium-12-font-weight: 500;
+    --medium-12-letter-spacing: 0px;
+    --medium-12-line-height: normal;
+    --medium-14-font-family: "Pretendard", Helvetica;
+    --medium-14-font-size: 14px;
+    --medium-14-font-style: normal;
+    --medium-14-font-weight: 500;
+    --medium-14-letter-spacing: 0px;
+    --medium-14-line-height: normal;
+    --medium-16-font-family: "Pretendard", Helvetica;
+    --medium-16-font-size: 16px;
+    --medium-16-font-style: normal;
+    --medium-16-font-weight: 500;
+    --medium-16-letter-spacing: 0px;
+    --medium-16-line-height: normal;
+    --medium-18-font-family: "Pretendard", Helvetica;
+    --medium-18-font-size: 18px;
+    --medium-18-font-style: normal;
+    --medium-18-font-weight: 500;
+    --medium-18-letter-spacing: 0px;
+    --medium-18-line-height: normal;
+    --medium-20-font-family: "Pretendard", Helvetica;
+    --medium-20-font-size: 20px;
+    --medium-20-font-style: normal;
+    --medium-20-font-weight: 500;
+    --medium-20-letter-spacing: 0px;
+    --medium-20-line-height: normal;
+    --medium-24-font-family: "Pretendard", Helvetica;
+    --medium-24-font-size: 24px;
+    --medium-24-font-style: normal;
+    --medium-24-font-weight: 500;
+    --medium-24-letter-spacing: 0px;
+    --medium-24-line-height: normal;
+    --pink: rgba(255, 105, 105, 1);
+    --purple-1: rgba(120, 121, 241, 1);
+    --purple-2: rgba(143, 144, 250, 1);
+    --purple-3: rgba(173, 174, 252, 1);
+    --purple-4: rgba(206, 207, 255, 1);
+    --purple-5: rgba(243, 245, 255, 1);
+    --purple-6: rgba(251, 251, 254, 1);
+    --regular-12-font-family: "Pretendard", Helvetica;
+    --regular-12-font-size: 12px;
+    --regular-12-font-style: normal;
+    --regular-12-font-weight: 400;
+    --regular-12-letter-spacing: 0px;
+    --regular-12-line-height: normal;
+    --regular-14-font-family: "Pretendard", Helvetica;
+    --regular-14-font-size: 14px;
+    --regular-14-font-style: normal;
+    --regular-14-font-weight: 400;
+    --regular-14-letter-spacing: 0px;
+    --regular-14-line-height: normal;
+    --regular-16-font-family: "Pretendard", Helvetica;
+    --regular-16-font-size: 16px;
+    --regular-16-font-style: normal;
+    --regular-16-font-weight: 400;
+    --regular-16-letter-spacing: 0px;
+    --regular-16-line-height: normal;
+    --regular-18-font-family: "Pretendard", Helvetica;
+    --regular-18-font-size: 18px;
+    --regular-18-font-style: normal;
+    --regular-18-font-weight: 400;
+    --regular-18-letter-spacing: 0px;
+    --regular-18-line-height: normal;
+    --regular-20-font-family: "Pretendard", Helvetica;
+    --regular-20-font-size: 20px;
+    --regular-20-font-style: normal;
+    --regular-20-font-weight: 400;
+    --regular-20-letter-spacing: 0px;
+    --regular-20-line-height: normal;
+    --regular-24-font-family: "Pretendard", Helvetica;
+    --regular-24-font-size: 24px;
+    --regular-24-font-style: normal;
+    --regular-24-font-weight: 400;
+    --regular-24-letter-spacing: 0px;
+    --regular-24-line-height: normal;
+    --semibold-12-font-family: "Pretendard", Helvetica;
+    --semibold-12-font-size: 12px;
+    --semibold-12-font-style: normal;
+    --semibold-12-font-weight: 600;
+    --semibold-12-letter-spacing: 0px;
+    --semibold-12-line-height: normal;
+    --semibold-14-font-family: "Pretendard", Helvetica;
+    --semibold-14-font-size: 14px;
+    --semibold-14-font-style: normal;
+    --semibold-14-font-weight: 600;
+    --semibold-14-letter-spacing: 0px;
+    --semibold-14-line-height: normal;
+    --semibold-16-font-family: "Pretendard", Helvetica;
+    --semibold-16-font-size: 16px;
+    --semibold-16-font-style: normal;
+    --semibold-16-font-weight: 600;
+    --semibold-16-letter-spacing: 0px;
+    --semibold-16-line-height: normal;
+    --semibold-18-font-family: "Pretendard", Helvetica;
+    --semibold-18-font-size: 18px;
+    --semibold-18-font-style: normal;
+    --semibold-18-font-weight: 600;
+    --semibold-18-letter-spacing: 0px;
+    --semibold-18-line-height: normal;
+    --semibold-20-font-family: "Pretendard", Helvetica;
+    --semibold-20-font-size: 20px;
+    --semibold-20-font-style: normal;
+    --semibold-20-font-weight: 600;
+    --semibold-20-letter-spacing: 0px;
+    --semibold-20-line-height: normal;
+    --semibold-24-font-family: "Pretendard", Helvetica;
+    --semibold-24-font-size: 24px;
+    --semibold-24-font-style: normal;
+    --semibold-24-font-weight: 600;
+    --semibold-24-letter-spacing: 0px;
+    --semibold-24-line-height: normal;
+    --white: rgba(255, 255, 255, 1);
+    --yellow-1: rgba(255, 205, 107, 1);
+    --yellow-2: rgba(255, 246, 223, 1);
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --background: 0 0% 100%;
+        --foreground: 222.2 47.4% 11.2%;
+
+        --muted: 210 40% 96.1%;
+        --muted-foreground: 215.4 16.3% 46.9%;
+
+        --popover: 0 0% 100%;
+        --popover-foreground: 222.2 47.4% 11.2%;
+
+        --border: 214.3 31.8% 91.4%;
+        --input: 214.3 31.8% 91.4%;
+
+        --card: transparent;
+        --card-foreground: 222.2 47.4% 11.2%;
+
+        --primary: 222.2 47.4% 11.2%;
+        --primary-foreground: 210 40% 98%;
+
+        --secondary: 210 40% 96.1%;
+        --secondary-foreground: 222.2 47.4% 11.2%;
+
+        --accent: 210 40% 96.1%;
+        --accent-foreground: 222.2 47.4% 11.2%;
+
+        --destructive: 0 100% 50%;
+        --destructive-foreground: 210 40% 98%;
+
+        --ring: 215 20.2% 65.1%;
+
+        --radius: 0.5rem;
+    }
+
+    .dark {
+        --background: 224 71% 4%;
+        --foreground: 213 31% 91%;
+
+        --muted: 223 47% 11%;
+        --muted-foreground: 215.4 16.3% 56.9%;
+
+        --accent: 216 34% 17%;
+        --accent-foreground: 210 40% 98%;
+
+        --popover: 224 71% 4%;
+        --popover-foreground: 215 20.2% 65.1%;
+
+        --border: 216 34% 17%;
+        --input: 216 34% 17%;
+
+        --card: transparent;
+        --card-foreground: 213 31% 91%;
+
+        --primary: 210 40% 98%;
+        --primary-foreground: 222.2 47.4% 1.2%;
+
+        --secondary: 222.2 47.4% 11.2%;
+        --secondary-foreground: 210 40% 98%;
+
+        --destructive: 0 63% 31%;
+        --destructive-foreground: 210 40% 98%;
+
+        --ring: 216 34% 17%;
+
+        --radius: 0.5rem;
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+        font-feature-settings: "rlig" 1, "calt" 1;
+    }
+}
