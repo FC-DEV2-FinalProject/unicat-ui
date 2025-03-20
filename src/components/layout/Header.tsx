@@ -12,7 +12,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 interface HeaderProps {
-    className?: string; // ✅ className을 props로 받을 수 있도록 추가
+  className?: string; // ✅ className을 props로 받을 수 있도록 추가
 }
 
 const navigationItems = [
@@ -21,22 +21,22 @@ const navigationItems = [
 ];
 
 const Header: React.FC<HeaderProps> = ({ className }) => {
-    return (
-        <header className={`flex flex-col items-center w-full border-b border-[#ECECEC] ${className}`}>
-            <div className="w-full h-[100px] bg-basewhite border-b border-[#ECECEC]">
-                <div className="container flex items-center justify-between h-full max-w-[1200px] mx-auto px-4">
-                    <div className="flex items-center gap-11">
-                        {/* Logo */}
-                        <Link href="/">
-                            <Image
-                                alt="AINEWS"
-                                src="/images/logo.png"
-                                width={127}
-                                height={24}
-                                priority
-                                className="cursor-pointer"
-                            />
-                        </Link>
+  return (
+    <header className={`flex flex-col items-center w-full border-b border-[#ECECEC] ${className}`}>
+      <div className="w-full h-[100px] bg-basewhite border-b border-[#ECECEC]">
+        <div className="container flex items-center justify-between h-full max-w-[1200px] mx-auto px-4">
+          <div className="flex items-center gap-11">
+            {/* Logo */}
+              <Link href="/">
+                <Image
+                  alt="AINEWS"
+                  src="/images/logo.png"
+                  width={127}
+                  height={24}
+                  priority
+                  className="cursor-pointer"
+                />
+              </Link>
 
             {/* Navigation */}
             <NavigationMenu>
