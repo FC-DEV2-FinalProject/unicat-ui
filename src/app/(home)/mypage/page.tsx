@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@/src/components/ui/card/card";
+import { Card, CardContent } from "@/src/components/common/Card";
 import React, { JSX } from "react";
 
 export default function MyPage(): JSX.Element {
