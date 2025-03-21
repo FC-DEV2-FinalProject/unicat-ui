@@ -57,6 +57,8 @@ export default function AiNews() {
                         altText={style.alt}
                         onClick={() => setSelectedStyle(style.id)} // ✅ 클릭 시 상태 변경
                         isSelected={selectedStyle === style.id} // ✅ 선택된 경우 스타일 변경
+                        width={268}
+                        height={300}
                     />
                 ))}
             </div>
