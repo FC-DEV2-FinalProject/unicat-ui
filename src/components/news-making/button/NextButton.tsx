@@ -1,13 +1,16 @@
-import { Button } from "@/src/components/common/Button";
+interface ButtonProps {
+    onClick?: () => void;
+    className?: string;
+}
 
-export default function NextButton() {
-
+export default function NextButton({ onClick, className }: ButtonProps) {
     return (
-        <Button
-            className="h-20 px-20 py-10 rounded-[15px] text-white font-bold text-[24px]
-                      bg-gray-2 hover:bg-purple-1 transition-colors"
-        >
-            다음으로
-        </Button>
+      <button
+        className={`w-[268px] h-[80px] bg-gray-2 rounded-[15px] text-white font-bold text-[24px] 
+                        hover:bg-purple-1 transition-colors ${className}`}
+        onClick={onClick}
+      >
+          다음으로
+      </button>
     );
 }

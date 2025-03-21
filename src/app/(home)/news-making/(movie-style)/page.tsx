@@ -1,8 +1,10 @@
 "use client"; // ✅ 클라이언트 컴포넌트 지정
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@/src/components/common/Button";
 import ArtStyleCard from "@/src/components/news-making/card/ArtStyleCard";
+import StepIndicator from "@/src/components/news-making/StepIndicator";
+import Image from "next/image";
 
 const artStyles = [
     { id: 1, imageSrc: "/images/news-making/news-style-1.png", alt: "스타일 1" },
@@ -15,8 +17,36 @@ export default function AiNews() {
     const [selectedStyle, setSelectedStyle] = useState<number | null>(null);
 
     return (
+
         <div className="flex flex-col items-center min-h-screen mt-[205px] gap-[40px]">
-            <h2 className="text-xl font-bold">어떤 그림체로 영상을 생성할 건지 골라주세요.</h2>
+          {/* 헤더 */}
+          <header className="flex w-full items-center justify-between">
+            <div className="flex items-center gap-4">
+              <h1 className="text-gray-5 font-bold-24 text-[24px] font-bold leading-[28px]">
+                어떤 그림체로 영상을 생성할 건지 골라주세요.
+              </h1>
+
+              <div className="flex items-center">
+                <div className="p-1">
+                  <Image
+                    alt="info"
+                    src="/images/info.png"
+                    width={20}
+                    height={20}
+                    priority
+                  />
+                </div>
+
+                <div id ="뱃지자리" className="bg-base-700 text-basewhite px-2 py-1.5 rounded-lg">
+                  <span className="font-bold-14 text-[14px] font-bold">
+                    추후 단계에서 사용자가 직접 사진을 업로드할 수 있습니다.
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <StepIndicator currentStep={1} totalSteps={4}/>
+          </header>
 
             {/* ✅ 이미지 선택 영역 */}
             <div className="flex flex-wrap justify-center gap-[42px] max-w-[1200px] w-full">
