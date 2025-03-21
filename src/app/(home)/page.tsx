@@ -1,44 +1,25 @@
-import { Card, CardContent } from "@/src/components/ui/card/card";
+import { MovieList } from "@/src/components/home/MovieList";
+import { groupMoviesByDate } from "@/src/components/home/MovieCardGroup";
 import React, { JSX } from "react";
+import Image from "next/image";
+import Link from "next/link";
+
+const dummyMovies = [
+  { id: 1, image: "/images/dummy-thumbnail.png", title: "피겨스케이팅 2025", description: "입상했습니다.", date: "2025.03.02" },
+  { id: 2, image: "/images/dummy-thumbnail.png", title: "다큐멘터리 제작", description: "AI 기술을 활용한 다큐멘터리", date: "2025.03.02" },
+  { id: 3, image: "/images/dummy-thumbnail.png", title: "뉴스 보도", description: "최근 이슈 뉴스 보도", date: "2025.03.02" },
+  { id: 4, image: "/images/dummy-thumbnail.png", title: "스포츠 뉴스", description: "국제 스포츠 경기 소식", date: "2025.02.26" },
+  { id: 5, image: "/images/dummy-thumbnail.png", title: "경제 뉴스", description: "금융 시장 업데이트", date: "2025.02.26" },
+  { id: 6, image: "/images/dummy-thumbnail.png", title: "연예 뉴스", description: "최신 연예 뉴스", date: "2025.02.26" },
+  { id: 7, image: "/images/dummy-thumbnail.png", title: "테크 뉴스", description: "최신 기술 동향", date: "2025.02.25" },
+];
+
+const homeDashboardMovies = groupMoviesByDate(dummyMovies, { maxItemsPerDate: 3, sortByDate: "desc" });
+
+
 
 export default function AiNews(): JSX.Element {
   // Project data for the first row
-  const firstRowProjects = [
-    {
-      image: "/images/dummy-thumbnail.png",
-      title: "피겨스케이팅 2025년 선수권 대회 입상",
-      description: "네 입상했다고 하네요(내용 간단한...)",
-    },
-    {
-      image: "/images/dummy-thumbnail.png",
-      title: "피겨스케이팅 2025년 선수권 대회 입상",
-      description: "네 입상했다고 하네요(내용 간단한...)",
-    },
-    {
-      image: "/images/dummy-thumbnail.png",
-      title: "피겨스케이팅 2025년 선수권 대회 입상",
-      description: "네 입상했다고 하네요(내용 간단한...)",
-    },
-  ];
-
-  // Project data for the second row
-  const secondRowProjects = [
-    {
-      image: "/images/dummy-thumbnail.png",
-      title: "피겨스케이팅 2025년 선수권 대회 입상",
-      description: "네 입상했다고 하네요(내용 간단한...)",
-    },
-    {
-      image: "/images/dummy-thumbnail.png",
-      title: "피겨스케이팅 2025년 선수권 대회 입상",
-      description: "네 입상했다고 하네요(내용 간단한...)",
-    },
-    {
-      image: "/images/dummy-thumbnail.png",
-      title: "피겨스케이팅 2025년 선수권 대회 입상",
-      description: "네 입상했다고 하네요(내용 간단한...)",
-    },
-  ];
 
   return (
       <div className="flex flex-col items-center justify-center gap-[90px] relative bg-purple-6 min-h-screen">
@@ -48,8 +29,14 @@ export default function AiNews(): JSX.Element {
           <section className="relative w-full h-[262px] rounded-2xl overflow-hidden">
             <div
                 className="absolute inset-0 w-full h-full bg-cover bg-center"
-                style={{ backgroundImage: "url('/images/news-making-background.png')" }}
             >
+              <Image
+                  src="/images/news-making-background.png"
+                  alt="뉴스 메이킹 배경"
+                  layout="fill"
+                  objectFit="cover"
+                  priority
+              />
               {/* 내용 전체를 감싸는 div (위 50px, 왼쪽 32px 여백) */}
               <div className="absolute top-[50px] left-[32px] flex flex-col">
                 {/* "뉴스에 대한 어떠한 의견"과 "뉴스만들기" 사이 간격 12px */}
@@ -61,13 +48,16 @@ export default function AiNews(): JSX.Element {
                   뉴스만들기
                 </div>
                 {/* 버튼 이미지 (185px × 52px) */}
-                <img
-                    src="/images/news-making-button.png"
-                    alt="뉴스 제작하기 버튼"
-                    className="w-[185px] h-[52px] cursor-pointer"
-                />
+                <Link href="/news-making">
+                  <Image
+                      src="/images/news-making-button.png"
+                      alt="뉴스 제작하기 버튼"
+                      width={185}
+                      height={52}
+                      className="cursor-pointer"
+                  />
+                </Link>
               </div>
-
             </div>
           </section>
 
@@ -77,61 +67,15 @@ export default function AiNews(): JSX.Element {
             만든 프로젝트
           </h2>
 
-          {/* First Project Row */}
-          <Card className="w-full h-[306px] bg-white rounded-2xl border border-solid border-gray-1 shadow-[0px_1px_8px_2px_#0000000a]">
-            <div className="flex w-full h-8 items-center gap-8 p-5 pb-0">
-              <div className="font-med-20 text-base-900 text-[length:var(--med-20-font-size)] tracking-[var(--med-20-letter-spacing)] leading-[var(--med-20-line-height)]">
-                2025.03.02
-              </div>
-            </div>
-            <CardContent className="flex w-full items-center justify-between pt-[72px] px-6 pb-6">
-              {firstRowProjects.map((project, index) => (
-                  <div key={index} className="relative w-[368px] h-[210px]">
-                    <div className="relative h-[210px] bg-base-50 rounded-xl overflow-hidden">
-                      <img
-                          className="absolute w-[368px] h-[140px] top-0 left-0 object-cover"
-                          alt="Project thumbnail"
-                          src={project.image}
-                      />
-                      <div className="absolute w-[343px] top-[150px] left-4 font-bold-16 text-gray-5 text-[length:var(--bold-16-font-size)] text-center tracking-[var(--bold-16-letter-spacing)] leading-[var(--bold-16-line-height)]">
-                        {project.title}
-                      </div>
-                      <div className="absolute w-[343px] top-44 left-4 font-normal text-gray-5 text-base text-center tracking-[0] leading-5">
-                        {project.description}
-                      </div>
-                    </div>
-                  </div>
-              ))}
-            </CardContent>
-          </Card>
+          {/* ✅ 날짜별로 동적으로 `MovieList` 생성 (시간순 정렬 포함) */}
+          {homeDashboardMovies.map(({ date, movies }) => (
+              <MovieList
+                  key={date}
+                  className="w-full bg-white rounded-2xl border border-solid border-gray-1 shadow-md p-5"
+                  movies={movies}
+              />
+          ))}
 
-          {/* Second Project Row */}
-          <Card className="w-full h-[306px] bg-white rounded-2xl border border-solid border-gray-1 shadow-[0px_1px_8px_2px_#0000000a]">
-            <div className="flex w-full h-8 items-center gap-8 p-5 pb-0">
-              <div className="font-med-20 text-base-900 text-[length:var(--med-20-font-size)] tracking-[var(--med-20-letter-spacing)] leading-[var(--med-20-line-height)]">
-                2025.02.26
-              </div>
-            </div>
-            <CardContent className="flex w-full items-center justify-between pt-[72px] px-6 pb-6">
-              {secondRowProjects.map((project, index) => (
-                  <div key={index} className="relative w-[368px] h-[210px]">
-                    <div className="relative h-[210px] bg-base-50 rounded-xl overflow-hidden">
-                      <img
-                          className="absolute w-[368px] h-[140px] top-0 left-0 object-cover"
-                          alt="Project thumbnail"
-                          src={project.image}
-                      />
-                      <div className="absolute w-[343px] top-[150px] left-4 font-bold-16 text-gray-5 text-[length:var(--bold-16-font-size)] text-center tracking-[var(--bold-16-letter-spacing)] leading-[var(--bold-16-line-height)]">
-                        {project.title}
-                      </div>
-                      <div className="absolute w-[343px] top-44 left-4 font-normal text-gray-5 text-base text-center tracking-[0] leading-5">
-                        {project.description}
-                      </div>
-                    </div>
-                  </div>
-              ))}
-            </CardContent>
-          </Card>
         </main>
       </div>
   );
