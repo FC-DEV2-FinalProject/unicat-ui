@@ -9,7 +9,7 @@ export default function HomeLayout({ children }: { children: React.ReactNode }) 
             <Header className="h-[100px]" />
 
             {/* 메인 콘텐츠 */}
-            <main className="flex-1 max-w-[1200px] mx-auto w-full">
+            <main className="flex-1 max-w-[1200px] mx-auto w-full mt-[105px]">
                 {children}
             </main>
 
