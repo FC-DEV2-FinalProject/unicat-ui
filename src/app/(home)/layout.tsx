@@ -4,12 +4,12 @@ import Header from "@/src/components/layout/Header";
 
 export default function HomeLayout({ children }: { children: React.ReactNode }) {
     return (
-        <div className="bg-purple-6 min-h-screen flex flex-col">
+        <div className="min-h-screen flex flex-col">
             {/* 공통 헤더 */}
             <Header className="h-[100px]" />
 
             {/* 메인 콘텐츠 */}
-            <main className="flex-1 max-w-[1200px] mx-auto w-full mt-[105px]">
+            <main className="flex-1 bg-white max-w-[1200px] mx-auto w-full mt-[105px]">
                 {children}
             </main>
 

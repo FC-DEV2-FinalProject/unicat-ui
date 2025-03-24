@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ChevronDownIcon } from "lucide-react";
-import { Button } from "@/src/components/news-making/button/CreateCommonButton";
+import { Button } from "@/src/components/news-making/button/CommonNewsMakingButton";
 
 export default function VoiceDropdown() {
 	const [isOpen, setIsOpen] = useState(false);
