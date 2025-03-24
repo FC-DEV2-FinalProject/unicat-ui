@@ -19,7 +19,7 @@ export default function AiNews() {
 
     return (
 
-        <div className="flex flex-col items-center min-h-screen mt-[205px] gap-[40px]">
+        <div className="flex flex-col items-center min-h-screen gap-[40px]">
           {/* 헤더 */}
           <header className="flex w-full items-center justify-between">
             <div className="flex items-center gap-4">

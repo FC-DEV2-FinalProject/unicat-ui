@@ -7,22 +7,27 @@ interface ThumbnailCardProps {
 	title: string;
 	imageSrc: string;
 	altText: string;
-	textAlign: "left" | "center" | "right";
-	fontColor: string;
-	fontSize: number;
-	fontFamily: string;
+	textAlign?: "left" | "center" | "right";
+	fontColor?: string;
+	fontSize?: number;
+	fontFamily?: string;
 }
 
 export default function ThumbnailCard(props: ThumbnailCardProps) {
 	const { thumbnailId, artStyleId, title, imageSrc, altText, textAlign, fontColor, fontSize, fontFamily } = props;
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const tempThumbnailId = thumbnailId;
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const tempArtStyleId = artStyleId;
+
+
 	useEffect(() => {
 		const canvas = canvasRef.current;
 		if (!canvas) return;
 		const ctx = canvas.getContext("2d");
 		if (!ctx) return;
-
 		// ✅ 캔버스 크기 설정
 		const canvasWidth = 265;
 		const canvasHeight = 108;
@@ -34,12 +39,12 @@ export default function ThumbnailCard(props: ThumbnailCardProps) {
 
 		// ✅ 텍스트 스타일 적용
 		ctx.font = `${fontSize}px ${fontFamily}`;
-		ctx.fillStyle = fontColor;
+		ctx.fillStyle = fontColor ?? 'black';
 		ctx.textAlign = textAlign as CanvasTextAlign;
 		ctx.textBaseline = "top";
 
 		// ✅ 최대 줄 수 제한 (현재 폰트 기준)
-		const lineHeight = fontSize * 1.2;
+		const lineHeight = ((fontSize ?? 3) * 1.2);
 		const maxLines = Math.floor(canvasHeight / lineHeight);
 		const maxWidth = canvasWidth - 40; // 좌우 여백 고려
 
