@@ -73,7 +73,7 @@ export default function Element () {
 										title={"기본 제목"}
 										imageSrc={""} // 공백일 경우 더미 이미지
 										altText={"썸네일 카드"}
-										className="w-full h-auto object-contain"
+										/*className="w-full h-auto object-contain"*/
 									/>
 								</div>
 							</CardContent>
