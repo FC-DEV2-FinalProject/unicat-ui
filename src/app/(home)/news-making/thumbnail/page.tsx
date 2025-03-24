@@ -38,7 +38,8 @@ export default function AiNewsAnima() {
 
 	const [projectCards, setProjectCards] = useState<ProjectCard[]>(initialProjectCards);
 
-	const updateCard = (id: number, key: keyof ProjectCard, value: any) => {
+	// ProjectCart에 맞게 key, value 선언
+	const updateCard = <K extends keyof ProjectCard>(id: number, key: K, value: ProjectCard[K]) => {
 		setProjectCards((prev) =>
 			prev.map((card) => (card.id === id ? { ...card, [key]: value } : card))
 		);

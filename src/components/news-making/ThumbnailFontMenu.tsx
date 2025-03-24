@@ -5,7 +5,7 @@ interface ThumbnailFontMenuProps {
 	fontFamily: string;
 	fontColor: string;
 	textAlign: "left" | "center" | "right";
-	onUpdate: (key: string, value: any) => void;
+	onUpdate: (key: string, value: number | string) => void;
 }
 
 const ThumbnailFontMenu: React.FC<ThumbnailFontMenuProps> = ({ fontSize, fontFamily, fontColor, textAlign, onUpdate }) => {

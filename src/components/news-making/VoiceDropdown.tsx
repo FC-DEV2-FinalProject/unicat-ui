@@ -17,16 +17,16 @@ export default function VoiceDropdown() {
 			<Button
 				variant="outline"
 				size="sm"
-				className="flex items-center gap-1"
+				className="flex items-center gap-1 min-w-[110px]" // ✅ 최소 너비 110px 설정
 				onClick={toggleDropdown}
 			>
 				<ChevronDownIcon className="h-4 w-4" />
-				<span>{selectedVoice}</span>
+				<span className="truncate">{selectedVoice}</span> {/* 너무 길면 ... 처리 */}
 			</Button>
 
 			{isOpen && (
 				<div className="absolute left-0 mt-2 w-40 bg-white border rounded-md shadow-lg z-10">
-					<ul className="py-2 text-sm text-gray-700">
+					<ul className="py-2 text-sm text-gray-700 w-full h-32 overflow-auto">
 						{["10대 목소리", "20대 목소리", "30대 목소리"].map((voice) => (
 							<li
 								key={voice}
@@ -39,6 +39,7 @@ export default function VoiceDropdown() {
 					</ul>
 				</div>
 			)}
+
 		</div>
 	);
 }
