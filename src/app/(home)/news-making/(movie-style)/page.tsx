@@ -5,6 +5,7 @@ import { Button } from "@/src/components/common/Button";
 import ArtStyleCard from "@/src/components/news-making/card/ArtStyleCard";
 import StepIndicator from "@/src/components/news-making/StepIndicator";
 import Image from "next/image";
+import Link from "next/link";
 
 const artStyles = [
     { id: 1, imageSrc: "/images/news-making/news-style-1.png", alt: "스타일 1" },
@@ -64,8 +65,9 @@ export default function AiNews() {
             </div>
 
             {/* ✅ 선택된 경우 `NextButton` 스타일 변경 */}
-            {/* 버튼 컨테이너 */}
+            {/* 다음으로 버튼 컨테이너 */}
             <div className="w-full flex justify-end">
+              <Link href="/news-making/thumbnail">
                 <Button
                     className={`w-[268px] h-[80px] rounded-[15px] text-white font-bold text-[24px] transition-colors 
                         ${selectedStyle !== null ? "bg-purple-1" : "bg-gray-2"}`}
@@ -80,7 +82,7 @@ export default function AiNews() {
                 >
                     다음으로
                 </Button>
-
+              </Link>
             </div>
 
         </div>
