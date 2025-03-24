@@ -1,11 +1,14 @@
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+import "@/src/styles/tailwind.css";
+import "@/src/styles/globals.css";
 
-
-    return (
-        <html lang="ko">
-        <body>
-        {children}
-        </body>
-        </html>
-    );
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="ko">
+      <body>{children}</body>
+    </html>
+  );
 }
