@@ -6,17 +6,59 @@ import PreviewButton from "@/src/components/news-making/button/PreviewButton";
 import ThumbnailCard from "@/src/components/news-making/card/ThumbnailCard";
 import ImageMakingButton from "@/src/components/news-making/button/ImageMakingButton";
 import ThumbnailImageModal from "@/src/components/news-making/ThumbnailImageModal";
+import ThumbnailFontMenu from "@/src/components/news-making/ThumbnailFontMenu";
 
-const projectCards = [
-	{ id: 1, artStyleId: 1, thumbnailId: 101, imageSrc: "", altText: "스타일 1" },
-	{ id: 2, artStyleId: 2, thumbnailId: 102, imageSrc: "", altText: "스타일 2" },
-	{ id: 3, artStyleId: 3, thumbnailId: 103, imageSrc: "", altText: "스타일 3" },
-	{ id: 4, artStyleId: 4, thumbnailId: 104, imageSrc: "", altText: "스타일 4" },
+interface ProjectCard {
+	id: number;
+	artStyleId: number;
+	thumbnailId: number;
+	imageSrc: string;
+	altText: string;
+	textAlign: "left" | "center" | "right";
+	fontColor: string;
+	fontSize: number;
+	fontFamily: "Arial" | "Times New Roman" | "Courier New" | "Verdana";
+}
+
+const initialProjectCards: ProjectCard[] = [
+	{ id: 1, artStyleId: 1, thumbnailId: 101, imageSrc: "", altText: "스타일 1", textAlign: "left", fontColor: "#ff5733", fontSize: 20, fontFamily: "Arial" },
+	{ id: 2, artStyleId: 2, thumbnailId: 102, imageSrc: "", altText: "스타일 2", textAlign: "center", fontColor: "#33ff57", fontSize: 24, fontFamily: "Times New Roman" },
+	{ id: 3, artStyleId: 3, thumbnailId: 103, imageSrc: "", altText: "스타일 3", textAlign: "right", fontColor: "#3357ff", fontSize: 18, fontFamily: "Courier New" },
+	{ id: 4, artStyleId: 4, thumbnailId: 104, imageSrc: "", altText: "스타일 4", textAlign: "center", fontColor: "#ff33a1", fontSize: 22, fontFamily: "Verdana" }
 ];
+
+// ✅ 가장 작은 폰트 크기 기준으로 `maxLines` 계산
+const minFontSize = Math.min(...initialProjectCards.map((card) => card.fontSize));
+const lineHeight = minFontSize * 1.2;
+const maxTextareaHeight = 108;
+const maxLines = Math.floor(maxTextareaHeight / lineHeight);
 
 export default function AiNewsAnima() {
 	const [title, setTitle] = useState<string>("");
-	const [isModalOpen, setIsModalOpen] = useState(false); // ✅ 모달 상태 추가
+
+	const [projectCards, setProjectCards] = useState<ProjectCard[]>(initialProjectCards);
+
+	// ProjectCart에 맞게 key, value 선언
+	const updateCard = <K extends keyof ProjectCard>(id: number, key: K, value: ProjectCard[K]) => {
+		setProjectCards((prev) =>
+			prev.map((card) => (card.id === id ? { ...card, [key]: value } : card))
+		);
+	};
+
+	const [isModalOpen, setIsModalOpen] = useState(false);
+
+	const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+		const inputValue = e.target.value;
+
+		// ✅ 최대 줄 수 제한 (가장 작은 폰트 기준)
+		const lines = inputValue.split("\n").slice(0, maxLines);
+
+		// ✅ 한 줄당 최대 14자 제한
+		const limitedLines = lines.map((line) => line.slice(0, 14));
+
+		setTitle(limitedLines.join("\n"));
+	};
+
 	return (
 		<div className="flex flex-col items-center min-h-screen gap-[40px] bg-purple-6">
 			{/* 헤더 */}
@@ -31,48 +73,48 @@ export default function AiNewsAnima() {
 			{/* 프로젝트 카드 리스트 */}
 			<div className="grid grid-cols-4 gap-10 w-full max-w-[1200px]">
 				{projectCards.map((card) => (
-					<ThumbnailCard
-						key={card.thumbnailId}
-						artStyleId={card.artStyleId}
-						thumbnailId={card.thumbnailId}
-						title={title || "기본 제목"} // ✅ 입력된 제목을 모든 카드에 반영
-						imageSrc={card.imageSrc}
-						altText={card.altText}
-					/>
+					<div key={card.thumbnailId} className="flex flex-col items-center">
+						<ThumbnailCard
+							artStyleId={card.artStyleId}
+							thumbnailId={card.thumbnailId}
+							title={title}
+							imageSrc={card.imageSrc}
+							altText={card.altText}
+							textAlign={card.textAlign}
+							fontColor={card.fontColor}
+							fontSize={card.fontSize}
+							fontFamily={card.fontFamily}
+						/>
+						{/* ✅ 폰트 설정 UI (컴포넌트 분리) */}
+						<ThumbnailFontMenu
+							fontSize={card.fontSize}
+							fontFamily={card.fontFamily}
+							fontColor={card.fontColor}
+							textAlign={card.textAlign}
+							onUpdate={(key, value) => updateCard(card.id, key as keyof ProjectCard, value)}
+						/>
+					</div>
 				))}
 			</div>
 
-			{/* 제목 입력 필드 */}
-			<div className="w-full max-w-[1200px] h-[120px] flex items-center border border-gray-300 bg-white rounded-lg px-4">
-				<textarea
+			{/* ✅ 제목 입력 필드 */}
+			<div className="relative w-full max-w-[1200px] h-[120px] flex items-center border border-gray-300 bg-white rounded-lg px-4">
+        <textarea
 					className="w-full h-full border-none text-center focus:ring-0 focus:outline-none text-gray-700 text-lg resize-none"
 					placeholder="영상에서 사용할 제목을 적어주세요."
 					value={title}
-					onChange={(e) => {
-						// 현재 입력값
-						const inputValue = e.target.value;
-
-						// 줄 단위로 분리
-						const lines = inputValue.split("\n");
-
-						// ✅ 각 줄의 최대 길이를 14자로 제한
-						const limitedLines = lines.map((line) => line.slice(0, 14));
-
-						// ✅ 최대 3줄까지만 입력 가능
-						if (limitedLines.length > 3) return;
-
-						// 상태 업데이트
-						setTitle(limitedLines.join("\n"));
-					}}
-					rows={3} // ✅ 기본 3줄 입력 가능
+					onChange={handleInputChange}
+					rows={maxLines}
 				/>
 			</div>
+
 			{/* 버튼 영역 */}
-			<ImageMakingButton onClick={() => setIsModalOpen(true)}></ImageMakingButton>
+			<ImageMakingButton onClick={() => setIsModalOpen(true)} />
 			<div className="w-full max-w-[1200px] flex justify-end gap-6">
-				<PreviewButton className="w-[290px] h-[80px]"></PreviewButton>
-				<NextButton className="w-[290px] h-[80px]"></NextButton>
+				<PreviewButton className="w-[290px] h-[80px]" />
+				<NextButton className="w-[290px] h-[80px]" />
 			</div>
+
 			{/* 모달 */}
 			<ThumbnailImageModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 		</div>

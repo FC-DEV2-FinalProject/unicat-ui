@@ -5,6 +5,7 @@ import { Button } from "@/src/components/common/Button";
 import ArtStyleCard from "@/src/components/news-making/card/ArtStyleCard";
 import StepIndicator from "@/src/components/news-making/StepIndicator";
 import Image from "next/image";
+import Link from "next/link";
 
 const artStyles = [
     { id: 1, imageSrc: "/images/news-making/news-style-1.png", alt: "스타일 1" },
@@ -18,7 +19,7 @@ export default function AiNews() {
 
     return (
 
-        <div className="flex flex-col items-center min-h-screen mt-[205px] gap-[40px]">
+        <div className="flex flex-col items-center min-h-screen gap-[40px]">
           {/* 헤더 */}
           <header className="flex w-full items-center justify-between">
             <div className="flex items-center gap-4">
@@ -57,13 +58,16 @@ export default function AiNews() {
                         altText={style.alt}
                         onClick={() => setSelectedStyle(style.id)} // ✅ 클릭 시 상태 변경
                         isSelected={selectedStyle === style.id} // ✅ 선택된 경우 스타일 변경
+                        width={268}
+                        height={300}
                     />
                 ))}
             </div>
 
             {/* ✅ 선택된 경우 `NextButton` 스타일 변경 */}
-            {/* 버튼 컨테이너 */}
+            {/* 다음으로 버튼 컨테이너 */}
             <div className="w-full flex justify-end">
+              <Link href="/news-making/thumbnail">
                 <Button
                     className={`w-[268px] h-[80px] rounded-[15px] text-white font-bold text-[24px] transition-colors 
                         ${selectedStyle !== null ? "bg-purple-1" : "bg-gray-2"}`}
@@ -78,7 +82,7 @@ export default function AiNews() {
                 >
                     다음으로
                 </Button>
-
+              </Link>
             </div>
 
         </div>

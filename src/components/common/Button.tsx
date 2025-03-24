@@ -17,3 +17,4 @@ export const Button = ({ children, className, onClick }: ButtonProps) => {
         </button>
     );
 };
+
