@@ -1,5 +1,9 @@
+import TossPaymentButton from "@/src/components/toss/Payment";
 import { Card, CardContent } from "@/src/components/common/Card";
 import React, { JSX } from "react";
+
+const token =
+  "eyJraWQiOiJyc2EtcHJvZC1rZXktaWQiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiI0IiwiZXhwIjoxNzQyODk3MzU3LCJpYXQiOjE3NDIyOTI1NTcsImVtYWlsIjoia3JiN2tvcmVhQGdtYWlsLmNvbSIsInNjb3BlIjoiYWxsIn0.ijwHQlM1reuJ2qh5d1-1OIUBUduQOn7LcNtlXTGc3ppWVKGCNDuJ2jPHnKUu2afg835VFhnWWaa9le6mfsYiJmYh8xZMikGLSI8PhKdEEG3oguyOGNqAtpM_3WcV6Q7926P1ViS3wGCykx2sWeg_ULwOu5EFmiY8RsVuJ8fSwoP5zRvlLalYDf3B-IrcSkc1-skQEgKvE6YuRK_QkZWFGi3Mf-H62cCHwxnCzTnvp3j8vU1B2ANo4rTmVtI5SFqHSo-5cg6SZGe4ww0Rq7f637zjCq5SLVGFuEjMD-k7X4yfNP8Fb9J844VtRdNPMVU05D05xZQQ9Cy41aXsp01wjQ";
 
 export default function MyPage(): JSX.Element {
   return (
@@ -21,9 +25,7 @@ export default function MyPage(): JSX.Element {
             <div className="flex flex-col mb-10">
               <div className="text-gray-5 font-bold mb-2">구독정보</div>
               <div className="text-gray-5 mb-1">프리미엄 회원 : 2025.12.31</div>
-              <button className="w-[150px] h-[40px] bg-black rounded-lg text-white hover:bg-purple-2 flex items-center justify-center">
-                토스 결제하기
-              </button>
+              <TossPaymentButton token={token} />
             </div>
 
             <div className="w-full h-px bg-gray-4 my-4"></div>
