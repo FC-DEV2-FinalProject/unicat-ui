@@ -23,7 +23,7 @@ const navigationItems = [
 const Header: React.FC<HeaderProps> = ({ className }) => {
   return (
     <header className={`flex flex-col items-center w-full border-b border-[#ECECEC] ${className}`}>
-      <div className="w-full h-[100px] bg-basewhite border-b border-[#ECECEC]">
+      <div className="w-full h-[100px] bg-white border-b border-[#ECECEC]">
         <div className="container flex items-center justify-between h-full max-w-[1200px] mx-auto px-4">
           <div className="flex items-center gap-11">
             {/* Logo */}
