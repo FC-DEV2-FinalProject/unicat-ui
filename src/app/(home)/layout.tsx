@@ -7,23 +7,24 @@ export const metadata: Metadata = {
 };
 
 export default function HomeLayout({
-  children,
-}: {
+                                     children,
+                                   }: {
   children: React.ReactNode;
 }) {
   return (
     <html lang="ko">
-      <head>
-        <meta charSet="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta httpEquiv="X-UA-Compatible" content="ie=edge" />
-      </head>
-      <body>
-        {/* 공통 헤더 내용 */}
+    <head>
+      <meta charSet="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta httpEquiv="X-UA-Compatible" content="ie=edge" />
+    </head>
+    <body>
+    {/* 공통 헤더 내용 */}
+      <div className="min-h-screen flex flex-col">
         <Header />
 
         {/* 메인 콘텐츠 */}
-        <main className="max-w-[1200px] min-h-[900px] mx-auto p-4">
+        <main className="max-w-[1200px] min-h-[900px] mx-auto">
           {" "}
           {/* 최대 너비 1200px 고정 */}
           {children}
@@ -55,7 +56,8 @@ export default function HomeLayout({
             </div>
           </div>
         </footer>
-      </body>
+      </div>
+    </body>
     </html>
   );
 }
