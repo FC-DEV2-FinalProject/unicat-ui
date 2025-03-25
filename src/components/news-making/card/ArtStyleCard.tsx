@@ -1,27 +1,7 @@
 import Image from "next/image";
 import { cn } from "@/src/utils/cn"; // ✅ cn 함수 가져오기
 
-interface ArtStyleCardProps {
-  imageSrc: string;
-  altText: string;
-  onClick?: () => void;
-  isSelected: boolean;
-  width?: number;
-  height?: number;
-  className?: string;
-}
-
-// 기본 width, height 268 300 이전 Props로 속성 전달시 변경됨
-interface ArtStyleCardProps {
-  imageSrc: string;
-  altText: string;
-  onClick?: () => void;
-  isSelected: boolean;
-  applyBorderBox?: boolean; // ✅ 특정 컴포넌트에서만 적용할 수 있는 새로운 prop
-  width?: number;
-  height?: number;
-  className?: string;
-}
+import { ArtStyleCardProps } from "@/src/types/newsMakingTypes";
 
 export default function ArtStyleCard({
                                        imageSrc,
