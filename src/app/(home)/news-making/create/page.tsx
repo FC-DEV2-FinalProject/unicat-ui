@@ -64,6 +64,7 @@ export default function Element () {
 									{"영상 썸네일"}
 								</h3>
 
+								{/*//todo 썸네일 카드 데이터에 zustand store에서 불러온 데이터 넣으면 됨 */}
 								{/* 썸네일 카드 컨테이너 */}
 								<div className="flex items-center justify-center w-full h-auto">
 									<ThumbnailCard
@@ -74,6 +75,10 @@ export default function Element () {
 										imageSrc={""} // 공백일 경우 더미 이미지
 										altText={"썸네일 카드"}
 										/*className="w-full h-auto object-contain"*/
+										textAlign={"left"}
+										fontColor={"#000000"}
+										fontSize={20}
+										fontFamily={"Arial"}
 									/>
 								</div>
 							</CardContent>

@@ -15,8 +15,8 @@ export const MovieCard = ({ image, title, description, className }: MovieCardPro
                 <Image
                     src={image || "/images/default-thumbnail.png"}
                     alt={title || "영상 이미지"}
-                    layout="fill"
-                    objectFit="cover"
+                    fill
+                    style={{ objectFit: 'cover' }}
                     className="rounded-xl"
                 />
             </div>
