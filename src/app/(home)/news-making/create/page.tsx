@@ -10,6 +10,7 @@ import ArtStyleCard from "@/src/components/news-making/card/ArtStyleCard";
 import ThumbnailCard from "@/src/components/news-making/card/ThumbnailCard";
 import VoiceDropdown from "@/src/components/news-making/VoiceDropdown";
 import Link from "next/link";
+import { useArtStyleStore } from "@/src/store/useNewsMakingStore";
 
 const artStyles = [
 	{ id: 1, imageSrc: "/images/news-making/news-style-1.png", alt: "스타일 1" },
@@ -19,9 +20,10 @@ const artStyles = [
 ];
 
 // ✅ 아무거나 하나 선택 (예: 첫 번째 스타일 사용)
-const selectedStyle = artStyles[0]; // 혹은 다른 인덱스로 변경 가능
+const selectedStyle = artStyles[0];
 
 export default function Element () {
+	const { selectedArtStyleId } = useArtStyleStore();
 
 	const contentSections = [
 		{ title: "썸네일", buttonText: "LLM 수정 버튼", hasCheckbox: true },
@@ -35,17 +37,17 @@ export default function Element () {
 					{/* 왼쪽 컬럼: 비디오 스타일 & 썸네일 */}
 					<div className="md:col-span-1 space-y-6 overflow-hidden">
 						{/* 왼쪽 영역 상단: ArtStyleCard 적용 */}
-						<Card className="overflow-hidden border rounded-lg shadow-sm h-auto"> {/* ✅ 여기 추가 */}
+						<Card className="overflow-hidden border rounded-lg shadow-sm h-auto">
 							<CardContent className="bg-white flex flex-col justify-center items-center h-auto">
 								<h3 className="text-3xl font-bold font-bold-32 mb-3 p-3 mt-3">
 									{"영상 스타일"}
 								</h3>
 								<div className="rounded-md">
 									<ArtStyleCard
+										artStyleId={selectedStyle.id}
 										imageSrc={selectedStyle.imageSrc}
 										altText={selectedStyle.alt}
-										isSelected={true}
-										onClick={() => {}}
+										isSelected={selectedArtStyleId === selectedStyle.id}
 										className="mx-auto"
 										width={200}
 										height={224}
@@ -83,7 +85,6 @@ export default function Element () {
 								</div>
 							</CardContent>
 						</Card>
-
 					</div>
 					{/* 오른쪽 컬럼: 콘텐츠 카드들 컷 단위 추가 */}
 					<div className="md:col-span-3 space-y-6">
