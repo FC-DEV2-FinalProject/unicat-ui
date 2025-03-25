@@ -60,7 +60,7 @@ export default function AiNewsAnima() {
 	};
 
 	return (
-		<div className="flex flex-col items-center min-h-screen gap-[40px] bg-purple-6">
+		<div className="mt-[105px] flex flex-col items-center min-h-screen gap-[40px] bg-purple-6">
 			{/* 헤더 */}
 			<header className="w-full max-w-[1200px] flex justify-between items-center">
 				<h1 className="text-gray-5 font-bold text-2xl">만든 프로젝트</h1>
