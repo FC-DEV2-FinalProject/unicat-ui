@@ -1,47 +1,31 @@
 "use client"; // ✅ 클라이언트 컴포넌트로 설정
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function OAuthLogin() {
-    const [oauthLinks, setOauthLinks] = useState([]);
+    const router = useRouter();
 
-    useEffect(() => {
-        // Router 요청
-        fetch("api/auth/oauth-links", {
-            method: "GET"  // 기본값이 GET이라 생략 가능
-        })
-            .then((response) => response.json())
-            .then((data) => setOauthLinks(data))
-            .catch((error) => console.error("Error fetching OAuth links:", error));
-    }, []);
+    const handleOAuthLogin = () => {
+        // 백엔드의 구글 OAuth 인증 URL로 직접 리다이렉트
+        window.location.href = "https://api.unicat.day/oauth2/authorization/google";
+    };
 
-    console.log(oauthLinks);
     return (
-        <div>
-            <h1>간편 로그인</h1>
-            {oauthLinks.length > 0 ? (
-                <div>
-                    {oauthLinks.map((item, index) => (
-                        <button
-                            key={index}
-                            onClick={() => (window.location.href = (item as {link: string}).link)} // OAuth 인증 페이지로 이동
-                            style={{
-                                padding: "10px 20px",
-                                margin: "10px",
-                                borderRadius: "5px",
-                                backgroundColor: "#4285F4",
-                                color: "#fff",
-                                border: "none",
-                                cursor: "pointer",
-                            }}
-                        >
-                            {(item as {provider: string}).provider} 로그인
-                        </button>
-                    ))}
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+            <div className="p-8 bg-white rounded-lg shadow-md">
+                <h1 className="text-2xl font-bold mb-6 text-center">간편 로그인</h1>
+                <div className="space-y-4">
+                    <button
+                        onClick={handleOAuthLogin}
+                        className="w-full px-6 py-3 text-white bg-blue-600 rounded-lg
+                                 hover:bg-blue-700 transition-colors duration-200
+                                 flex items-center justify-center space-x-2"
+                    >
+                        <span>Google 로그인</span>
+                    </button>
                 </div>
-            ) : (
-                <p>로그인 방법을 불러오는 중...</p>
-            )}
+            </div>
         </div>
     );
 }

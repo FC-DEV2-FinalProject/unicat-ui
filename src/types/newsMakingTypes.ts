@@ -35,11 +35,22 @@ export interface ThumbnailCardProps {
   onClick?: () => void;
   /** Indicates whether the thumbnail is selected. */
   isSelected?: boolean;
-
+  /** Text alignment for the thumbnail title */
   textAlign: "left" | "center" | "right";
-	fontColor: string;
-	fontSize: number;
-	fontFamily: "Arial" | "Times New Roman" | "Courier New" | "Verdana";
+  /** Font color for the thumbnail title */
+  fontColor: string;
+  /** Font size for the thumbnail title */
+  fontSize: number;
+  /** Font family for the thumbnail title */
+  fontFamily: "Arial" | "Times New Roman" | "Courier New" | "Verdana";
+}
+
+export interface ArtStyleState {
+  selectedArtStyleId: number;
+  imageSrc: string;
+  altText: string;
+  setSelectedArtStyle: (id: number, src: string, alt: string) => void;
+  clearSelectedArtStyle: () => void;
 }
 
 // 뉴스 만들기 프로세스 상태 인터페이스
