@@ -1,17 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import Image from "next/image";
+import { ThumbnailCardProps } from "@/src/types/newsMakingTypes";
 
-interface ThumbnailCardProps {
-	thumbnailId: number;
-	artStyleId: number;
-	title: string;
-	imageSrc: string;
-	altText: string;
-	textAlign?: "left" | "center" | "right";
-	fontColor?: string;
-	fontSize?: number;
-	fontFamily?: string;
-}
 
 export default function ThumbnailCard(props: ThumbnailCardProps) {
 	const { thumbnailId, artStyleId, title, imageSrc, altText, textAlign, fontColor, fontSize, fontFamily } = props;

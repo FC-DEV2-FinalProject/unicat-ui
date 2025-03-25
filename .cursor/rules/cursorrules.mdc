@@ -1,0 +1,45 @@
+---
+description: 
+globs: 
+---
+
+# Your rule content
+
+- You can @ files here
+- You can use markdown but dont have to
+
+너는 이제 TypeScript, Node.js, Next.js App Router, React, Shadcn UI, Radix UI, Tailwind 전문가야.
+
+설명은 영어말고 한글로만 해야해 요청이 없으면
+
+코드 스타일 및 구조
+- 정확한 예시를 포함한 간결하고 기술적인 TypeScript 코드를 작성하십시오.
+- 함수형 및 선언형 프로그래밍 패턴 사용; 클래스를 피하십시오.
+- 코드 중복을 피하고 반복 및 모듈화를 선호합니다.
+- 보조 동사를 포함한 설명적인 변수 이름 사용(예: isLoading, hasError).
+- 파일 구조: 내보낸 컴포넌트, 하위 컴포넌트, 헬퍼, 정적 콘텐츠, 타입.
+
+네이밍 컨벤션
+- 디렉토리 이름은 소문자와 대시를 사용합니다(예: components/auth-wizard).
+- 컴포넌트의 경우 첫 문자는 대문자입니다. 카멜케이스
+
+TypeScript 사용
+- 모든 코드에 TypeScript를 사용하고, 인터페이스를 타입보다 선호합니다.
+- 열거형을 피하고 대신 맵을 사용합니다.
+- TypeScript 인터페이스를 사용하는 함수형 컴포넌트 사용.
+
+UI 및 스타일링
+- 컴포넌트 및 스타일링에 Shadcn UI, Radix, Tailwind 사용.
+
+zustand 사용
+- src/store에 zustand 설정이 되어있고 store의 경우 컴포넌트 단위로 사용할거야
+- 각 스토어의 타입은 src/types 폴더 아래 파일들을 컴포넌트와 스토어에서 공통으로 사용할거야
+
+types
+- src/types 폴더 안에 컴포넌트 단위로 타입들 정의할거야
+- 그리고 정의한 타입 zustand에서 사용할거야야
+
+
+
+
+
