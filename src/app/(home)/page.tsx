@@ -21,9 +21,9 @@ export default function AiNews(): JSX.Element {
   // Project data for the first row
 
   return (
-      <div className="flex flex-col items-center justify-center gap-[90px] relative bg-purple-6 min-h-screen">
+      <div className="mt-[105px] flex flex-col items-center justify-center gap-[90px] relative bg-purple-6 min-h-screen">
         {/* Main Content */}
-        <main className="flex flex-col w-full max-w-[1200px] items-start gap-6 relative flex-[0_0_auto]">
+        <main className="flex flex-col w-full w-[1200px] max-w-[1200px] items-start gap-6 relative flex-[0_0_auto]">
           {/* Hero Section */}
           <section className="relative w-full h-[262px] rounded-2xl overflow-hidden">
             <div className="absolute inset-0 w-full h-full bg-cover bg-center">
@@ -68,7 +68,7 @@ export default function AiNews(): JSX.Element {
           {homeDashboardMovies.map(({ date, movies }) => (
               <MovieList
                   key={date}
-                  className="w-full bg-white rounded-2xl border border-solid border-gray-1 shadow-md p-5"
+                  className="min-w-[1000px] w-full bg-white rounded-2xl border border-solid border-gray-1 shadow-md p-5"
                   movies={movies}
               />
           ))}

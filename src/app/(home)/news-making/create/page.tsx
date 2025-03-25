@@ -29,7 +29,7 @@ export default function Element () {
 	];
 
 	return (
-		<div className="bg-purple-6 flex flex-row justify-center w-full border-b-[30px] border-white">
+		<div className="mt-[105px] bg-purple-6 flex flex-row justify-center w-full border-b-[30px] border-white">
 			<div className="bg-purple-6 w-full max-w-[1920px] p-12 pl-6 pt-6 pr-6 relative">
 				<div className="grid grid-cols-1 md:grid-cols-4 gap-6">
 					{/* 왼쪽 컬럼: 비디오 스타일 & 썸네일 */}
