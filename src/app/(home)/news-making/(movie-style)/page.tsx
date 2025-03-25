@@ -7,13 +7,7 @@ import StepIndicator from "@/src/components/news-making/StepIndicator";
 import Image from "next/image";
 import Link from "next/link";
 import { useArtStyleStore } from "@/src/store/useNewsMakingStore";
-
-const artStyles = [
-    { id: 1, imageSrc: "/images/news-making/news-style-1.png", alt: "스타일 1" },
-    { id: 2, imageSrc: "/images/news-making/news-style-2.png", alt: "스타일 2" },
-    { id: 3, imageSrc: "/images/news-making/news-style-3.png", alt: "스타일 3" },
-    { id: 4, imageSrc: "/images/news-making/news-style-4.png", alt: "스타일 4" },
-];
+import { ART_STYLES } from "@/src/constants/artStyles";
 
 export default function AiNews() {
     const { selectedArtStyleId } = useArtStyleStore();
@@ -51,7 +45,7 @@ export default function AiNews() {
 
             {/* ✅ 이미지 선택 영역 */}
             <div className="flex flex-wrap justify-center gap-[42px] max-w-[1200px] w-full">
-                {artStyles.map((style) => (
+                {ART_STYLES.map((style) => (
                     <ArtStyleCard
                         key={style.id}
                         artStyleId={style.id}
