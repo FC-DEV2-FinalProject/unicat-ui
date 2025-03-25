@@ -15,11 +15,9 @@ const apiClient = axios.create({
 // 요청 인터셉터: 각 요청에 JWT 토큰을 헤더에 추가
 apiClient.interceptors.request.use(
     (config) => {
-        // 요청 URL 출력
-        console.log("API 클라이언트 : 요청된 URL:", config.baseURL ?? 'base' + config.url ?? '');
-        //const token = getCookie("jwt_token"); // 쿠키에서 JWT 토큰 가져오기
-        const token = "eyJraWQiOiJyc2EtcHJvZC1rZXktaWQiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiI1Iiwic3Vic2NyaXB0aW9uIjoiQkFTSUMiLCJleHAiOjE3NDM0OTMyNTgsImlhdCI6MTc0Mjg4ODQ1OCwiZW1haWwiOiJ3aHdqZGFuQGdtYWlsLmNvbSJ9.PXbn8gsnXAi96OAjPzTHVxnpzLzR_aQLu2vgdgyFgxKFvY0h_cExINxzT_m6CLRkmJm70N5bz6eA3_0o0QrKDsUz76QReICi49CCDtIC1bR7jxJMMyVFdpN2op8mQn1fSfcBrbpFoIenCZxpf61Eo009Aq1mphLiCxcWv-IUZr6Qa-tqyrPSu-VsTjLots68vvu88xFp_eMQK33v-NzVfvCr-Hv-vYTugEwo_BE9cWSeKzU8YyYElmls52F17BdkjbGoBH3TX-JlpPtWK6pcsoury3wmvJ8IEVrLMhed6MQOY_K4P6tgaZUf4JD413lf7vtarlebD1sIjCDTi6Zq7g";
-        console.log("API 클라이언트 : token", token);
+        console.log("요청된 URL:", config.baseURL ?? 'base' + config.url ?? '');
+        const token = getCookie("jwt_token") || process.env.TEST_TOKEN; // 쿠키에서 JWT 토큰 가져오기, 없으면 환경변수의 테스트 토큰 사용
+        console.log("token", token);
         
         if (token) {
             config.headers["Authorization"] = `Bearer ${token}`; // JWT 토큰을 Authorization 헤더에 추가
@@ -35,7 +33,6 @@ apiClient.interceptors.request.use(
         return config;
     },
     (error) => {
-        console.log("요청 중 오류 발생:", error.config?.baseURL ?? '' + error.config?.url ?? '');
         return Promise.reject(error);
     }
 );
@@ -43,16 +40,29 @@ apiClient.interceptors.request.use(
 // 응답 인터셉터: 새로운 JWT 토큰이 응답에 포함된 경우 쿠키에 저장
 apiClient.interceptors.response.use(
     (response) => {
-        const token = response.headers["authorization"];
-        console.log("API 클라이언트 응답 : 응답 헤더의 토큰", token);
-        if (token) {
-            console.log("API 클라이언트 응답 : 새로운 토큰 쿠키에 저장", token);
-            setCookie("jwt_token", token, { maxAge: 60 * 60 * 24 * 7 }); // 7일 동안 쿠키에 JWT 토큰 저장
+        console.log("API 응답 전체 헤더:", response.headers);
+        
+        // 1. Set-Cookie로 토큰이 온 경우 (백엔드에서 직접 쿠키 설정)
+        const setCookieHeader = response.headers["set-cookie"];
+        if (setCookieHeader) {
+            console.log("백엔드에서 Set-Cookie로 토큰 설정됨");
+            return response;
         }
+
+        // 2. Authorization 헤더로 토큰이 온 경우
+        const token = response.headers["authorization"];
+        if (token) {
+            console.log("Authorization 헤더에서 새 토큰 발견, 쿠키에 저장:", token);
+            setCookie("jwt_token", token, { maxAge: 60 * 60 * 24 * 7 });
+        }
+        
         return response;
     },
     (error) => {
-        console.log("API 클라이언트 응답 : 에러 발생", error);
+        console.error("API 에러 응답:", error.response);
+        if (error.response) {
+            console.log("에러 응답 헤더:", error.response.headers);
+        }
         return Promise.reject(error);
     }
 );
