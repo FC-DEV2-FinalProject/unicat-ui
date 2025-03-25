@@ -1,9 +1,12 @@
+"use client";
+
 import { MovieList } from "@/src/components/home/MovieList";
 import { groupMoviesByDate } from "@/src/components/home/MovieCardGroup";
-import React, { JSX } from "react";
+import React, { JSX, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { DummyMovie } from '@/src/types/newsMakingTypes';
+import { useRouter } from "next/navigation";
 
 const dummyMovies: DummyMovie[] = [
   { id: 1, image: "/images/dummy-thumbnail.png", title: "피겨스케이팅 2025", description: "입상했습니다.", date: "2025.03.02" },
@@ -18,12 +21,57 @@ const dummyMovies: DummyMovie[] = [
 const homeDashboardMovies = groupMoviesByDate(dummyMovies, { maxItemsPerDate: 3, sortByDate: "desc" });
 
 export default function AiNews(): JSX.Element {
+  const router = useRouter();
+
+  useEffect(() => {
+    const refreshToken = async () => {
+      try {
+        const response = await fetch('/api/auth/token/refresh', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer eyJraWQiOiJyc2EtcHJvZC1rZXktaWQiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiI1Iiwic3Vic2NyaXB0aW9uIjoiQkFTSUMiLCJleHAiOjE3NDM0OTMyNTgsImlhdCI6MTc0Mjg4ODQ1OCwiZW1haWwiOiJ3aHdqZGFuQGdtYWlsLmNvbSJ9.PXbn8gsnXAi96OAjPzTHVxnpzLzR_aQLu2vgdgyFgxKFvY0h_cExINxzT_m6CLRkmJm70N5bz6eA3_0o0QrKDsUz76QReICi49CCDtIC1bR7jxJMMyVFdpN2op8mQn1fSfcBrbpFoIenCZxpf61Eo009Aq1mphLiCxcWv-IUZr6Qa-tqyrPSu-VsTjLots68vvu88xFp_eMQK33v-NzVfvCr-Hv-vYTugEwo_BE9cWSeKzU8YyYElmls52F17BdkjbGoBH3TX-JlpPtWK6pcsoury3wmvJ8IEVrLMhed6MQOY_K4P6tgaZUf4JD413lf7vtarlebD1sIjCDTi6Zq7g'
+          }
+        });
+        
+        if (!response.ok) {
+          console.error('Token refresh failed');
+        }
+      } catch (error) {
+        console.error('Token refresh error:', error);
+      }
+    };
+
+    refreshToken();
+  }, []);
+
+  const handleCreateProject = async () => {
+    try {
+      const project = await fetch('/api/projects', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          title: "새로운 프로젝트",
+          content: "",
+          artStyleId: 0
+        })
+      }).then(res => res.json());
+      //router.push(`/news-making/movie-style?projectId=${project.id}`);
+      router.push(`/news-making/`);
+    } catch (error) {
+      console.error("Failed to create project:", error);
+      alert("프로젝트 생성에 실패했습니다. 다시 시도해주세요.");
+    }
+  };
+
   // Project data for the first row
 
   return (
-      <div className="flex flex-col items-center justify-center gap-[90px] relative bg-purple-6 min-h-screen">
+      <div className="mt-[105px] flex flex-col items-center justify-center gap-[90px] relative bg-purple-6 min-h-screen">
         {/* Main Content */}
-        <main className="flex flex-col w-full max-w-[1200px] items-start gap-6 relative flex-[0_0_auto]">
+        <main className="flex flex-col w-full w-[1200px] max-w-[1200px] items-start gap-6 relative flex-[0_0_auto]">
           {/* Hero Section */}
           <section className="relative w-full h-[262px] rounded-2xl overflow-hidden">
             <div className="absolute inset-0 w-full h-full bg-cover bg-center">
@@ -45,15 +93,16 @@ export default function AiNews(): JSX.Element {
                   뉴스만들기
                 </div>
                 {/* 버튼 이미지 (185px × 52px) */}
-                <Link href="/news-making">
+                <div className="relative">
                   <Image
                       src="/images/news-making-button.png"
                       alt="뉴스 제작하기 버튼"
                       width={185}
                       height={52}
                       className="cursor-pointer"
+                      onClick={handleCreateProject}
                   />
-                </Link>
+                </div>
               </div>
             </div>
           </section>
@@ -68,7 +117,7 @@ export default function AiNews(): JSX.Element {
           {homeDashboardMovies.map(({ date, movies }) => (
               <MovieList
                   key={date}
-                  className="w-full bg-white rounded-2xl border border-solid border-gray-1 shadow-md p-5"
+                  className="min-w-[1000px] w-full bg-white rounded-2xl border border-solid border-gray-1 shadow-md p-5"
                   movies={movies}
               />
           ))}

@@ -1,18 +1,32 @@
 import Image from "next/image";
 import { cn } from "@/src/utils/cn"; // ✅ cn 함수 가져오기
-
 import { ArtStyleCardProps } from "@/src/types/newsMakingTypes";
+import { useArtStyleStore } from "@/src/store/useNewsMakingStore";
+
+interface ExtendedArtStyleCardProps extends Omit<ArtStyleCardProps, 'onClick'> {
+  artStyleId: number;
+}
 
 export default function ArtStyleCard({
-                                       imageSrc,
-                                       altText,
-                                       onClick,
-                                       isSelected,
-                                       applyBorderBox = false, // ✅ 기본값 false (기존 동작 유지)
-                                       width = 268,
-                                       height = 300,
-                                       className,
-                                     }: ArtStyleCardProps) {
+    artStyleId,
+    imageSrc,
+    altText,
+    isSelected,
+    applyBorderBox = false,
+    width = 268,
+    height = 300,
+    className,
+}: ExtendedArtStyleCardProps) {
+  const { setSelectedArtStyle, clearSelectedArtStyle } = useArtStyleStore();
+  
+  const handleClick = () => {
+    if (isSelected) {
+      clearSelectedArtStyle();
+    } else {
+      setSelectedArtStyle(artStyleId, imageSrc, altText);
+    }
+  };
+
   return (
     <div
       className={cn(
@@ -22,7 +36,7 @@ export default function ArtStyleCard({
         `w-[${width}px] h-[${height}px]`,
         className
       )}
-      onClick={onClick}
+      onClick={handleClick}
     >
       <Image
         src={imageSrc}
