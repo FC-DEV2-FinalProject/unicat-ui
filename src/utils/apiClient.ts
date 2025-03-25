@@ -9,19 +9,23 @@ const apiClient = axios.create({
         Accept: "application/json",
         "Content-Type": "application/json",
     },
-    httpsAgent: createHttpsAgent(), // httpsAgent를 axios 인스턴스에 추가
+    httpsAgent: createHttpsAgent(), // httpsAgent를 axios 인스턴스에 추가   
 });
 
 // 요청 인터셉터: 각 요청에 JWT 토큰을 헤더에 추가
 apiClient.interceptors.request.use(
     (config) => {
+        // 요청 URL 출력
+        console.log("요청된 URL:", config.baseURL ?? 'base' + config.url ?? '');
         const token = getCookie("jwt_token"); // 쿠키에서 JWT 토큰 가져오기
+        console.log("token", token);
         if (token) {
             config.headers["Authorization"] = `Bearer ${token}`; // JWT 토큰을 Authorization 헤더에 추가
         }
         return config;
     },
     (error) => {
+        console.log("요청 중 오류 발생:", error.config?.baseURL ?? '' + error.config?.url ?? '');
         return Promise.reject(error);
     }
 );

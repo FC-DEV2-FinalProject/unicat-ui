@@ -3,8 +3,9 @@ import { groupMoviesByDate } from "@/src/components/home/MovieCardGroup";
 import React, { JSX } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { DummyMovie } from '@/src/types/newsMakingTypes';
 
-const dummyMovies = [
+const dummyMovies: DummyMovie[] = [
   { id: 1, image: "/images/dummy-thumbnail.png", title: "피겨스케이팅 2025", description: "입상했습니다.", date: "2025.03.02" },
   { id: 2, image: "/images/dummy-thumbnail.png", title: "다큐멘터리 제작", description: "AI 기술을 활용한 다큐멘터리", date: "2025.03.02" },
   { id: 3, image: "/images/dummy-thumbnail.png", title: "뉴스 보도", description: "최근 이슈 뉴스 보도", date: "2025.03.02" },
@@ -16,8 +17,6 @@ const dummyMovies = [
 
 const homeDashboardMovies = groupMoviesByDate(dummyMovies, { maxItemsPerDate: 3, sortByDate: "desc" });
 
-
-
 export default function AiNews(): JSX.Element {
   // Project data for the first row
 
@@ -27,14 +26,12 @@ export default function AiNews(): JSX.Element {
         <main className="flex flex-col w-full max-w-[1200px] items-start gap-6 relative flex-[0_0_auto]">
           {/* Hero Section */}
           <section className="relative w-full h-[262px] rounded-2xl overflow-hidden">
-            <div
-                className="absolute inset-0 w-full h-full bg-cover bg-center"
-            >
+            <div className="absolute inset-0 w-full h-full bg-cover bg-center">
               <Image
                   src="/images/news-making-background.png"
                   alt="뉴스 메이킹 배경"
-                  layout="fill"
-                  objectFit="cover"
+                  fill
+                  style={{ objectFit: 'cover' }}
                   priority
               />
               {/* 내용 전체를 감싸는 div (위 50px, 왼쪽 32px 여백) */}
