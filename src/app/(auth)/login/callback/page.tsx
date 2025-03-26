@@ -2,22 +2,17 @@
 
 import { Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { setCookie } from "cookies-next";
+import { getCookie } from "cookies-next";
+
 
 function CallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    const token = searchParams.get("token");
-
+    //const token = searchParams.get("token");
+    const token = getCookie("Authorization");
     if (token) {
-      // JWT 토큰을 쿠키에 저장
-      setCookie("Authorization", token, {
-        maxAge: 60 * 60 * 24 * 7, // 7일
-        path: "/",
-      });
-
       // 대시보드로 리다이렉트
       router.replace("/dashboard");
     } else {
