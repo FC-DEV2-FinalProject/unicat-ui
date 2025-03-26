@@ -20,8 +20,10 @@ const apiClient = axios.create({
 // 요청 인터셉터: 각 요청에 JWT 토큰을 헤더에 추가
 apiClient.interceptors.request.use(
     (config) => {
+
         console.log("요청된 URL - 서버 콘솔 확인:", config.baseURL ?? 'base' + config.url ?? '');
         const token = getCookie("Authorization"); // Authorization 쿠키에서 토큰 가져오기
+
         console.log("token", token);
         if (token) {
             config.headers["Authorization"] = `Bearer ${token}`; // JWT 토큰을 Authorization 헤더에 추가
