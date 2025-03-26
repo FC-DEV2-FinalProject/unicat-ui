@@ -1,6 +1,5 @@
 import { http, HttpResponse } from 'msw'
 import { ART_STYLES } from '@/src/constants/artStyles';
-import { MSW_CONFIG } from './config';
 
 interface ProjectBody {
   title: string;
@@ -16,19 +15,8 @@ const API_URL = process.env.API_URL;
 export const handlers = [
   // 프로젝트 목록 조회 API
   http.get(`${API_URL}/projects`, async ({ request }) => {
-    if (!MSW_CONFIG.USE_MSW.PROJECTS) {
-      console.log('🔴 MSW Bypassed - GET /projects (Using real API)');
-      return new HttpResponse(null, { status: 404 });
-    }
-
-    const headers = Object.fromEntries(request.headers.entries());
-    if (!headers.authorization) {
-      console.log('🔴 Unauthorized - No Authorization header');
-      return new HttpResponse(null, { status: 404 });
-    }
 
     console.log('🔵 MSW Intercepted - GET /projects');
-    console.log('Request headers:', headers);
 
     return new HttpResponse(
       JSON.stringify([
@@ -63,21 +51,10 @@ export const handlers = [
 
   // 프로젝트 생성 API
   http.post(`${API_URL}/projects`, async ({ request }) => {
-    if (!MSW_CONFIG.USE_MSW.PROJECTS) {
-      console.log('🔴 MSW Bypassed - POST /projects (Using real API)');
-      return new HttpResponse(null, { status: 404 });
-    }
-
-    const headers = Object.fromEntries(request.headers.entries());
-    if (!headers.authorization) {
-      console.log('🔴 Unauthorized - No Authorization header');
-      return new HttpResponse(null, { status: 404 });
-    }
 
     console.log('🔵 MSW Intercepted - POST /projects');
     const body = await request.json() as ProjectBody;
     console.log('Request body:', body);
-    console.log('Request headers:', headers);
 
     return new HttpResponse(
       JSON.stringify({
@@ -101,10 +78,6 @@ export const handlers = [
 
   // 아트 스타일 목록 API
   http.get(`${API_URL}/art-styles`, async ({ request }) => {
-    if (!MSW_CONFIG.USE_MSW.ART_STYLES) {
-      console.log('🔴 MSW Bypassed - GET /art-styles (Using real API)');
-      return new HttpResponse(null, { status: 404 });
-    }
 
     const headers = Object.fromEntries(request.headers.entries());
     if (!headers.authorization) {
