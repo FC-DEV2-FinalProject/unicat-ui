@@ -1,4 +1,39 @@
-export default function LoginPage() {
+import apiClient from "@/src/utils/apiClient";
+import SocialLoginButton from "./components/SocialLoginButton";
+
+interface OAuthLink {
+  provider: string;
+  link: string;
+}
+
+export default async function LoginPage() {
+  // 서버 사이드에서 데이터 페칭
+  const oauthLinks: OAuthLink[] = await apiClient
+    .get("/auth/oauth-links")
+    .then((response) => {
+      // 각 OAuth URL에 redirect 파라미터 추가
+      return response.data.map((item: OAuthLink) => {
+        try {
+          const redirectUrl = encodeURIComponent("https://unicat.day/");
+          const separator = item.link.includes("?") ? "&" : "?";
+          const newLink = `${item.link}${separator}redirect=${redirectUrl}`;
+          console.log("Original URL:", item.link);
+          console.log("Modified URL:", newLink);
+          return {
+            ...item,
+            link: newLink,
+          };
+        } catch (error) {
+          console.error("Error processing OAuth link:", error);
+          return item; // 에러 발생 시 원본 URL 반환
+        }
+      });
+    })
+    .catch((error) => {
+      console.error("Error fetching OAuth links:", error);
+      return [];
+    });
+
   return (
     <div className="w-full h-screen flex justify-center items-center">
       <div className="w-[60%] h-full overflow-hidden relative">
@@ -64,21 +99,14 @@ export default function LoginPage() {
               >
                 로그인
               </button>
-              <button
-                type="button"
-                className="flex h-[52px] px-6 py-3 justify-center items-center gap-2.5 self-stretch rounded-lg bg-[#FEE500]"
-              >
-                <img src="/images/KaKao.svg" alt="카카오 로그인 아이콘" />
-                카카오 로그인
-              </button>
-              <button
-                type="button"
-                className="flex h-[52px] px-6 py-3 justify-center items-center gap-2.5 self-stretch rounded-lg bg-[#F2F2F2]"
-              >
-                <img src="/images/Google.svg" alt="구글 로그인 아이콘" />
-                구글 로그인
-              </button>
-              <a className="text-md font-bold text-[#7879F1]" href="#">
+              {oauthLinks.map((item: OAuthLink, index: number) => (
+                <SocialLoginButton
+                  key={index}
+                  provider={item.provider}
+                  link={item.link}
+                />
+              ))}
+              <a className="text-md font-bold text-[#7879F1]" href="/sign-up">
                 회원가입
               </a>
             </div>
