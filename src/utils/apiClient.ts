@@ -21,17 +21,7 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
     (config) => {
 
-        console.log("요청된 URL - 서버 콘솔 확인:", config.baseURL ?? 'base' + config.url ?? '');
-        const token = getCookie("Authorization"); // Authorization 쿠키에서 토큰 가져오기
-
-        console.log("token", token);
-        if (token) {
-            config.headers["Authorization"] = `Bearer ${token}`; // JWT 토큰을 Authorization 헤더에 추가
-        } else {
-            // 쿠키에 토큰이 없을 경우
-            console.log("No token available");
-        }
-        return config;
+    return config;
     },
     (error) => {
         return Promise.reject(error);
@@ -41,15 +31,9 @@ apiClient.interceptors.request.use(
 // 응답 인터셉터: 백엔드에서 BYPASS로 쿠기가 전송되므로 기존 jwt 쿠기가 자동으로 덮어씌워짐
 apiClient.interceptors.response.use(
     (response) => {
-        console.log("API 응답 전체 헤더:", response.headers);
-        
         return response;
     },
     (error) => {
-        console.error("API 에러 응답:", error.response);
-        if (error.response) {
-            console.log("에러 응답 헤더:", error.response.headers);
-        }
         return Promise.reject(error);
     }
 );
