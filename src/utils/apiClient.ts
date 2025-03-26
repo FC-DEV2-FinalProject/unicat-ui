@@ -3,8 +3,13 @@ import axios from "axios";
 import { getCookie, setCookie } from "cookies-next"; // 쿠키에서 JWT 토큰을 가져오고 설정하는 유틸리티
 import { createHttpsAgent } from "@/src/utils/httpsAgent"; // httpsAgent 가져오기
 
+// 서버와 클라이언트 환경에 따라 다른 baseURL 설정
+const baseURL = typeof window !== 'undefined' 
+    ? process.env.NEXT_PUBLIC_API_URL  // 클라이언트 환경
+    : process.env.API_URL;             // 서버 환경
+
 const apiClient = axios.create({
-    baseURL: process.env.API_URL, // 기본 URL 설정
+    baseURL, // 환경에 맞는 baseURL 설정
     headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -16,7 +21,7 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
     (config) => {
         console.log("요청된 URL:", config.baseURL ?? 'base' + config.url ?? '');
-        const token = getCookie("jwt_token") || process.env.TEST_TOKEN; // 쿠키에서 JWT 토큰 가져오기, 없으면 환경변수의 테스트 토큰 사용
+        const token = getCookie("jwt_token");
         console.log("token", token);
         
         if (token) {
