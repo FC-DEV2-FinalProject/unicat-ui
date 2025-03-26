@@ -20,7 +20,6 @@ export default function AiNews() {
                     <h1 className="text-gray-5 font-bold-24 text-[24px] font-bold leading-[28px]">
                         어떤 그림체로 영상을 생성할 건지 골라주세요.
                     </h1>
-
                     <div className="flex items-center">
                         <div className="p-1">
                             <Image
