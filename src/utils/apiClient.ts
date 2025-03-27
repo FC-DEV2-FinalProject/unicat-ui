@@ -30,15 +30,17 @@ apiClient.interceptors.request.use(
                 // Authorization 쿠키가 있는 경우 (로컬 환경)
                 const authToken = cookieHeader.split('Authorization=')?.[1];
                 if (authToken) {
+                    // Authorization 헤더는 Bearer 형식으로
                     config.headers['Authorization'] = `Bearer ${authToken.split(';')[0]}`;
-                    config.headers['Cookie'] = `${authToken.split(';')[0]}`;
+                    // Cookie 헤더는 'key=value' 형식으로
+                    config.headers['Cookie'] = `Authorization=${authToken.split(';')[0]}`;
                 }
                 
                 // _vercel_jwt 쿠키가 있는 경우 (Vercel 환경)
                 const vercelToken = cookieHeader.split('_vercel_jwt=')?.[1];
                 if (vercelToken) {
                     config.headers['Authorization'] = `Bearer ${vercelToken.split(';')[0]}`;
-                    config.headers['Cookie'] = `${vercelToken.split(';')[0]}`;
+                    config.headers['Cookie'] = `Authorization=${vercelToken.split(';')[0]}`;
                 }
             }
 
