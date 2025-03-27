@@ -71,13 +71,14 @@ const useArtStyleStore = create(persist<ArtStyleState>(
     selectedArtStyleId: 0,
     imageSrc: '',
     altText: '',
-    setSelectedArtStyle: (id: number, src: string, alt: string) => {
-      console.log('ArtStyleStore - setSelectedArtStyle:', { id, src, alt });
-      set({ selectedArtStyleId: id, imageSrc: src, altText: alt });
+    projectId: undefined,
+    setSelectedArtStyle: (id: number, src: string, alt: string, projectId?: number) => {
+      console.log('ArtStyleStore - setSelectedArtStyle:', { id, src, alt, projectId });
+      set({ selectedArtStyleId: id, imageSrc: src, altText: alt, projectId });
     },
     clearSelectedArtStyle: () => {
       console.log('ArtStyleStore - clearSelectedArtStyle');
-      set({ selectedArtStyleId: 0, imageSrc: '', altText: '' });
+      set({ selectedArtStyleId: 0, imageSrc: '', altText: '', projectId: 0 });
     },
   }),
   {

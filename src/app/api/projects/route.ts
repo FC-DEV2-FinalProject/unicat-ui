@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
       console.log('e.message', e instanceof Error ? e.message : String(e));
       console.log('📝 요청 바디 없음 - 빈 객체 사용');
     }
-    
+
     // apiClient로 백엔드 요청 보내기 전 로깅
     console.log('📤 백엔드로 보낼 요청 정보:', {
       url: '/projects',
@@ -52,13 +52,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(response.data);
   } catch (error) {
     console.error('❌ Next.js API 라우트 에러:', {
-        error: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined,
-        requestHeaders: Object.fromEntries(req.headers.entries())
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+      requestHeaders: Object.fromEntries(req.headers.entries())
     });
     return NextResponse.json(
-        { error: error instanceof Error ? error.message : String(error) }, 
-        { status: 500 }
+      { error: error instanceof Error ? error.message : String(error) },
+      { status: 500 }
     );
   }
 }

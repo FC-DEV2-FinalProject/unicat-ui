@@ -8,9 +8,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useArtStyleStore } from "@/src/store/useNewsMakingStore";
 import { ART_STYLES } from "@/src/constants/artStyles";
+import { useSearchParams } from 'next/navigation';
 
 export default function AiNews() {
     const { selectedArtStyleId } = useArtStyleStore();
+    const searchParams = useSearchParams();
+    const projectId = searchParams.get('projectId');
 
     return (
         <div className="mt-[105px] flex flex-col items-center min-h-screen gap-[40px]">
@@ -53,6 +56,7 @@ export default function AiNews() {
                         isSelected={selectedArtStyleId === style.id}
                         width={268}
                         height={300}
+                        projectId={projectId ? parseInt(projectId) : undefined}
                     />
                 ))}
             </div>

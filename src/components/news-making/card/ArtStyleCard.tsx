@@ -5,6 +5,7 @@ import { useArtStyleStore } from "@/src/store/useNewsMakingStore";
 
 interface ExtendedArtStyleCardProps extends Omit<ArtStyleCardProps, 'onClick'> {
   artStyleId: number;
+  projectId?: number;
 }
 
 export default function ArtStyleCard({
@@ -16,6 +17,7 @@ export default function ArtStyleCard({
     width = 268,
     height = 300,
     className,
+    projectId,
 }: ExtendedArtStyleCardProps) {
   const { setSelectedArtStyle, clearSelectedArtStyle } = useArtStyleStore();
   
@@ -23,7 +25,7 @@ export default function ArtStyleCard({
     if (isSelected) {
       clearSelectedArtStyle();
     } else {
-      setSelectedArtStyle(artStyleId, imageSrc, altText);
+      setSelectedArtStyle(artStyleId, imageSrc, altText, projectId);
     }
   };
 

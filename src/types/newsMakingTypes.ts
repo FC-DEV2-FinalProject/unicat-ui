@@ -49,7 +49,8 @@ export interface ArtStyleState {
   selectedArtStyleId: number;
   imageSrc: string;
   altText: string;
-  setSelectedArtStyle: (id: number, src: string, alt: string) => void;
+  projectId?: number;
+  setSelectedArtStyle: (id: number, src: string, alt: string, projectId?: number) => void;
   clearSelectedArtStyle: () => void;
 }
 
