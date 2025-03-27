@@ -35,8 +35,9 @@ const maxLines = Math.floor(maxTextareaHeight / lineHeight);
 
 export default function AiNewsAnima() {
 	const [title, setTitle] = useState<string>("");
-
 	const [projectCards, setProjectCards] = useState<ProjectCard[]>(initialProjectCards);
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
 
 	// ProjectCart에 맞게 key, value 선언
 	const updateCard = <K extends keyof ProjectCard>(id: number, key: K, value: ProjectCard[K]) => {
@@ -45,18 +46,26 @@ export default function AiNewsAnima() {
 		);
 	};
 
-	const [isModalOpen, setIsModalOpen] = useState(false);
-
 	const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		const inputValue = e.target.value;
-
 		// ✅ 최대 줄 수 제한 (가장 작은 폰트 기준)
 		const lines = inputValue.split("\n").slice(0, maxLines);
-
 		// ✅ 한 줄당 최대 14자 제한
 		const limitedLines = lines.map((line) => line.slice(0, 14));
-
 		setTitle(limitedLines.join("\n"));
+	};
+
+	const updateAllCardImages = (imageSrc: string) => {
+		setProjectCards(prev => 
+			prev.map(card => ({
+				...card,
+				imageSrc
+			}))
+		);
+	};
+
+	const handleCardClick = (id: number) => {
+		setSelectedCardId(id === selectedCardId ? null : id);
 	};
 
 	return (
@@ -84,6 +93,8 @@ export default function AiNewsAnima() {
 							fontColor={card.fontColor}
 							fontSize={card.fontSize}
 							fontFamily={card.fontFamily}
+							isSelected={card.id === selectedCardId}
+							onClick={() => handleCardClick(card.id)}
 						/>
 						{/* ✅ 폰트 설정 UI (컴포넌트 분리) */}
 						<ThumbnailFontMenu
@@ -99,7 +110,7 @@ export default function AiNewsAnima() {
 
 			{/* ✅ 제목 입력 필드 */}
 			<div className="relative w-full max-w-[1200px] h-[120px] flex items-center border border-gray-300 bg-white rounded-lg px-4">
-        <textarea
+				<textarea
 					className="w-full h-full border-none text-center focus:ring-0 focus:outline-none text-gray-700 text-lg resize-none"
 					placeholder="영상에서 사용할 제목을 적어주세요."
 					value={title}
@@ -110,13 +121,17 @@ export default function AiNewsAnima() {
 
 			{/* 버튼 영역 */}
 			<ImageMakingButton onClick={() => setIsModalOpen(true)} />
-			<div className="w-full max-w-[1200px] flex justify-end gap-6">
+			<div className="flex gap-[20px]">
 				<PreviewButton className="w-[290px] h-[80px]" />
 				<NextButton className="w-[290px] h-[80px]" />
 			</div>
 
 			{/* 모달 */}
-			<ThumbnailImageModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+			<ThumbnailImageModal 
+				isOpen={isModalOpen} 
+				onClose={() => setIsModalOpen(false)} 
+				onImageUpload={updateAllCardImages}
+			/>
 		</div>
 	);
 }

@@ -36,13 +36,9 @@ export interface ThumbnailCardProps {
   /** The title to display on the thumbnail. */
   title: string;
   /** The source URL of the thumbnail image. */
-  imageSrc?: string;
+  imageSrc: string;
   /** The alt text for the thumbnail image. */
   altText: string;
-  /** Optional click handler for the thumbnail. */
-  onClick?: () => void;
-  /** Indicates whether the thumbnail is selected. */
-  isSelected?: boolean;
   /** Text alignment for the thumbnail title */
   textAlign: "left" | "center" | "right";
   /** Font color for the thumbnail title */
@@ -50,7 +46,11 @@ export interface ThumbnailCardProps {
   /** Font size for the thumbnail title */
   fontSize: number;
   /** Font family for the thumbnail title */
-  fontFamily: "Arial" | "Times New Roman" | "Courier New" | "Verdana";
+  fontFamily: string;
+  /** Indicates whether the thumbnail is selected. */
+  isSelected?: boolean;
+  /** Optional click handler for the thumbnail. */
+  onClick?: () => void;
 }
 
 
