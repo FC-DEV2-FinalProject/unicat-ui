@@ -14,7 +14,7 @@ const API_URL = process.env.API_URL;
 // MSW를 사용할 API 엔드포인트만 여기에 정의
 export const handlers = [
   // 프로젝트 목록 조회 API
-  http.get(`${API_URL}/projects`, async ({ request }) => {
+  http.get(`${API_URL}/projects`, async ({  }) => {
 
     console.log('🔵 MSW Intercepted - GET /projects');
 
