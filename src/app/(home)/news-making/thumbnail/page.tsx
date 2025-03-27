@@ -1,12 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect, Suspense } from "react";
 import NextButton from "@/src/components/news-making/button/NextButton";
 import PreviewButton from "@/src/components/news-making/button/PreviewButton";
 import ThumbnailCard from "@/src/components/news-making/card/ThumbnailCard";
 import ImageMakingButton from "@/src/components/news-making/button/ImageMakingButton";
 import ThumbnailImageModal from "@/src/components/news-making/ThumbnailImageModal";
 import ThumbnailFontMenu from "@/src/components/news-making/ThumbnailFontMenu";
+import { useProjectStore } from "@/src/store/useNewsMakingStore";
+import { useRouter, useSearchParams } from "next/navigation";
+import { PROJECT_STAGES } from "@/src/types/newsMakingTypes";
 
 interface ProjectCard {
 	id: number;
@@ -34,10 +37,34 @@ const maxTextareaHeight = 108;
 const maxLines = Math.floor(maxTextareaHeight / lineHeight);
 
 export default function AiNewsAnima() {
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<ThumbnailContent />
+		</Suspense>
+	);
+}
+
+function ThumbnailContent() {
 	const [title, setTitle] = useState<string>("");
 	const [projectCards, setProjectCards] = useState<ProjectCard[]>(initialProjectCards);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
+	const { updateSelectedThumbnail, updateProjectStage } = useProjectStore();
+	const router = useRouter();
+	const searchParams = useSearchParams();
+	const projectId = searchParams.get('projectId');
+	
+	type CardRef = { captureCard: (callback: (dataUrl: string) => void) => void };
+	const cardRefs = useRef<{ [key: number]: React.MutableRefObject<CardRef | null> }>({});
+
+	// 컴포넌트 마운트 시 ref 초기화
+	useEffect(() => {
+		projectCards.forEach(card => {
+			if (!cardRefs.current[card.id]) {
+				cardRefs.current[card.id] = { current: null };
+			}
+		});
+	}, [projectCards]);
 
 	// ProjectCart에 맞게 key, value 선언
 	const updateCard = <K extends keyof ProjectCard>(id: number, key: K, value: ProjectCard[K]) => {
@@ -68,6 +95,51 @@ export default function AiNewsAnima() {
 		setSelectedCardId(id === selectedCardId ? null : id);
 	};
 
+	const handleNext = () => {
+		if (!selectedCardId) {
+			alert("썸네일을 선택해주세요!");
+			return;
+		}
+
+		if (!title.trim()) {
+			alert("제목을 입력해주세요!");
+			return;
+		}
+
+		const selectedCard = projectCards.find(card => card.id === selectedCardId);
+		if (!selectedCard) return;
+
+		if (!selectedCard.imageSrc) {
+			alert("이미지를 업로드해주세요!");
+			return;
+		}
+
+		// 선택된 썸네일 정보 저장
+		const handleCapture = (dataUrl: string) => {
+			updateSelectedThumbnail(
+				selectedCardId,
+				title,
+				selectedCard.textAlign,
+				selectedCard.fontColor,
+				selectedCard.fontSize,
+				selectedCard.fontFamily,
+				dataUrl
+			);
+
+			// 캡처 완료 후 프로젝트 단계 업데이트 및 페이지 이동
+			if (projectId) {
+				updateProjectStage(parseInt(projectId), PROJECT_STAGES.CREATING);
+				router.push(`/news-making/create?projectId=${projectId}`);
+			}
+		};
+
+		// ref를 통해 직접 캡처 함수 호출
+		const cardRef = cardRefs.current[selectedCardId];
+		if (cardRef?.current) {
+			cardRef.current.captureCard(handleCapture);
+		}
+	};
+
 	return (
 		<div className="mt-[105px] flex flex-col items-center min-h-screen gap-[40px] bg-purple-6">
 			{/* 헤더 */}
@@ -84,6 +156,11 @@ export default function AiNewsAnima() {
 				{projectCards.map((card) => (
 					<div key={card.thumbnailId} className="flex flex-col items-center">
 						<ThumbnailCard
+							ref={(el) => {
+								if (cardRefs.current[card.id]) {
+									cardRefs.current[card.id].current = el;
+								}
+							}}
 							artStyleId={card.artStyleId}
 							thumbnailId={card.thumbnailId}
 							title={title}
@@ -109,7 +186,7 @@ export default function AiNewsAnima() {
 			</div>
 
 			{/* ✅ 제목 입력 필드 */}
-			<div className="relative w-full max-w-[1200px] h-[120px] flex items-center border border-gray-300 bg-white rounded-lg px-4">
+			<div className="w-full max-w-[1200px] h-[108px] bg-white rounded-lg p-4">
 				<textarea
 					className="w-full h-full border-none text-center focus:ring-0 focus:outline-none text-gray-700 text-lg resize-none"
 					placeholder="영상에서 사용할 제목을 적어주세요."
@@ -123,7 +200,7 @@ export default function AiNewsAnima() {
 			<ImageMakingButton onClick={() => setIsModalOpen(true)} />
 			<div className="flex gap-[20px]">
 				<PreviewButton className="w-[290px] h-[80px]" />
-				<NextButton className="w-[290px] h-[80px]" />
+				<NextButton className="w-[290px] h-[80px]" onClick={handleNext} />
 			</div>
 
 			{/* 모달 */}

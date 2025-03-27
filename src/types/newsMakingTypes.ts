@@ -46,7 +46,7 @@ export interface ThumbnailCardProps {
   /** Font size for the thumbnail title */
   fontSize: number;
   /** Font family for the thumbnail title */
-  fontFamily: string;
+  fontFamily: "Arial" | "Times New Roman" | "Courier New" | "Verdana";
   /** Indicates whether the thumbnail is selected. */
   isSelected?: boolean;
   /** Optional click handler for the thumbnail. */
