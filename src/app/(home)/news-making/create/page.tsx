@@ -59,7 +59,7 @@ export default function Element() {
 						<div className="md:col-span-1 space-y-6 overflow-hidden">
 						</div>
 						{/* 왼쪽 영역 하단: Thumbnail Card 적용 */}
-						<Card>
+						<Card className="overflow-hidden border rounded-lg shadow-sm h-auto">
 							<CardContent className="flex flex-col justify-center items-center h-auto">
 								{/* 카드 제목 */}
 								<h3 className="text-3xl font-bold font-bold-32 mb-3 p-3 mt-3">
@@ -67,19 +67,26 @@ export default function Element() {
 								</h3>
 
 								{/* 썸네일 카드 컨테이너 */}
-								<div className="flex items-center justify-center w-full h-auto">
-									<ThumbnailCard
-										key={"1"}
-										artStyleId={currentProject?.selectedArtStyleId || 1}
-										thumbnailId={1}
-										title={"기본 제목"}
-										imageSrc={""} // 공백일 경우 더미 이미지
-										altText={"썸네일 카드"}
-										textAlign={"left"}
-										fontColor={"#000000"}
-										fontSize={20}
-										fontFamily={"Arial"}
-									/>
+								<div className="w-full h-auto bg-gray-5 rounded-lg">
+									<div className="flex items-center justify-center">
+										{currentProject?.thumbnail ? (
+											<ThumbnailCard
+												artStyleId={currentProject.selectedArtStyleId || 1}
+												thumbnailId={1}
+												title={currentProject.thumbnail.title || ""}
+												imageSrc={currentProject.thumbnail.imageSrc || ""}
+												altText="썸네일 이미지"
+												textAlign={currentProject.thumbnail.textAlign || "left"}
+												fontColor={currentProject.thumbnail.fontColor || "#000000"}
+												fontSize={currentProject.thumbnail.fontSize || 20}
+												fontFamily={(currentProject.thumbnail.fontFamily as "Arial" | "Times New Roman" | "Courier New" | "Verdana") || "Arial"}
+											/>
+										) : (
+											<div className="w-[268px] h-[480px] flex items-center justify-center text-gray-500 bg-gray-5 rounded-[8px]">
+												이미지가 없습니다
+											</div>
+										)}
+									</div>
 								</div>
 							</CardContent>
 						</Card>

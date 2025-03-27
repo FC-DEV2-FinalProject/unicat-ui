@@ -1,10 +1,14 @@
-import React, { useEffect, useRef } from "react";
-import Image from "next/image";
+import React, { useEffect, useRef, useImperativeHandle, forwardRef } from "react";
 import { ThumbnailCardProps } from "@/src/types/newsMakingTypes";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function ThumbnailCard({
+const ThumbnailCard = forwardRef<
+	{ captureCard: (callback: (dataUrl: string) => void) => void },
+	ThumbnailCardProps & { onCapture?: (dataUrl: string) => void }
+>(({
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	artStyleId,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	thumbnailId,
 	title,
 	imageSrc,
@@ -14,25 +18,85 @@ export default function ThumbnailCard({
 	fontSize,
 	fontFamily,
 	onClick,
-	isSelected
-}: ThumbnailCardProps) {
-	const canvasRef = useRef<HTMLCanvasElement | null>(null);
+	isSelected,
+	onCapture
+}, ref) => {
+	const cardRef = useRef<HTMLDivElement>(null);
+	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const imageRef = useRef<HTMLImageElement>(null);
+	const captureCanvasRef = useRef<HTMLCanvasElement>(null);
 
-	// 이미지 영역 추출 함수
-	const extractImageArea = () => {
-		if (!imageRef.current) return null;
+	// 카드 전체 영역을 PNG로 캡처하는 함수
+	const captureCard = (callback?: (dataUrl: string) => void) => {
+		console.log('captureCard 시작');
 		
-		const canvas = document.createElement('canvas');
+		if (!cardRef.current || !canvasRef.current || !captureCanvasRef.current) {
+			console.log('캡처 실패:', {
+				cardRef: !!cardRef.current,
+				canvasRef: !!canvasRef.current,
+				captureCanvasRef: !!captureCanvasRef.current
+			});
+			return;
+		}
+
+		const canvas = captureCanvasRef.current;
+		canvas.width = 268;
+		canvas.height = 480;
 		const ctx = canvas.getContext('2d');
-		if (!ctx) return null;
+		if (!ctx) {
+			console.log('캔버스 컨텍스트 가져오기 실패');
+			return;
+		}
 
-		canvas.width = 268;  // 카드 너비
-		canvas.height = 224; // 이미지 영역 높이
+		console.log('캔버스 설정 완료');
 
-		ctx.drawImage(imageRef.current, 0, 0, canvas.width, canvas.height);
-		return canvas.toDataURL('image/png');
+		// 배경색 채우기 (전체 영역)
+		ctx.fillStyle = 'rgb(243 244 246)'; // bg-gray-5
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+		console.log('배경색 채우기 완료');
+
+		// 텍스트 캔버스 그리기
+		if (canvasRef.current) {
+			ctx.drawImage(canvasRef.current, 0, 0);
+			console.log('텍스트 캔버스 그리기 완료');
+		}
+
+		// 이미지 그리기
+		if (imageRef.current && imageSrc) {
+			// 이미지 영역 배경색 다시 채우기
+			ctx.fillStyle = 'rgb(243 244 246)'; // bg-gray-5
+			ctx.fillRect(0, 128, 268, 224);
+			
+			ctx.drawImage(
+				imageRef.current,
+				0, 128,  // 이미지 시작 위치
+				268, 224 // 이미지 크기
+			);
+			console.log('이미지 그리기 완료');
+		}
+
+		// PNG로 변환
+		const dataUrl = canvas.toDataURL('image/png');
+		console.log('PNG 변환 완료, dataUrl 길이:', dataUrl.length);
+		
+		if (callback) {
+			callback(dataUrl);
+			console.log('캡처 콜백 호출 완료');
+		} else if (onCapture) {
+			onCapture(dataUrl);
+			console.log('캡처 콜백 호출 완료');
+		}
 	};
+
+	useImperativeHandle(ref, () => ({
+		captureCard
+	}));
+
+	useEffect(() => {
+		if (onCapture) {
+			captureCard();
+		}
+	}, [onCapture]);
 
 	useEffect(() => {
 		const canvas = canvasRef.current;
@@ -82,13 +146,13 @@ export default function ThumbnailCard({
 	}, [title, fontSize, fontColor, fontFamily, textAlign]);
 
 	return (
-		<div className="relative w-[268px] h-[480px] cursor-pointer group">
-			{/* 선택 효과 배경 */}
-			<div className={`absolute inset-0 rounded-[8px] transition-colors ${isSelected ? 'bg-purple-1' : ''}`} />
+		<div className="relative w-[268px] h-[480px] cursor-pointer group" ref={cardRef}>
+			{/* 선택 효과 테두리 */}
+			<div className={`absolute inset-0 rounded-[8px] transition-colors z-20 pointer-events-none ${isSelected ? 'border-[8px] border-purple-1' : ''}`} />
 			
-			{/* 실제 컨텐츠 */}
+			{/* 실제 컨텐츠 - 캡처 영역 */}
 			<div
-				className="absolute inset-[8px] overflow-hidden rounded-[8px] flex flex-col items-center justify-center bg-gray-5"
+				className="absolute inset-0 overflow-hidden rounded-[8px] flex flex-col items-center justify-center bg-gray-5"
 				onClick={onClick}
 			>
 				{/* ✅ 이미지 */}
@@ -132,6 +196,13 @@ export default function ThumbnailCard({
 				{/* ✅ 캔버스를 제목 텍스트로 사용 */}
 				<canvas ref={canvasRef} className="absolute top-4 left-0 w-full h-[108px] pointer-events-none" />
 			</div>
+
+			{/* 캡처용 숨겨진 캔버스 */}
+			<canvas ref={captureCanvasRef} className="hidden" />
 		</div>
 	);
-}
+});
+
+ThumbnailCard.displayName = 'ThumbnailCard';
+
+export default ThumbnailCard;

@@ -14,6 +14,7 @@ interface Project {
         fontColor?: string;
         fontSize?: number;
         fontFamily?: string;
+        selectedCardId?: number;
     };
 }
 
@@ -25,6 +26,15 @@ interface ProjectStore {
     updateProjectArtStyle: (projectId: number, artStyleId: number) => void;
     updateProjectStage: (projectId: number, stage: ProjectStage) => void;
     updateThumbnailImage: (imageSrc: string) => void;
+    updateSelectedThumbnail: (
+        cardId: number,
+        title: string,
+        textAlign: "left" | "center" | "right",
+        fontColor: string,
+        fontSize: number,
+        fontFamily: string,
+        dataUrl: string
+    ) => void;
 }
 
 export const useProjectStore = create<ProjectStore>()(
@@ -70,6 +80,34 @@ export const useProjectStore = create<ProjectStore>()(
                                 thumbnail: {
                                     ...project.thumbnail,
                                     imageSrc,
+                                },
+                            }
+                            : project
+                    ),
+                })),
+            updateSelectedThumbnail: (
+                cardId: number,
+                title: string,
+                textAlign: "left" | "center" | "right",
+                fontColor: string,
+                fontSize: number,
+                fontFamily: string,
+                dataUrl: string
+            ) =>
+                set((state) => ({
+                    projects: state.projects.map((project) =>
+                        project.id === state.currentProjectId
+                            ? {
+                                ...project,
+                                thumbnail: {
+                                    ...project.thumbnail,
+                                    selectedCardId: cardId,
+                                    title,
+                                    textAlign,
+                                    fontColor,
+                                    fontSize,
+                                    fontFamily,
+                                    imageSrc: dataUrl,
                                 },
                             }
                             : project

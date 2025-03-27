@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useProjectStore } from '@/src/store/useNewsMakingStore';
 import ModalImageUploadSelfButton from "@/src/components/news-making/button/ModalImageUploadSelfButton";
 import ModalImageUploadAiButton from "@/src/components/news-making/button/ModalImageUploadAiButton";
 import Link from "next/link";
@@ -13,8 +12,9 @@ interface ThumbnailImageModalProps {
 }
 
 export default function ThumbnailImageModal({ isOpen, onClose, onImageUpload }: ThumbnailImageModalProps) {
-	const { updateThumbnailImage } = useProjectStore();
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [fileName, setFileName] = useState<string>("");
 
 	useEffect(() => {
