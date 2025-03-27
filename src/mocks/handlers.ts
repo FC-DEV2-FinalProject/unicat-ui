@@ -51,8 +51,16 @@ export const handlers = [
 
   // 프로젝트 생성 API
   http.post(`${API_URL}/projects`, async ({ request }) => {
-
     console.log('🔵 MSW Intercepted - POST /projects');
+    
+    // 요청 헤더 로깅
+    const headers = Object.fromEntries(request.headers.entries());
+    // console.log('📤 Request Headers:', {
+    //   cookie: headers.cookie,
+    //   authorization: headers.authorization,
+    //   allHeaders: headers
+    // });
+
     const body = await request.json() as ProjectBody;
     console.log('Request body:', body);
 
@@ -70,7 +78,8 @@ export const handlers = [
       {
         status: 201,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Set-Cookie': `Authorization=${headers.authorization}; Path=/; HttpOnly; SameSite=Lax`
         }
       }
     );
