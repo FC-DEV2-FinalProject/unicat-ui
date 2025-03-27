@@ -5,8 +5,7 @@ import { groupMoviesByDate } from "@/src/components/home/MovieCardGroup";
 import React, { JSX } from "react";
 import Image from "next/image";
 import { DummyMovie } from '@/src/types/newsMakingTypes';
-import { useRouter } from "next/navigation";
-import apiClient from "@/src/utils/apiClient";
+import { CreateProjectButton } from "@/src/components/home/CreateProjectButton";
 
 const dummyMovies: DummyMovie[] = [
   { id: 1, image: "/images/dummy-thumbnail.png", title: "피겨스케이팅 2025", description: "입상했습니다.", date: "2025.03.02" },
@@ -21,60 +20,6 @@ const dummyMovies: DummyMovie[] = [
 const homeDashboardMovies = groupMoviesByDate(dummyMovies, { maxItemsPerDate: 3, sortByDate: "desc" });
 
 export default function AiNews(): JSX.Element {
-  const router = useRouter();
-
-  // // 토큰 체크 및 리프레시
-  // useEffect(() => {
-  //   const checkAndRefreshToken = async () => {
-  //     try {
-  //       // Authorization 쿠키 체크
-  //       const hasToken = document.cookie
-  //         .split('; ')
-  //         .some(row => row.startsWith('Authorization='));
-
-  //       if (!hasToken) {
-  //         console.log('🔄 토큰 없음, 리프레시 시도');
-  //         // 리프레시 토큰으로 새 토큰 요청
-  //         const response = await apiClient.post('/auth/token/refresh');
-          
-  //         if (!response.data) {
-  //           console.log('❌ 토큰 리프레시 실패');
-  //           window.location.href = '/login';
-  //           return;
-  //         }
-          
-  //         console.log('✅ 토큰 리프레시 성공');
-  //       }
-  //     } catch (error) {
-  //       console.error('토큰 리프레시 실패:', error);
-  //       window.location.href = '/login';
-  //     }
-  //   };
-
-  //   checkAndRefreshToken();
-  // }, []);
-
-  const handleCreateProject = async () => {
-    try {
-      const headers = {
-        'Content-Type': 'application/json',
-      };
-      console.log('📤 요청 헤더에 있는 쿠키:', document.cookie); // 클라이언트의 쿠키 확인
-
-      const project = await apiClient('/api/projects', {
-        method: 'POST',
-        headers,
-      }).then(res => res.data);
-
-      router.push(`/news-making/artStyle?projectId=${project.id}`);
-    } catch (error) {
-      console.error("Failed to create project:", error);
-      alert("프로젝트 생성에 실패했습니다. 다시 시도해주세요.");
-    }
-  };
-
-  // Project data for the first row
-
   return (
     <div className="mt-[105px] flex flex-col items-center justify-center gap-[90px] relative bg-purple-6 min-h-screen">
       {/* Main Content */}
@@ -99,21 +44,11 @@ export default function AiNews(): JSX.Element {
               <div className="text-gray-5 font-bold text-[length:var(--bold-32-font-size)]  mb-[32px]">
                 뉴스만들기
               </div>
-              {/* 버튼 이미지 (185px × 52px) */}
-              <div className="relative">
-                <Image
-                  src="/images/news-making-button.png"
-                  alt="뉴스 제작하기 버튼"
-                  width={185}
-                  height={52}
-                  className="cursor-pointer"
-                  onClick={handleCreateProject}
-                />
-              </div>
+              {/* 프로젝트 생성 버튼 */}
+              <CreateProjectButton />
             </div>
           </div>
         </section>
-
 
         {/* Projects Section */}
         <h2 className="font-bold-24 text-gray-5 font-bold text-[length:var(--bold-24-font-size)] tracking-[var(--bold-24-letter-spacing)] leading-[var(--bold-24-line-height)]">
@@ -128,7 +63,6 @@ export default function AiNews(): JSX.Element {
             movies={movies}
           />
         ))}
-
       </main>
     </div>
   );

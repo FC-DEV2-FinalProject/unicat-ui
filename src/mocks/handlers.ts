@@ -1,5 +1,4 @@
 import { http, HttpResponse } from 'msw'
-import { ART_STYLES } from '@/src/constants/artStyles';
 
 interface ProjectBody {
   title: string;

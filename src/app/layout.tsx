@@ -9,6 +9,7 @@ export const metadata: Metadata = {
 
 // 환경 변수에 따라 모킹 실행
 if (process.env.NEXT_PUBLIC_API_MOCKING === "enabled") {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   require("../mocks");
 }
 
