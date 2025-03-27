@@ -2,11 +2,11 @@
 
 import { MovieList } from "@/src/components/home/MovieList";
 import { groupMoviesByDate } from "@/src/components/home/MovieCardGroup";
-import React, { JSX, useEffect } from "react";
+import React, { JSX } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { DummyMovie } from '@/src/types/newsMakingTypes';
 import { useRouter } from "next/navigation";
+import apiClient from "@/src/utils/apiClient";
 
 const dummyMovies: DummyMovie[] = [
   { id: 1, image: "/images/dummy-thumbnail.png", title: "피겨스케이팅 2025", description: "입상했습니다.", date: "2025.03.02" },
@@ -23,43 +23,19 @@ const homeDashboardMovies = groupMoviesByDate(dummyMovies, { maxItemsPerDate: 3,
 export default function AiNews(): JSX.Element {
   const router = useRouter();
 
-  useEffect(() => {
-    const refreshToken = async () => {
-      try {
-        const response = await fetch('/api/auth/token/refresh', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer eyJraWQiOiJyc2EtcHJvZC1rZXktaWQiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiI1Iiwic3Vic2NyaXB0aW9uIjoiQkFTSUMiLCJleHAiOjE3NDM0OTMyNTgsImlhdCI6MTc0Mjg4ODQ1OCwiZW1haWwiOiJ3aHdqZGFuQGdtYWlsLmNvbSJ9.PXbn8gsnXAi96OAjPzTHVxnpzLzR_aQLu2vgdgyFgxKFvY0h_cExINxzT_m6CLRkmJm70N5bz6eA3_0o0QrKDsUz76QReICi49CCDtIC1bR7jxJMMyVFdpN2op8mQn1fSfcBrbpFoIenCZxpf61Eo009Aq1mphLiCxcWv-IUZr6Qa-tqyrPSu-VsTjLots68vvu88xFp_eMQK33v-NzVfvCr-Hv-vYTugEwo_BE9cWSeKzU8YyYElmls52F17BdkjbGoBH3TX-JlpPtWK6pcsoury3wmvJ8IEVrLMhed6MQOY_K4P6tgaZUf4JD413lf7vtarlebD1sIjCDTi6Zq7g'
-          }
-        });
-        
-        if (!response.ok) {
-          console.error('Token refresh failed');
-        }
-      } catch (error) {
-        console.error('Token refresh error:', error);
-      }
-    };
-
-    refreshToken();
-  }, []);
-
   const handleCreateProject = async () => {
     try {
-      const project = await fetch('/api/projects', {
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+      console.log('📤 요청 헤더에 있는 쿠키:', document.cookie); // 클라이언트의 쿠키 확인
+
+      const project = await apiClient('/api/projects', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          title: "새로운 프로젝트",
-          content: "",
-          artStyleId: 0
-        })
-      }).then(res => res.json());
-      //router.push(`/news-making/movie-style?projectId=${project.id}`);
-      router.push(`/news-making/`);
+        headers,
+      }).then(res => res.data);
+
+      router.push(`/news-making/artStyle?projectId=${project.id}`);
     } catch (error) {
       console.error("Failed to create project:", error);
       alert("프로젝트 생성에 실패했습니다. 다시 시도해주세요.");
