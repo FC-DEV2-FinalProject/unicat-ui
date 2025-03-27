@@ -23,13 +23,24 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
     (config) => {
         if (typeof window === 'undefined') {  // 서버사이드(Next.js API 라우트)에서만
+            // 쿠키에서 토큰 추출
+            const cookieHeader = config.headers['Cookie'] || config.headers['cookie'];
+            if (cookieHeader) {
+                const token = cookieHeader.split('Authorization=')?.[1];
+                if (token) {
+                    // Authorization 헤더와 Cookie 헤더 모두 설정
+                    config.headers['Authorization'] = `Bearer ${token}`;
+                    config.headers['Cookie'] = token;  // 쿠키도 토큰값만 설정
+                }
+            }
+
+            // 로깅
             console.log('🔄 Next.js -> 백엔드 요청 정보:', {
                 url: config.url,
                 method: config.method,
                 headers: {
                     cookie: config.headers['Cookie'] || config.headers['cookie'],
                     authorization: config.headers['Authorization'],
-                    // 전체 헤더 확인
                     allHeaders: config.headers
                 },
                 withCredentials: config.withCredentials

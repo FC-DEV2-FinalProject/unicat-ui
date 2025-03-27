@@ -39,15 +39,13 @@ export async function POST(req: NextRequest) {
       url: '/projects',
       body,
       headers: {
-        Cookie: req.headers.get('cookie')?.split('Authorization=')?.[1],
-        Authorization: 'Bearer ' + req.headers.get('cookie')?.split('Authorization=')?.[1]
+        Cookie: req.headers.get('cookie')
       }
     });
 
     const response = await apiClient.post('/projects', body, {
       headers: {
-        Cookie: req.headers.get('cookie')?.split('Authorization=')?.[1],
-        Authorization: 'Bearer ' + req.headers.get('cookie')?.split('Authorization=')?.[1]
+        Cookie: req.headers.get('cookie')
       }
     });
     return NextResponse.json(response.data);
