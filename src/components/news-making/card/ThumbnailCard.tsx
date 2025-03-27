@@ -3,14 +3,20 @@ import Image from "next/image";
 import { ThumbnailCardProps } from "@/src/types/newsMakingTypes";
 
 
-export default function ThumbnailCard(props: ThumbnailCardProps) {
-	const { thumbnailId, artStyleId, title, imageSrc, altText, textAlign, fontColor, fontSize, fontFamily } = props;
+export default function ThumbnailCard({
+	// artStyleId,
+	// thumbnailId,
+	title,
+	imageSrc,
+	altText,
+	textAlign,
+	fontColor,
+	fontSize,
+	fontFamily,
+	onClick,
+	isSelected
+}: ThumbnailCardProps) {
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const tempThumbnailId = thumbnailId;
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const tempArtStyleId = artStyleId;
 
 
 	useEffect(() => {
@@ -62,7 +68,10 @@ export default function ThumbnailCard(props: ThumbnailCardProps) {
 
 	return (
 		<div
-			className="relative w-[268px] h-[480px] overflow-hidden cursor-pointer rounded-[8px] flex flex-col items-center justify-center transition-all border border-gray-300"
+			className={`relative w-[268px] h-[480px] overflow-hidden cursor-pointer rounded-[8px] flex flex-col items-center justify-center transition-all ${
+				isSelected ? 'border-8 border-purple-1' : 'border-gray-300'
+			}`}
+			onClick={onClick}
 		>
 			{/* ✅ 기존 배경 유지 */}
 			<div className="absolute top-0 left-0 w-full h-full bg-gray-5"></div>

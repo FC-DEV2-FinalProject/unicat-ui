@@ -75,26 +75,4 @@ export const handlers = [
       }
     );
   }),
-
-  // 아트 스타일 목록 API
-  http.get(`${API_URL}/art-styles`, async ({ request }) => {
-
-    const headers = Object.fromEntries(request.headers.entries());
-    if (!headers.authorization) {
-      console.log('🔴 Unauthorized - No Authorization header');
-      return new HttpResponse(null, { status: 404 });
-    }
-
-    console.log('🔵 MSW Intercepted - GET /art-styles');
-    console.log('Request headers:', Object.fromEntries(request.headers.entries()));
-
-    return new HttpResponse(
-      JSON.stringify(ART_STYLES),
-      {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    );
-  })
 ]; 

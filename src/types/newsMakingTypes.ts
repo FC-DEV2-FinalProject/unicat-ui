@@ -84,3 +84,15 @@ export interface DummyMovie {
   date: string;
 }
 
+export interface ThumbnailProjectCard {
+    id: number;
+    artStyleId: number;
+    thumbnailId: number;
+    imageSrc: string;
+    altText: string;
+    textAlign: "left" | "center" | "right";
+    fontColor: string;
+    fontSize: number;
+    fontFamily: "Arial" | "Times New Roman" | "Courier New" | "Verdana";
+}
+
