@@ -3,12 +3,11 @@
 import { useProjectStore } from "@/src/store/useNewsMakingStore";
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect } from "react";
-import { useArtStyleStore } from "@/src/store/useNewsMakingStore";
 import Image from 'next/image';
 import ArtStyleCard from "@/src/components/news-making/art-style/ArtStyleCard";
 import StepIndicator from "@/src/components/news-making/StepIndicator";
 import { ART_STYLES } from "@/src/constants/artStyles";
-import { ArtStyleNextButton } from "@/src/components/news-making/art-style/ArtStyleNextButton";
+import ArtStyleNextButton from "@/src/components/news-making/art-style/ArtStyleNextButton";
 import { JSX } from "react";
 
 /**
@@ -39,8 +38,7 @@ import { JSX } from "react";
 * 
 */
 export const useArtStyleService = () => {
-    const { projects, setCurrentProject, currentProjectId, updateProjectArtStyle } = useProjectStore();
-    const { selectedArtStyleId, setSelectedArtStyle } = useArtStyleStore();
+    const { projects, currentProjectId, updateProjectArtStyle, setCurrentProject } = useProjectStore();
     const searchParams = useSearchParams();
     const router = useRouter();
     const projectId = searchParams.get('projectId');
@@ -49,11 +47,9 @@ export const useArtStyleService = () => {
         if (projectId) {
             const id = parseInt(projectId);
             if (!isNaN(id)) {
-                // 프로젝트 스토어에서 해당 ID의 프로젝트 찾기
                 const projectExists = projects.some(project => project.id === id);
                 
                 if (!projectExists) {
-                    // 프로젝트가 없으면 메인 페이지로 리다이렉트
                     router.push('/');
                     return;
                 }
@@ -61,19 +57,15 @@ export const useArtStyleService = () => {
                 setCurrentProject(id);
             }
         } else {
-            // projectId 파라미터가 없으면 메인 페이지로 리다이렉트
             router.push('/');
         }
-    }, [projectId, projects, setCurrentProject, router]);
+    }, [projectId, projects, router]);
 
     const handleNext = (nextPath: string) => {
-        if (selectedArtStyleId === 0) {
+        const currentProject = projects.find(p => p.id === currentProjectId);
+        if (!currentProject?.selectedArtStyleId) {
             alert("스타일을 선택해주세요!");
             return;
-        }
-        
-        if (currentProjectId) {
-            updateProjectArtStyle(currentProjectId, selectedArtStyleId);
         }
 
         // 현재 projectId를 URL 파라미터로 유지
@@ -81,20 +73,26 @@ export const useArtStyleService = () => {
         router.push(nextPathWithProjectId);
     };
 
-    const handleArtStyleSelect = (artStyleId: number, imageSrc: string, altText: string, isSelected: boolean) => {
+    const handleArtStyleSelect = (artStyleId: number) => {
+        if (!currentProjectId) return;
+        
+        const currentProject = projects.find(p => p.id === currentProjectId);
+        const isSelected = currentProject?.selectedArtStyleId === artStyleId;
+
         if (isSelected) {
-            setSelectedArtStyle(0, '', '');
+            updateProjectArtStyle(currentProjectId, 0); // 선택 해제
         } else {
-            console.log('🎨 ArtStyleCard - handleClick:', { artStyleId, imageSrc, altText });
-            setSelectedArtStyle(artStyleId, imageSrc, altText);
+            updateProjectArtStyle(currentProjectId, artStyleId);
         }
     };
 
     const renderArtStyleContent = (): JSX.Element => {
+        const currentProject = projects.find(p => p.id === currentProjectId);
+
         return (
-            <div className="mt-[105px] flex flex-col items-center min-h-screen gap-[40px]">
+            <div className="mt-[105px] flex flex-col items-center min-h-screen">
                 {/* 헤더 */}
-                <header className="flex w-full items-center justify-between">
+                <header className="flex w-full items-center justify-between mb-[40px]">
                     <div className="flex items-center gap-4">
                         <h1 className="text-gray-5 font-bold-24 text-[24px] font-bold leading-[28px]">
                             어떤 그림체로 영상을 생성할 건지 골라주세요.
@@ -122,22 +120,24 @@ export const useArtStyleService = () => {
                 </header>
 
                 {/* 이미지 선택 영역 */}
-                <div className="flex flex-wrap justify-center gap-[42px] max-w-[1200px] w-full">
+                <div className="flex flex-wrap justify-center gap-[42px] max-w-[1200px] w-full mb-[40px]">
                     {ART_STYLES.map((style) => (
                         <ArtStyleCard
                             key={style.id}
                             imageSrc={style.imageSrc}
                             altText={style.alt}
-                            isSelected={selectedArtStyleId === style.id}
+                            isSelected={currentProject?.selectedArtStyleId === style.id}
                             width={268}
                             height={300}
-                            onClick={() => handleArtStyleSelect(style.id, style.imageSrc, style.alt, selectedArtStyleId === style.id)}
+                            onClick={() => handleArtStyleSelect(style.id)}
                         />
                     ))}
                 </div>
 
                 {/* 다음으로 버튼 */}
-                <ArtStyleNextButton onClick={() => handleNext("/news-making/thumbnail")} />
+                <div className="w-full flex justify-end">
+                    <ArtStyleNextButton onClick={() => handleNext("/news-making/thumbnail")} />
+                </div>
             </div>
         );
     };

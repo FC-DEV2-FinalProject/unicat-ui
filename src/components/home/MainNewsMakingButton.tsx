@@ -21,10 +21,7 @@ export const MainNewsMakingButton: React.FC = () => {
         headers,
       }).then(res => res.data);
 
-      addProject({
-        id: project.id,
-        createdAt: new Date().toISOString()
-      });
+      addProject(project.id);
       router.push('/news-making/artStyle');
     } catch (error) {
       console.error("Failed to create project:", error);

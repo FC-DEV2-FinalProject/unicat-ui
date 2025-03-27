@@ -97,42 +97,36 @@ export interface ThumbnailProjectCard {
     fontFamily: "Arial" | "Times New Roman" | "Courier New" | "Verdana";
 }
 
+// Project stage type
+export const PROJECT_STAGES = {
+  ART_STYLE: 'art_style',
+  THUMBNAIL: 'thumbnail',
+  CREATING: 'creating',
+  COMPLETED: 'completed'
+} as const;
+
+export type ProjectStage = typeof PROJECT_STAGES[keyof typeof PROJECT_STAGES];
+
 // Project store interface
 /**
  * 프로젝트 정보를 담는 인터페이스
  * @property id - 프로젝트 고유 ID
  * @property createdAt - 프로젝트 생성 시간
  * @property selectedArtStyleId - 선택된 아트스타일 ID (선택되지 않은 경우 undefined)
+ * @property stage - 프로젝트 진행 단계
  */
 export interface Project {
   id: number;
   createdAt: string;
   selectedArtStyleId?: number;
+  stage: ProjectStage;
+  // 썸네일 관련 필드 추가
+  thumbnail?: {
+    title: string;
+    imageSrc: string;
+    textAlign: "left" | "center" | "right";
+    fontColor: string;
+    fontSize: number;
+    fontFamily: "Arial" | "Times New Roman" | "Courier New" | "Verdana";
+  };
 }
-
-/**
- * 프로젝트 스토어의 영구 저장 상태
- * @property projects - 생성된 모든 프로젝트 목록
- * @property currentProjectId - 현재 작업 중인 프로젝트 ID (없는 경우 null)
- */
-export interface PersistedProjectState {
-  projects: Project[];
-  currentProjectId: number | null;
-}
-
-/**
- * 프로젝트 스토어의 전체 상태 및 메서드
- * @property projects - 생성된 모든 프로젝트 목록
- * @property currentProjectId - 현재 작업 중인 프로젝트 ID
- * @property addProject - 새로운 프로젝트 추가
- * @property setCurrentProject - 현재 작업 중인 프로젝트 설정
- * @property clearCurrentProject - 현재 프로젝트 초기화
- * @property updateProjectArtStyle - 프로젝트의 아트스타일 업데이트
- */
-export interface ProjectState extends PersistedProjectState {
-  addProject: (project: Project) => void;
-  setCurrentProject: (id: number) => void;
-  clearCurrentProject: () => void;
-  updateProjectArtStyle: (projectId: number, artStyleId: number) => void;
-}
-

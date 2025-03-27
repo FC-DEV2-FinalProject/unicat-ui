@@ -1,46 +1,55 @@
 "use client";
 
-import React from "react";
-import ModalImageUploadSelfButton from "@/src/components/news-making/button/ModalImageUploadSelfButton";
-import ModalImageUploadAiButton from "@/src/components/news-making/button/ModalImageUploadAiButton";
-import Link from "next/link";
-import { useThumbnailProjectCardStore } from '@/src/store/useNewsMakingStore';
-import { ThumbnailProjectCard } from '@/src/types/newsMakingTypes';
+import React from 'react';
+import { useProjectStore } from '@/src/store/useNewsMakingStore';
 
 interface ThumbnailImageModalProps {
 	isOpen: boolean;
 	onClose: () => void;
-	selectedCard?: ThumbnailProjectCard;
 }
 
-export default function ThumbnailImageModal({ isOpen, onClose, selectedCard }: ThumbnailImageModalProps) {
-	const { setProjectCard } = useThumbnailProjectCardStore();
+export default function ThumbnailImageModal({ isOpen, onClose }: ThumbnailImageModalProps) {
+	const { updateThumbnailImage } = useProjectStore();
 
-	const handleAiButtonClick = () => {
-		if (selectedCard) {
-			setProjectCard(selectedCard);
+	const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const file = event.target.files?.[0];
+		if (file) {
+			const reader = new FileReader();
+			reader.onloadend = () => {
+				const base64String = reader.result as string;
+				updateThumbnailImage(base64String);
+				onClose();
+			};
+			reader.readAsDataURL(file);
 		}
 	};
 
-	if (!isOpen) return null; // 모달이 닫혀있으면 아무것도 렌더링하지 않음
+	if (!isOpen) return null;
 
 	return (
 		<div className="fixed inset-0 flex items-center justify-center z-50">
-			{/* ✅ 배경 오버레이 (흐리게) */}
 			<div className="absolute inset-0 bg-black opacity-40" onClick={onClose}></div>
-
-			{/* ✅ 모달 본체 */}
-			<div className="flex flex-col items-center justify-center gap-[25px] relative bg-white w-[390px] h-[300px] p-[30px] rounded-lg shadow-lg text-center">
-				<h2 className="font-bold font-bold-24 text-2xl">이미지 업로드</h2>
-					<p className="text-gray-500">이미지를 업로드하세요.</p>
-					<ModalImageUploadSelfButton></ModalImageUploadSelfButton>
-				<Link href="/news-making/create" onClick={handleAiButtonClick}>
-					<ModalImageUploadAiButton></ModalImageUploadAiButton>
-				</Link>
-					{/* ✅ 닫기 버튼 */}
-					<button className="mt-4 px-4 py-2 bg-gray-300 rounded" onClick={onClose}>
-						닫기
+			<div className="relative bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+				<h2 className="text-lg font-medium mb-4">이미지 업로드</h2>
+				<div className="space-y-4">
+					<input
+						type="file"
+						accept="image/*"
+						onChange={handleImageUpload}
+						className="block w-full text-sm text-gray-500
+							file:mr-4 file:py-2 file:px-4
+							file:rounded-full file:border-0
+							file:text-sm file:font-semibold
+							file:bg-purple-50 file:text-purple-700
+							hover:file:bg-purple-100"
+					/>
+					<button
+						onClick={onClose}
+						className="w-full py-2 px-4 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+					>
+						취소
 					</button>
+				</div>
 			</div>
 		</div>
 	);
