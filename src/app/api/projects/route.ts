@@ -31,6 +31,7 @@ export async function POST(req: NextRequest) {
     try {
       body = await req.json();
     } catch (e) {
+      console.log('e.message', e instanceof Error ? e.message : String(e));
       console.log('📝 요청 바디 없음 - 빈 객체 사용');
     }
     

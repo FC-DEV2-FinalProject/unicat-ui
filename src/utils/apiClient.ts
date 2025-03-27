@@ -1,7 +1,6 @@
 // src/utils/apiClient.ts
 import axios from "axios";
 import { createHttpsAgent } from "@/src/utils/httpsAgent"; // httpsAgent 가져오기
-import { getCookie } from "cookies-next";
 
 // 서버와 클라이언트 환경에 따라 다른 baseURL 설정
 const baseURL = typeof window !== 'undefined' 
