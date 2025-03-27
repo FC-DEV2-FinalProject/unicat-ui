@@ -4,13 +4,24 @@ import React from "react";
 import ModalImageUploadSelfButton from "@/src/components/news-making/button/ModalImageUploadSelfButton";
 import ModalImageUploadAiButton from "@/src/components/news-making/button/ModalImageUploadAiButton";
 import Link from "next/link";
+import { useThumbnailProjectCardStore } from '@/src/store/useNewsMakingStore';
+import { ThumbnailProjectCard } from '@/src/types/newsMakingTypes';
 
 interface ThumbnailImageModalProps {
 	isOpen: boolean;
 	onClose: () => void;
+	selectedCard?: ThumbnailProjectCard;
 }
 
-export default function ThumbnailImageModal({ isOpen, onClose }: ThumbnailImageModalProps) {
+export default function ThumbnailImageModal({ isOpen, onClose, selectedCard }: ThumbnailImageModalProps) {
+	const { setProjectCard } = useThumbnailProjectCardStore();
+
+	const handleAiButtonClick = () => {
+		if (selectedCard) {
+			setProjectCard(selectedCard);
+		}
+	};
+
 	if (!isOpen) return null; // 모달이 닫혀있으면 아무것도 렌더링하지 않음
 
 	return (
@@ -23,7 +34,7 @@ export default function ThumbnailImageModal({ isOpen, onClose }: ThumbnailImageM
 				<h2 className="font-bold font-bold-24 text-2xl">이미지 업로드</h2>
 					<p className="text-gray-500">이미지를 업로드하세요.</p>
 					<ModalImageUploadSelfButton></ModalImageUploadSelfButton>
-				<Link href="/news-making/create">
+				<Link href="/news-making/create" onClick={handleAiButtonClick}>
 					<ModalImageUploadAiButton></ModalImageUploadAiButton>
 				</Link>
 					{/* ✅ 닫기 버튼 */}
