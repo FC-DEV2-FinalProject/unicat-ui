@@ -10,20 +10,20 @@ import ArtStyleCard from "@/src/components/news-making/art-style/ArtStyleCard";
 import ThumbnailCard from "@/src/components/news-making/card/ThumbnailCard";
 import VoiceDropdown from "@/src/components/news-making/VoiceDropdown";
 import Link from "next/link";
-import { useArtStyleStore } from "@/src/store/useNewsMakingStore";
+import { useProjectStore } from "@/src/store/useNewsMakingStore";
+import { ART_STYLES } from "@/src/constants/artStyles";
 
-const artStyles = [
-	{ id: 1, imageSrc: "/images/news-making/news-style-1.png", alt: "스타일 1" },
-	{ id: 2, imageSrc: "/images/news-making/news-style-2.png", alt: "스타일 2" },
-	{ id: 3, imageSrc: "/images/news-making/news-style-3.png", alt: "스타일 3" },
-	{ id: 4, imageSrc: "/images/news-making/news-style-4.png", alt: "스타일 4" },
-];
-
-// ✅ 아무거나 하나 선택 (예: 첫 번째 스타일 사용)
-const selectedStyle = artStyles[0];
-
-export default function Element () {
-	const { selectedArtStyleId } = useArtStyleStore();
+export default function Element() {
+	const { projects, currentProjectId } = useProjectStore();
+	const currentProject = projects.find(p => p.id === currentProjectId);
+	let selectedStyle = ART_STYLES[0]; // 기본값으로 첫 번째 스타일 사용
+	
+	if (currentProject?.selectedArtStyleId) {
+		const found = ART_STYLES.find(style => style.id === currentProject.selectedArtStyleId);
+		if (found) {
+			selectedStyle = found;
+		}
+	}
 
 	const contentSections = [
 		{ title: "썸네일", buttonText: "LLM 수정 버튼", hasCheckbox: true },
@@ -47,7 +47,7 @@ export default function Element () {
 										artStyleId={selectedStyle.id}
 										imageSrc={selectedStyle.imageSrc}
 										altText={selectedStyle.alt}
-										isSelected={selectedArtStyleId === selectedStyle.id}
+										isSelected={currentProject?.selectedArtStyleId === selectedStyle.id}
 										className="mx-auto"
 										width={200}
 										height={224}
@@ -59,24 +59,22 @@ export default function Element () {
 						<div className="md:col-span-1 space-y-6 overflow-hidden">
 						</div>
 						{/* 왼쪽 영역 하단: Thumbnail Card 적용 */}
-						<Card className="overflow-hidden border rounded-lg shadow-sm h-auto">
+						<Card>
 							<CardContent className="flex flex-col justify-center items-center h-auto">
 								{/* 카드 제목 */}
 								<h3 className="text-3xl font-bold font-bold-32 mb-3 p-3 mt-3">
 									{"영상 썸네일"}
 								</h3>
 
-								{/*//todo 썸네일 카드 데이터에 zustand store에서 불러온 데이터 넣으면 됨 */}
 								{/* 썸네일 카드 컨테이너 */}
 								<div className="flex items-center justify-center w-full h-auto">
 									<ThumbnailCard
 										key={"1"}
-										artStyleId={1}
+										artStyleId={currentProject?.selectedArtStyleId || 1}
 										thumbnailId={1}
 										title={"기본 제목"}
 										imageSrc={""} // 공백일 경우 더미 이미지
 										altText={"썸네일 카드"}
-										/*className="w-full h-auto object-contain"*/
 										textAlign={"left"}
 										fontColor={"#000000"}
 										fontSize={20}
