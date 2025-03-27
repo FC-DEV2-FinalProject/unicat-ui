@@ -6,6 +6,8 @@ import React, { JSX } from "react";
 import Image from "next/image";
 import { DummyMovie } from '@/src/types/newsMakingTypes';
 import { useRouter } from "next/navigation";
+import axios from "axios";
+import apiClient from "@/src/utils/apiClient";
 
 const dummyMovies: DummyMovie[] = [
   { id: 1, image: "/images/dummy-thumbnail.png", title: "피겨스케이팅 2025", description: "입상했습니다.", date: "2025.03.02" },
@@ -24,17 +26,16 @@ export default function AiNews(): JSX.Element {
 
   const handleCreateProject = async () => {
     try {
-      const project = await fetch('/api/projects', {
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+      console.log('📤 요청 헤더에 있는 쿠키:', document.cookie); // 클라이언트의 쿠키 확인
+
+      const project = await apiClient('/api/projects', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          title: "새로운 프로젝트",
-          content: "",
-          artStyleId: 0
-        })
-      }).then(res => res.json());
+        headers,
+      }).then(res => res.data);
+
       router.push(`/news-making/artStyle?projectId=${project.id}`);
     } catch (error) {
       console.error("Failed to create project:", error);

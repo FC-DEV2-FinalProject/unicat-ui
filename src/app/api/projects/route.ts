@@ -2,6 +2,8 @@
 import { NextResponse } from 'next/server';
 import { projectService } from '@/src/services/projectService';
 import { handleApiError } from '@/src/utils/apiErrorUtil';
+import { NextRequest } from 'next/server';
+import apiClient from '@/src/utils/apiClient';
 
 // GET /projects
 export async function GET() {
@@ -14,13 +16,50 @@ export async function GET() {
 }
 
 // POST /projects
-export async function POST(request: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const body = await request.json();
-    const project = await projectService.createProject(body);
-    return NextResponse.json(project);
+    // 들어온 요청의 헤더와 쿠키 로깅
+    console.log('📥 Next.js API 라우트 수신된 요청:', {
+      headers: {
+        cookie: req.headers.get('cookie'),
+        authorization: req.headers.get('authorization'),
+        allHeaders: Object.fromEntries(req.headers.entries())
+      }
+    });
+
+    let body = {};
+    try {
+      body = await req.json();
+    } catch (e) {
+      console.log('📝 요청 바디 없음 - 빈 객체 사용');
+    }
+    
+    // apiClient로 백엔드 요청 보내기 전 로깅
+    console.log('📤 백엔드로 보낼 요청 정보:', {
+      url: '/projects',
+      body,
+      headers: {
+        Cookie: req.headers.get('cookie')?.split('Authorization=')?.[1],
+        Authorization: 'Bearer ' + req.headers.get('cookie')?.split('Authorization=')?.[1]
+      }
+    });
+
+    const response = await apiClient.post('/projects', body, {
+      headers: {
+        Cookie: req.headers.get('cookie')?.split('Authorization=')?.[1],
+        Authorization: 'Bearer ' + req.headers.get('cookie')?.split('Authorization=')?.[1]
+      }
+    });
+    return NextResponse.json(response.data);
   } catch (error) {
-    console.error("Project creation error:", error);
-    return handleApiError(error);
+    console.error('❌ Next.js API 라우트 에러:', {
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+        requestHeaders: Object.fromEntries(req.headers.entries())
+    });
+    return NextResponse.json(
+        { error: error instanceof Error ? error.message : String(error) }, 
+        { status: 500 }
+    );
   }
 }
