@@ -23,14 +23,23 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
     (config) => {
         if (typeof window === 'undefined') {  // 서버사이드(Next.js API 라우트)에서만
-            // 쿠키에서 토큰 추출
             const cookieHeader = config.headers['Cookie'] || config.headers['cookie'];
             if (cookieHeader) {
-                const token = cookieHeader.split('Authorization=')?.[1];
-                if (token) {
-                    // Authorization 헤더와 Cookie 헤더 모두 설정
-                    config.headers['Authorization'] = `Bearer ${token}`;
-                    config.headers['Cookie'] = token;  // 쿠키도 토큰값만 설정
+                // 원본 쿠키 유지
+                config.headers['Cookie'] = cookieHeader;
+                
+                // Authorization 쿠키가 있는 경우 (로컬 환경)
+                const authToken = cookieHeader.split('Authorization=')?.[1];
+                if (authToken) {
+                    config.headers['Authorization'] = `Bearer ${authToken.split(';')[0]}`;
+                    config.headers['Cookie'] = `${authToken.split(';')[0]}`;
+                }
+                
+                // _vercel_jwt 쿠키가 있는 경우 (Vercel 환경)
+                const vercelToken = cookieHeader.split('_vercel_jwt=')?.[1];
+                if (vercelToken) {
+                    config.headers['Authorization'] = `Bearer ${vercelToken.split(';')[0]}`;
+                    config.headers['Cookie'] = `${vercelToken.split(';')[0]}`;
                 }
             }
 
@@ -42,8 +51,7 @@ apiClient.interceptors.request.use(
                     cookie: config.headers['Cookie'] || config.headers['cookie'],
                     authorization: config.headers['Authorization'],
                     allHeaders: config.headers
-                },
-                withCredentials: config.withCredentials
+                }
             });
         }
 
