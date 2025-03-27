@@ -2,7 +2,7 @@
 
 import { MovieList } from "@/src/components/home/MovieList";
 import { groupMoviesByDate } from "@/src/components/home/MovieCardGroup";
-import React, { JSX } from "react";
+import React, { JSX, useEffect } from "react";
 import Image from "next/image";
 import { DummyMovie } from '@/src/types/newsMakingTypes';
 import { useRouter } from "next/navigation";
@@ -23,6 +23,37 @@ const homeDashboardMovies = groupMoviesByDate(dummyMovies, { maxItemsPerDate: 3,
 export default function AiNews(): JSX.Element {
   const router = useRouter();
 
+  // // 토큰 체크 및 리프레시
+  // useEffect(() => {
+  //   const checkAndRefreshToken = async () => {
+  //     try {
+  //       // Authorization 쿠키 체크
+  //       const hasToken = document.cookie
+  //         .split('; ')
+  //         .some(row => row.startsWith('Authorization='));
+
+  //       if (!hasToken) {
+  //         console.log('🔄 토큰 없음, 리프레시 시도');
+  //         // 리프레시 토큰으로 새 토큰 요청
+  //         const response = await apiClient.post('/auth/token/refresh');
+          
+  //         if (!response.data) {
+  //           console.log('❌ 토큰 리프레시 실패');
+  //           window.location.href = '/login';
+  //           return;
+  //         }
+          
+  //         console.log('✅ 토큰 리프레시 성공');
+  //       }
+  //     } catch (error) {
+  //       console.error('토큰 리프레시 실패:', error);
+  //       window.location.href = '/login';
+  //     }
+  //   };
+
+  //   checkAndRefreshToken();
+  // }, []);
+
   const handleCreateProject = async () => {
     try {
       const headers = {
@@ -42,10 +73,12 @@ export default function AiNews(): JSX.Element {
     }
   };
 
-  // Project data for the first row
+
 
   return (
       <div className="mt-[105px] flex flex-col items-center justify-center gap-[90px] relative bg-purple-6 min-h-screen">
+
+
         {/* Main Content */}
         <main className="flex flex-col w-full w-[1200px] max-w-[1200px] items-start gap-6 relative flex-[0_0_auto]">
           {/* Hero Section */}
