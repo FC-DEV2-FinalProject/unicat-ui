@@ -2,7 +2,6 @@
 
 import { Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { getCookie } from "cookies-next";
 
 
 function CallbackContent() {
@@ -10,8 +9,8 @@ function CallbackContent() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    //const token = searchParams.get("token");
-    const token = getCookie("Authorization");
+    const token = searchParams.get("token");
+    //const token = getCookie("Authorization");
     if (token) {
       // 대시보드로 리다이렉트
       router.replace("/dashboard");

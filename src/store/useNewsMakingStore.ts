@@ -1,6 +1,48 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { ArtStyleState, NewsMakingState, ThumbnailProjectCard } from '@/src/types/newsMakingTypes';
+import { ArtStyleState, NewsMakingState, ThumbnailProjectCard, ProjectState } from '@/src/types/newsMakingTypes';
+
+// Project store
+const useProjectStore = create(
+  persist<ProjectState>(
+    (set) => ({
+      projects: [],
+      currentProjectId: null,
+      addProject: (project) => {
+        console.log('ProjectStore - addProject:', project);
+        set((state) => ({
+          projects: [...state.projects, project],
+          currentProjectId: project.id
+        }));
+      },
+      setCurrentProject: (id) => {
+        console.log('ProjectStore - setCurrentProject:', id);
+        set({ currentProjectId: id });
+      },
+      clearCurrentProject: () => {
+        console.log('ProjectStore - clearCurrentProject');
+        set({ currentProjectId: null });
+      },
+      updateProjectArtStyle: (projectId, artStyleId) => {
+        console.log('ProjectStore - updateProjectArtStyle:', { projectId, artStyleId });
+        set((state) => ({
+          projects: state.projects.map(project => 
+            project.id === projectId 
+              ? { ...project, selectedArtStyleId: artStyleId }
+              : project
+          )
+        }));
+      },
+    }),
+    {
+      name: 'project-storage',
+      partialize: ((state) => ({
+        projects: state.projects,
+        currentProjectId: state.currentProjectId,
+      })) as (state: ProjectState) => ProjectState,
+    }
+  )
+);
 
 // 뉴스 만들기 스토어 생성
 const useNewsMakingStore = create(persist<NewsMakingState>(
@@ -71,14 +113,14 @@ const useArtStyleStore = create(persist<ArtStyleState>(
     selectedArtStyleId: 0,
     imageSrc: '',
     altText: '',
-    projectId: undefined,
-    setSelectedArtStyle: (id: number, src: string, alt: string, projectId?: number) => {
-      console.log('ArtStyleStore - setSelectedArtStyle:', { id, src, alt, projectId });
-      set({ selectedArtStyleId: id, imageSrc: src, altText: alt, projectId });
+    isSelected: false,
+    setSelectedArtStyle: (id: number, src: string, alt: string) => {
+      console.log('ArtStyleStore - setSelectedArtStyle:', { id, src, alt });
+      set({ selectedArtStyleId: id, imageSrc: src, altText: alt, isSelected: true });
     },
     clearSelectedArtStyle: () => {
       console.log('ArtStyleStore - clearSelectedArtStyle');
-      set({ selectedArtStyleId: 0, imageSrc: '', altText: '', projectId: 0 });
+      set({ selectedArtStyleId: 0, imageSrc: '', altText: '', isSelected: false });
     },
   }),
   {
@@ -101,4 +143,4 @@ const useArtStyleStore = create(persist<ArtStyleState>(
   }
 ));
 
-export { useNewsMakingStore, useArtStyleStore, useThumbnailProjectCardStore };
+export { useNewsMakingStore, useArtStyleStore, useThumbnailProjectCardStore, useProjectStore };
