@@ -1,3 +1,31 @@
 {
-  "cSpell.words": ["basewhite", "Noto", "Segoe"]
+  "cSpell.words": ["basewhite", "Noto", "Segoe"],
+  "editor.tokenColorCustomizations": {
+    "textMateRules": [
+      {
+        "scope": "comment.block.documentation",
+        "settings": {
+          "foreground": "#6A9955"
+        }
+      },
+      {
+        "scope": "comment.block.documentation string",
+        "settings": {
+          "foreground": "#CE9178"
+        }
+      },
+      {
+        "scope": "comment.block.documentation constant",
+        "settings": {
+          "foreground": "#B5CEA8"
+        }
+      },
+      {
+        "scope": "comment.block.documentation keyword",
+        "settings": {
+          "foreground": "#569CD6"
+        }
+      }
+    ]
+  }
 }

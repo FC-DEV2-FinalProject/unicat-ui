@@ -1,50 +1,121 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { ArtStyleState, NewsMakingState } from '@/src/types/newsMakingTypes'; // ThumbnailCardProps 제거
+import { PROJECT_STAGES, type ProjectStage } from '@/src/types/newsMakingTypes';
 
-// 뉴스 만들기 스토어 생성
-const useNewsMakingStore = create(persist<NewsMakingState>(
-  () => ({ // set 파라미터 제거
-    title: '',
-    content: '',
-    selectedThumbnail: null,
-    isCreating: false,
-    setTitle: (title) => useNewsMakingStore.setState({ title }),
-    setContent: (content) => useNewsMakingStore.setState({ content }),
-    setSelectedThumbnail: (thumbnail) => useNewsMakingStore.setState({ selectedThumbnail: thumbnail }),
-    clearSelectedThumbnail: () => useNewsMakingStore.setState({ selectedThumbnail: null }),
-    startCreating: () => useNewsMakingStore.setState({ isCreating: true }),
-    finishCreating: () => useNewsMakingStore.setState({ isCreating: false }),
-    clear: () => useNewsMakingStore.setState({ title: '', content: '', selectedThumbnail: null, isCreating: false }),
-  }),
-  {
-    name: 'news-making-storage', // LocalStorage에 저장될 키 이름
-  }
-));
+interface Project {
+    id: number;
+    createdAt: string;
+    selectedArtStyleId?: number;
+    stage: ProjectStage;
+    thumbnail?: {
+        imageSrc?: string;
+        title?: string;
+        textAlign?: "left" | "center" | "right";
+        fontColor?: string;
+        fontSize?: number;
+        fontFamily?: string;
+        selectedCardId?: number;
+    };
+}
 
-// 추가적인 스토어 생성 예시
-const useArtStyleStore = create(persist<ArtStyleState>(
-  (set) => ({
-    selectedArtStyleId: 0,
-    imageSrc: '',
-    altText: '',
-    setSelectedArtStyle: (id: number, src: string, alt: string) => 
-      set({ selectedArtStyleId: id, imageSrc: src, altText: alt }),
-    clearSelectedArtStyle: () => set({ selectedArtStyleId: 0, imageSrc: '', altText: '' }),
-  }),
-  {
-    name: 'art-style-storage',
-    storage: {
-      getItem: (name) => {
-        const str = localStorage.getItem(name);
-        return str ? JSON.parse(str) : null;
-      },
-      setItem: (name, value) => {
-        localStorage.setItem(name, JSON.stringify(value));
-      },
-      removeItem: (name) => localStorage.removeItem(name),
-    },
-  }
-));
+interface ProjectStore {
+    projects: Project[];
+    currentProjectId: number | null;
+    addProject: (project: Pick<Project, 'id' | 'createdAt' | 'stage'>) => void;
+    setCurrentProject: (id: number) => void;
+    updateProjectArtStyle: (projectId: number, artStyleId: number) => void;
+    updateProjectStage: (projectId: number, stage: ProjectStage) => void;
+    updateThumbnailImage: (imageSrc: string) => void;
+    updateSelectedThumbnail: (
+        cardId: number,
+        title: string,
+        textAlign: "left" | "center" | "right",
+        fontColor: string,
+        fontSize: number,
+        fontFamily: string,
+        dataUrl: string
+    ) => void;
+}
 
-export { useNewsMakingStore, useArtStyleStore }; 
+export const useProjectStore = create<ProjectStore>()(
+    persist(
+        (set) => ({
+            projects: [],
+            currentProjectId: null,
+            addProject: (project) =>
+                set((state) => ({
+                    projects: [...state.projects, { ...project }],
+                    currentProjectId: project.id,
+                })),
+            setCurrentProject: (id) =>
+                set(() => ({
+                    currentProjectId: id,
+                })),
+            updateProjectArtStyle: (projectId, artStyleId) =>
+                set((state) => ({
+                    projects: state.projects.map((project) =>
+                        project.id === projectId
+                            ? {
+                                ...project,
+                                selectedArtStyleId: artStyleId,
+                                stage: artStyleId ? PROJECT_STAGES.THUMBNAIL : PROJECT_STAGES.ART_STYLE,
+                            }
+                            : project
+                    ),
+                })),
+            updateProjectStage: (projectId, stage) =>
+                set((state) => ({
+                    projects: state.projects.map((project) =>
+                        project.id === projectId
+                            ? { ...project, stage }
+                            : project
+                    ),
+                })),
+            updateThumbnailImage: (imageSrc) =>
+                set((state) => ({
+                    projects: state.projects.map((project) =>
+                        project.id === state.currentProjectId
+                            ? {
+                                ...project,
+                                thumbnail: {
+                                    ...project.thumbnail,
+                                    imageSrc,
+                                },
+                            }
+                            : project
+                    ),
+                })),
+            updateSelectedThumbnail: (
+                cardId: number,
+                title: string,
+                textAlign: "left" | "center" | "right",
+                fontColor: string,
+                fontSize: number,
+                fontFamily: string,
+                dataUrl: string
+            ) =>
+                set((state) => ({
+                    projects: state.projects.map((project) =>
+                        project.id === state.currentProjectId
+                            ? {
+                                ...project,
+                                thumbnail: {
+                                    ...project.thumbnail,
+                                    selectedCardId: cardId,
+                                    title,
+                                    textAlign,
+                                    fontColor,
+                                    fontSize,
+                                    fontFamily,
+                                    imageSrc: dataUrl,
+                                },
+                            }
+                            : project
+                    ),
+                })),
+        }),
+        {
+            name: 'project-storage',
+        }
+    )
+);
