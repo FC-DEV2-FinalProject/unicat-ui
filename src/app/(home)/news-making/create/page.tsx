@@ -6,24 +6,24 @@ import React from "react";
 import { Button } from "@/src/components/news-making/button/CommonNewsMakingButton";
 import { Card, CardContent } from "@/src/components/news-making/card/CreateCard";
 import { Checkbox } from "@/src/components/news-making/CreateCheckbox";
-import ArtStyleCard from "@/src/components/news-making/card/ArtStyleCard";
+import ArtStyleCard from "@/src/components/news-making/art-style/ArtStyleCard";
 import ThumbnailCard from "@/src/components/news-making/card/ThumbnailCard";
 import VoiceDropdown from "@/src/components/news-making/VoiceDropdown";
 import Link from "next/link";
-import { useArtStyleStore } from "@/src/store/useNewsMakingStore";
+import { useProjectStore } from "@/src/store/useNewsMakingStore";
+import { ART_STYLES } from "@/src/constants/artStyles";
 
-const artStyles = [
-	{ id: 1, imageSrc: "/images/news-making/news-style-1.png", alt: "스타일 1" },
-	{ id: 2, imageSrc: "/images/news-making/news-style-2.png", alt: "스타일 2" },
-	{ id: 3, imageSrc: "/images/news-making/news-style-3.png", alt: "스타일 3" },
-	{ id: 4, imageSrc: "/images/news-making/news-style-4.png", alt: "스타일 4" },
-];
-
-// ✅ 아무거나 하나 선택 (예: 첫 번째 스타일 사용)
-const selectedStyle = artStyles[0];
-
-export default function Element () {
-	const { selectedArtStyleId } = useArtStyleStore();
+export default function Element() {
+	const { projects, currentProjectId } = useProjectStore();
+	const currentProject = projects.find(p => p.id === currentProjectId);
+	let selectedStyle = ART_STYLES[0]; // 기본값으로 첫 번째 스타일 사용
+	
+	if (currentProject?.selectedArtStyleId) {
+		const found = ART_STYLES.find(style => style.id === currentProject.selectedArtStyleId);
+		if (found) {
+			selectedStyle = found;
+		}
+	}
 
 	const contentSections = [
 		{ title: "썸네일", buttonText: "LLM 수정 버튼", hasCheckbox: true },
@@ -47,7 +47,7 @@ export default function Element () {
 										artStyleId={selectedStyle.id}
 										imageSrc={selectedStyle.imageSrc}
 										altText={selectedStyle.alt}
-										isSelected={selectedArtStyleId === selectedStyle.id}
+										isSelected={currentProject?.selectedArtStyleId === selectedStyle.id}
 										className="mx-auto"
 										width={200}
 										height={224}
@@ -66,22 +66,27 @@ export default function Element () {
 									{"영상 썸네일"}
 								</h3>
 
-								{/*//todo 썸네일 카드 데이터에 zustand store에서 불러온 데이터 넣으면 됨 */}
 								{/* 썸네일 카드 컨테이너 */}
-								<div className="flex items-center justify-center w-full h-auto">
-									<ThumbnailCard
-										key={"1"}
-										artStyleId={1}
-										thumbnailId={1}
-										title={"기본 제목"}
-										imageSrc={""} // 공백일 경우 더미 이미지
-										altText={"썸네일 카드"}
-										/*className="w-full h-auto object-contain"*/
-										textAlign={"left"}
-										fontColor={"#000000"}
-										fontSize={20}
-										fontFamily={"Arial"}
-									/>
+								<div className="w-full h-auto bg-gray-5 rounded-lg">
+									<div className="flex items-center justify-center">
+										{currentProject?.thumbnail ? (
+											<ThumbnailCard
+												artStyleId={currentProject.selectedArtStyleId || 1}
+												thumbnailId={1}
+												title={currentProject.thumbnail.title || ""}
+												imageSrc={currentProject.thumbnail.imageSrc || ""}
+												altText="썸네일 이미지"
+												textAlign={currentProject.thumbnail.textAlign || "left"}
+												fontColor={currentProject.thumbnail.fontColor || "#000000"}
+												fontSize={currentProject.thumbnail.fontSize || 20}
+												fontFamily={(currentProject.thumbnail.fontFamily as "Arial" | "Times New Roman" | "Courier New" | "Verdana") || "Arial"}
+											/>
+										) : (
+											<div className="w-[268px] h-[480px] flex items-center justify-center text-gray-500 bg-gray-5 rounded-[8px]">
+												이미지가 없습니다
+											</div>
+										)}
+									</div>
 								</div>
 							</CardContent>
 						</Card>

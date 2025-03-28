@@ -7,6 +7,7 @@ export interface ArtStyle {
 
 // 기본 width, height 268 300 이전 Props로 속성 전달시 변경됨
 export interface ArtStyleCardProps {
+  artStyleId?: number;  // Added artStyleId as optional prop
   imageSrc: string;
   altText: string;
   onClick?: () => void;
@@ -17,9 +18,16 @@ export interface ArtStyleCardProps {
   className?: string;
 }
 
+// Art style state interface - ArtStyleCardProps를 extends하고 onClick을 제외
+export interface ArtStyleState extends Omit<ArtStyleCardProps, 'onClick'> {
+  selectedArtStyleId: number;  // 선택된 아트스타일 ID 추가
+  setSelectedArtStyle: (id: number, src: string, alt: string) => void;
+  clearSelectedArtStyle: () => void;
+}
+
 /**
  * Props for the ThumbnailCard component.
- */
+*/
 export interface ThumbnailCardProps {
   /** The ID of the art style associated with the thumbnail. */
   artStyleId: number;
@@ -28,13 +36,9 @@ export interface ThumbnailCardProps {
   /** The title to display on the thumbnail. */
   title: string;
   /** The source URL of the thumbnail image. */
-  imageSrc?: string;
+  imageSrc: string;
   /** The alt text for the thumbnail image. */
   altText: string;
-  /** Optional click handler for the thumbnail. */
-  onClick?: () => void;
-  /** Indicates whether the thumbnail is selected. */
-  isSelected?: boolean;
   /** Text alignment for the thumbnail title */
   textAlign: "left" | "center" | "right";
   /** Font color for the thumbnail title */
@@ -43,15 +47,12 @@ export interface ThumbnailCardProps {
   fontSize: number;
   /** Font family for the thumbnail title */
   fontFamily: "Arial" | "Times New Roman" | "Courier New" | "Verdana";
+  /** Indicates whether the thumbnail is selected. */
+  isSelected?: boolean;
+  /** Optional click handler for the thumbnail. */
+  onClick?: () => void;
 }
 
-export interface ArtStyleState {
-  selectedArtStyleId: number;
-  imageSrc: string;
-  altText: string;
-  setSelectedArtStyle: (id: number, src: string, alt: string) => void;
-  clearSelectedArtStyle: () => void;
-}
 
 // 뉴스 만들기 프로세스 상태 인터페이스
 export interface NewsMakingState {
@@ -84,3 +85,48 @@ export interface DummyMovie {
   date: string;
 }
 
+export interface ThumbnailProjectCard {
+    id: number;
+    artStyleId: number;
+    thumbnailId: number;
+    imageSrc: string;
+    altText: string;
+    textAlign: "left" | "center" | "right";
+    fontColor: string;
+    fontSize: number;
+    fontFamily: "Arial" | "Times New Roman" | "Courier New" | "Verdana";
+}
+
+// Project stage type
+export const PROJECT_STAGES = {
+  ART_STYLE: 'art_style',
+  THUMBNAIL: 'thumbnail',
+  CREATING: 'creating',
+  COMPLETED: 'completed'
+} as const;
+
+export type ProjectStage = typeof PROJECT_STAGES[keyof typeof PROJECT_STAGES];
+
+// Project store interface
+/**
+ * 프로젝트 정보를 담는 인터페이스
+ * @property id - 프로젝트 고유 ID
+ * @property createdAt - 프로젝트 생성 시간
+ * @property selectedArtStyleId - 선택된 아트스타일 ID (선택되지 않은 경우 undefined)
+ * @property stage - 프로젝트 진행 단계
+ */
+export interface Project {
+  id: number;
+  createdAt: string;
+  selectedArtStyleId?: number;
+  stage: ProjectStage;
+  // 썸네일 관련 필드 추가
+  thumbnail?: {
+    title: string;
+    imageSrc: string;
+    textAlign: "left" | "center" | "right";
+    fontColor: string;
+    fontSize: number;
+    fontFamily: "Arial" | "Times New Roman" | "Courier New" | "Verdana";
+  };
+}

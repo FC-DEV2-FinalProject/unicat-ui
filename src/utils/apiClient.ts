@@ -27,20 +27,13 @@ apiClient.interceptors.request.use(
                 // 원본 쿠키 유지
                 config.headers['Cookie'] = cookieHeader;
                 
-                // Authorization 쿠키가 있는 경우 (로컬 환경)
+                // Authorization 쿠키가 있는 경우
                 const authToken = cookieHeader.split('Authorization=')?.[1];
                 if (authToken) {
                     // Authorization 헤더는 Bearer 형식으로
                     config.headers['Authorization'] = `Bearer ${authToken.split(';')[0]}`;
                     // Cookie 헤더는 'key=value' 형식으로
                     config.headers['Cookie'] = `Authorization=${authToken.split(';')[0]}`;
-                }
-                
-                // _vercel_jwt 쿠키가 있는 경우 (Vercel 환경)
-                const vercelToken = cookieHeader.split('_vercel_jwt=')?.[1];
-                if (vercelToken) {
-                    config.headers['Authorization'] = `Bearer ${vercelToken.split(';')[0]}`;
-                    config.headers['Cookie'] = `Authorization=${vercelToken.split(';')[0]}`;
                 }
             }
 
@@ -49,9 +42,9 @@ apiClient.interceptors.request.use(
                 url: config.url,
                 method: config.method,
                 headers: {
-                    cookie: config.headers['Cookie'] || config.headers['cookie'],
-                    authorization: config.headers['Authorization'],
-                    allHeaders: config.headers
+                    cookie: config.headers['Cookie'] ? 'Authorization=***' : '쿠키 없음',
+                    authorization: config.headers['Authorization'] ? 'Bearer ***' : '인증 없음',
+                    allHeaders: Object.keys(config.headers)
                 }
             });
         }
@@ -64,9 +57,9 @@ apiClient.interceptors.request.use(
                 url: error.config?.url,
                 method: error.config?.method,
                 headers: {
-                    cookie: error.config?.headers['Cookie'] || error.config?.headers['cookie'],
-                    authorization: error.config?.headers['Authorization'],
-                    allHeaders: error.config?.headers
+                    cookie: error.config?.headers['Cookie'] ? 'Authorization=***' : '쿠키 없음',
+                    authorization: error.config?.headers['Authorization'] ? 'Bearer ***' : '인증 없음',
+                    allHeaders: Object.keys(error.config?.headers || {})
                 },
                 error: error.message
             });
@@ -79,13 +72,13 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
     (response) => {
         // 전체 응답 헤더 로깅
-        console.log('📥 전체 응답 헤더:', response.headers);
+        //console.log('📥 전체 응답 헤더:', Object.keys(response.headers));
         
         // 쿠키 관련 헤더만 따로 로깅
         const cookies = response.headers['set-cookie'];
         console.log('📥 응답의 쿠키 정보:', {
-            'set-cookie': cookies || '쿠키 없음',
-            authorization: response.headers['authorization'],
+            'set-cookie': cookies ? 'Authorization=***' : '쿠키 없음',
+            authorization: response.headers['authorization'] ? 'Bearer ***' : '인증 없음',
         });
         
         return response;
@@ -96,12 +89,12 @@ apiClient.interceptors.response.use(
             url: error.config?.url,
             method: error.config?.method,
             requestHeaders: {
-                cookie: error.config?.headers['Cookie'] || error.config?.headers['cookie'],
-                authorization: error.config?.headers['Authorization']
+                cookie: error.config?.headers['Cookie'] ? 'Authorization=***' : '쿠키 없음',
+                authorization: error.config?.headers['Authorization'] ? 'Bearer ***' : '인증 없음'
             },
             status: error.response?.status,
             statusText: error.response?.statusText,
-            responseHeaders: error.response?.headers,
+            responseHeaders: Object.keys(error.response?.headers || {}),
             responseData: error.response?.data,
             error: error.message
         });

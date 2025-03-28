@@ -1,17 +1,102 @@
-import React, { useEffect, useRef } from "react";
-import Image from "next/image";
+import React, { useEffect, useRef, useImperativeHandle, forwardRef } from "react";
 import { ThumbnailCardProps } from "@/src/types/newsMakingTypes";
+import { motion, AnimatePresence } from "framer-motion";
 
-
-export default function ThumbnailCard(props: ThumbnailCardProps) {
-	const { thumbnailId, artStyleId, title, imageSrc, altText, textAlign, fontColor, fontSize, fontFamily } = props;
-	const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
+const ThumbnailCard = forwardRef<
+	{ captureCard: (callback: (dataUrl: string) => void) => void },
+	ThumbnailCardProps & { onCapture?: (dataUrl: string) => void }
+>(({
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const tempThumbnailId = thumbnailId;
+	artStyleId,
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const tempArtStyleId = artStyleId;
+	thumbnailId,
+	title,
+	imageSrc,
+	altText,
+	textAlign,
+	fontColor,
+	fontSize,
+	fontFamily,
+	onClick,
+	isSelected,
+	onCapture
+}, ref) => {
+	const cardRef = useRef<HTMLDivElement>(null);
+	const canvasRef = useRef<HTMLCanvasElement>(null);
+	const imageRef = useRef<HTMLImageElement>(null);
+	const captureCanvasRef = useRef<HTMLCanvasElement>(null);
 
+	// 카드 전체 영역을 PNG로 캡처하는 함수
+	const captureCard = (callback?: (dataUrl: string) => void) => {
+		console.log('captureCard 시작');
+		
+		if (!cardRef.current || !canvasRef.current || !captureCanvasRef.current) {
+			console.log('캡처 실패:', {
+				cardRef: !!cardRef.current,
+				canvasRef: !!canvasRef.current,
+				captureCanvasRef: !!captureCanvasRef.current
+			});
+			return;
+		}
+
+		const canvas = captureCanvasRef.current;
+		canvas.width = 268;
+		canvas.height = 480;
+		const ctx = canvas.getContext('2d');
+		if (!ctx) {
+			console.log('캔버스 컨텍스트 가져오기 실패');
+			return;
+		}
+
+		console.log('캔버스 설정 완료');
+
+		// 배경색 채우기 (전체 영역)
+		ctx.fillStyle = 'rgb(243 244 246)'; // bg-gray-5
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+		console.log('배경색 채우기 완료');
+
+		// 텍스트 캔버스 그리기
+		if (canvasRef.current) {
+			ctx.drawImage(canvasRef.current, 0, 0);
+			console.log('텍스트 캔버스 그리기 완료');
+		}
+
+		// 이미지 그리기
+		if (imageRef.current && imageSrc) {
+			// 이미지 영역 배경색 다시 채우기
+			ctx.fillStyle = 'rgb(243 244 246)'; // bg-gray-5
+			ctx.fillRect(0, 128, 268, 224);
+			
+			ctx.drawImage(
+				imageRef.current,
+				0, 128,  // 이미지 시작 위치
+				268, 224 // 이미지 크기
+			);
+			console.log('이미지 그리기 완료');
+		}
+
+		// PNG로 변환
+		const dataUrl = canvas.toDataURL('image/png');
+		console.log('PNG 변환 완료, dataUrl 길이:', dataUrl.length);
+		
+		if (callback) {
+			callback(dataUrl);
+			console.log('캡처 콜백 호출 완료');
+		} else if (onCapture) {
+			onCapture(dataUrl);
+			console.log('캡처 콜백 호출 완료');
+		}
+	};
+
+	useImperativeHandle(ref, () => ({
+		captureCard
+	}));
+
+	useEffect(() => {
+		if (onCapture) {
+			captureCard();
+		}
+	}, [onCapture]);
 
 	useEffect(() => {
 		const canvas = canvasRef.current;
@@ -61,17 +146,63 @@ export default function ThumbnailCard(props: ThumbnailCardProps) {
 	}, [title, fontSize, fontColor, fontFamily, textAlign]);
 
 	return (
-		<div
-			className="relative w-[268px] h-[480px] overflow-hidden cursor-pointer rounded-[8px] flex flex-col items-center justify-center transition-all border border-gray-300"
-		>
-			{/* ✅ 기존 배경 유지 */}
-			<div className="absolute top-0 left-0 w-full h-full bg-gray-5"></div>
+		<div className="relative w-[268px] h-[480px] cursor-pointer group" ref={cardRef}>
+			{/* 선택 효과 테두리 */}
+			<div className={`absolute inset-0 rounded-[8px] transition-colors z-20 pointer-events-none ${isSelected ? 'border-[8px] border-purple-1' : ''}`} />
+			
+			{/* 실제 컨텐츠 - 캡처 영역 */}
+			<div
+				className="absolute inset-0 overflow-hidden rounded-[8px] flex flex-col items-center justify-center bg-gray-5"
+				onClick={onClick}
+			>
+				{/* ✅ 이미지 */}
+				{imageSrc && (
+					<div className="absolute top-[128px] left-0 right-0 mx-auto w-[268px] h-[224px] overflow-hidden">
+						<img
+							ref={imageRef}
+							src={imageSrc}
+							alt={altText}
+							className="w-[268px] h-[224px] object-cover object-center"
+							style={{ maxWidth: '268px', maxHeight: '224px' }}
+						/>
+						<AnimatePresence>
+							{isSelected && (
+								<>
+									{/* 선택 효과 - 보라색 오버레이 */}
+									<motion.div
+										initial={{ opacity: 0 }}
+										animate={{ opacity: 0.3 }}
+										exit={{ opacity: 0 }}
+										className="absolute inset-0 bg-purple-1"
+									/>
+									{/* 체크 아이콘 */}
+									<motion.div
+										initial={{ scale: 0 }}
+										animate={{ scale: 1 }}
+										exit={{ scale: 0 }}
+										className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+									>
+										<svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+											<circle cx="24" cy="24" r="24" fill="white"/>
+											<path d="M16 24L22 30L32 18" stroke="#7C3AED" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+										</svg>
+									</motion.div>
+								</>
+							)}
+						</AnimatePresence>
+					</div>
+				)}
 
-			{/* ✅ 캔버스를 제목 텍스트로 사용 */}
-			<canvas ref={canvasRef} className="absolute top-4 left-0 w-full h-[108px] pointer-events-none" />
+				{/* ✅ 캔버스를 제목 텍스트로 사용 */}
+				<canvas ref={canvasRef} className="absolute top-4 left-0 w-full h-[108px] pointer-events-none" />
+			</div>
 
-			{/* ✅ 이미지 */}
-			<Image src={imageSrc || "/images/news-making/thumbnail-dummy.png"} alt={altText} width={268} height={224} className="relative z-10 object-cover" />
+			{/* 캡처용 숨겨진 캔버스 */}
+			<canvas ref={captureCanvasRef} className="hidden" />
 		</div>
 	);
-}
+});
+
+ThumbnailCard.displayName = 'ThumbnailCard';
+
+export default ThumbnailCard;
