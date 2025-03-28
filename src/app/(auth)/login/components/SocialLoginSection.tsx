@@ -15,7 +15,7 @@ export default function SocialLoginSection() {
   useEffect(() => {
     const fetchOAuthLinks = async () => {
       try {
-        const response = await apiClient.get("/auth/oauth-links");
+        const response = await apiClient.get("/api/auth/oauth-links");
         console.log("OAuth 링크 응답:", response.data);
 
         const modifiedLinks = (
@@ -38,7 +38,9 @@ export default function SocialLoginSection() {
 
             // 새로운 redirect_uri 설정
             const redirectUrl = `${window.location.origin}/login/callback`;
-            url.searchParams.set("redirect_uri", redirectUrl);
+            // 여기가 문제 백엔드에서 요청한 서치파람이 redirect 였는데 기존 새롭게 코드 변경하면서 redirect_url로 바꾸었고
+            //  잘못된 파라미터가 넘어가면서 디폴트 세팅인 스웨거 페이지로 넘어간것
+            url.searchParams.set("redirect", redirectUrl);
 
             console.log("=== 최종 URL ===", url.toString());
 
