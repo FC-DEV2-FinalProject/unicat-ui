@@ -1,24 +1,9 @@
 "use client";
-
-import axios from "axios";
-
-interface TossPaymentButtonProps {
-  token: string;
-}
-
-export default function TossPaymentButton({ token }: TossPaymentButtonProps) {
-  const handlePayment = async () => {
-    try {
-      const response = await axios.get("https://api.unicat.day/toss", {
-        headers: {
-          accept: "*/*",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      console.log("결제 응답:", response.data);
-    } catch (error) {
-      console.error("결제 API 호출 중 에러 발생:", error);
-    }
+export default function TossPaymentButton() {
+  const handlePayment = () => {
+    const paymentUrl = "https://api.unicat.day/toss";
+    const windowFeatures = "width=680,height=680,top=100,left=100,resizable=yes,scrollbars=yes";
+    window.open(paymentUrl, "PaymentWindow", windowFeatures);
   };
 
   return (

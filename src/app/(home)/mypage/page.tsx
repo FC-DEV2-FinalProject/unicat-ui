@@ -1,11 +1,43 @@
-import TossPaymentButton from "@/src/components/toss/Payment";
-import { Card, CardContent } from "@/src/components/common/Card";
-import React, { JSX } from "react";
+"use client";
 
-const token =
-  "eyJraWQiOiJyc2EtcHJvZC1rZXktaWQiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiI0IiwiZXhwIjoxNzQyODk3MzU3LCJpYXQiOjE3NDIyOTI1NTcsImVtYWlsIjoia3JiN2tvcmVhQGdtYWlsLmNvbSIsInNjb3BlIjoiYWxsIn0.ijwHQlM1reuJ2qh5d1-1OIUBUduQOn7LcNtlXTGc3ppWVKGCNDuJ2jPHnKUu2afg835VFhnWWaa9le6mfsYiJmYh8xZMikGLSI8PhKdEEG3oguyOGNqAtpM_3WcV6Q7926P1ViS3wGCykx2sWeg_ULwOu5EFmiY8RsVuJ8fSwoP5zRvlLalYDf3B-IrcSkc1-skQEgKvE6YuRK_QkZWFGi3Mf-H62cCHwxnCzTnvp3j8vU1B2ANo4rTmVtI5SFqHSo-5cg6SZGe4ww0Rq7f637zjCq5SLVGFuEjMD-k7X4yfNP8Fb9J844VtRdNPMVU05D05xZQQ9Cy41aXsp01wjQ";
+import React, { JSX, useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import { Card, CardContent } from "@/src/components/common/Card";
+import TossPaymentButton from "@/src/components/toss/Payment";
+import LogoutButton from "@/src/components/auth/Logout";
+
+interface MemberData {
+  name: string;
+  phoneNumber: string;
+}
+
+const dummyToken =
+  "eyJraWQiOiJyc2EtcHJvZC1rZXktaWQiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzQzODQxMDM1LCJpYXQiOjE3NDMyMzYyMzUsInBsYW4iOiJCQVNJQyIsImVtYWlsIjoia216MDQxNDAxQGdtYWlsLmNvbSJ9.KwAsjfUofsMi-5MbsdqAohSAWC3tEHd521s9kc6xRGnSVHWQcGJnxzOvuVJQfc5974HTDGVt0saGewSSFxHbaefzh7FacZ5T3NVpk7SRDuwBFrPqnenp8QWW_rYyjq_FrjjYAFb-oZZeEdN3w02Jq51bq6OGVwBAK7PKxjD2S2XjXhvLZcUmd2eZbLteQ7LAPKtLe4Ir50xCLwTU-0fcWBx-2TuqbMevFXfPgtb8Y9aTqIieC_0YmyG6MAFTv4gW-OFoy6m8jJSBpuJ8gtSgos1P6yruYBisAfC4_r2wYwJVCnWCUDVCLs_GvtuhIlCGMvpyyFZOM-QHJ-LMGXCD3A";
 
 export default function MyPage(): JSX.Element {
+  const [memberData, setMemberData] = useState<MemberData>({
+    name: "정보없음",
+    phoneNumber: "정보없음",
+  });
+  const token = Cookies.get("Authorization") ? 0 : dummyToken;
+
+  useEffect(() => {
+    fetch("https://api.unicat.day/members", {
+      method: "GET",
+      headers: {
+        Accept: "*/*",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setMemberData({
+          name: data.name ? data.name : "정보없음",
+          phoneNumber: data.phoneNumber ? data.phoneNumber : "정보없음",
+        });
+      });
+  }, [token]);
+
   return (
     <div className="flex flex-col items-center justify-center gap-[90px] relative bg-purple-6 min-h-screen">
       <main className="flex flex-col w-full max-w-[700px] items-center gap-6 relative flex-[0_0_auto]">
@@ -16,18 +48,17 @@ export default function MyPage(): JSX.Element {
           <CardContent className="flex flex-col w-full px-6 py-6">
             <div className="flex flex-col mb-10">
               <div className="text-gray-5 font-bold mb-2">이름</div>
-              <div className="text-gray-5">지민영</div>
+              <div className="text-gray-5">{memberData.name}</div>
             </div>
             <div className="flex flex-col mb-10">
               <div className="text-gray-5 font-bold mb-2">전화번호</div>
-              <div className="text-gray-5">010-1234-1234</div>
+              <div className="text-gray-5">{memberData.phoneNumber}</div>
             </div>
             <div className="flex flex-col mb-10">
               <div className="text-gray-5 font-bold mb-2">구독정보</div>
               <div className="text-gray-5 mb-1">프리미엄 회원 : 2025.12.31</div>
-              <TossPaymentButton token={token} />
+              <TossPaymentButton />
             </div>
-
             <div className="w-full h-px bg-gray-4 my-4"></div>
             <div className="flex flex-col mb-4">
               <div className="text-gray-5 font-bold mb-4">링크</div>
@@ -45,7 +76,7 @@ export default function MyPage(): JSX.Element {
               </button>
             </div>
             <div className="w-full h-px bg-gray-4 my-4"></div>
-            <div className="text-gray-5 font-bold mb-2">회원탈퇴</div>
+            <LogoutButton token={token} />
           </CardContent>
         </Card>
       </main>
