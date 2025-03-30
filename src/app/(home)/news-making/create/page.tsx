@@ -75,7 +75,7 @@ export default function Element() {
 			<div className="bg-purple-6 w-full max-w-[1920px] p-12 pl-6 pt-6 pr-6 relative">
 				<div className="grid grid-cols-1 md:grid-cols-4 gap-6">
 					{/* 왼쪽 컬럼: 비디오 스타일 & 썸네일 */}
-					<div className="md:col-span-1 space-y-6 overflow-hidden">
+					<div className="md:col-span-1 space-y-6 overflow-hidden sticky top-[105px] max-h-[calc(100vh-150px)]">
 						{/* 왼쪽 영역 상단: ArtStyleCard 적용 */}
 						<Card className="overflow-hidden border rounded-lg shadow-sm h-auto">
 							<CardContent className="bg-white flex flex-col justify-center items-center h-auto">
