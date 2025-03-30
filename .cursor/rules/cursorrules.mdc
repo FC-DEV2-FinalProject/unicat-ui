@@ -6,6 +6,11 @@ alwaysApply: false
 ---
 description: 
 globs: 
+alwaysApply: false
+---
+---
+description: 
+globs: 
 ---
 
 # Your rule content
@@ -53,6 +58,10 @@ types
 - 그리고 정의한 타입 zustand에서 사용할거야야
 
 
-
+api 호출
+- 클라이언트에서 api 호출시에 무조건 호출주소 앞에 /api 붙일 것 ex) /api/projects
+- BFF 넥스트 라우터를 호출하고 넥스트 라우터에서 /projects로 백엔드를 호출함
+- 넥스트 라우터에서는 공통 유틸 apiClients를 사용함
+- msw 핸들러의 경우 백엔드 url을 호출하면됨 {$API_URL}/projects
 
 

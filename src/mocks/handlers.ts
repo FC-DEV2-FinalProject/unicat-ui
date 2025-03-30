@@ -56,6 +56,8 @@ export const handlers = [
 
   http.post(`${API_URL}/projects/:projectId/sections`, async ({ request }) => {
     console.log('🔵 MSW Intercepted - POST /projects/:projectId/sections');
+    console.log('Request URL:', request.url);
+    console.log('Request Headers:', Object.fromEntries(request.headers.entries()));
     const headers = Object.fromEntries(request.headers.entries());
     return new HttpResponse(
       JSON.stringify({ 
@@ -112,45 +114,54 @@ export const handlers = [
     );
   }),
 
-  http.post('/projects/:projectId/sections/:sectionId', async ({ request }) => {
+  http.post(`${API_URL}/projects/:projectId/sections/:sectionId`, async ({ request }) => {
+    console.log('🔵 MSW Intercepted - POST /projects/:projectId/sections/:sectionId');
+    console.log('Request URL:', request.url);
+    console.log('Request Headers:', Object.fromEntries(request.headers.entries()));
+    
     const contentType = request.headers.get('Content-Type');
+    console.log('Content-Type:', contentType);
 
     if (contentType?.includes('multipart/form-data')) {
+      console.log('📤 FormData 요청 처리');
       const formData = await request.formData();
-      //const image = formData.get('image');
       const alt = formData.get('alt');
       const script = formData.get('script');
-      //const voiceName = formData.get('voiceName');
 
       return HttpResponse.json({
-        imageUrl: 'https://api.unicat.day/sample.png',
+        imageUrl: 'https://i.namu.wiki/i/S-GdCcwK7ejvPSJoSgXcdxvMbwDI3uX5_d4fM6nUH_9SaeaM-mWi-rLqNWmGaiiHuIBB9I_E9INrz0D0eTTw4g.webp',
         alt: alt || '고양이 사진',
         script: script || '고양이를 키울 때 알고 있어야 할 주의사항에 대해 알아보겠습니다.'
       });
 
     } else {
+      console.log('📤 JSON 요청 처리');
       const { prompt } = await request.json() as { prompt: string };
+      console.log('Prompt:', prompt);
+      
       const url = new URL(request.url);
       const type = url.searchParams.get('type');
-      //const transitionName = url.searchParams.get('transitionName');
+      console.log('Type:', type);
 
       // type에 따른 응답 분기
       if (type === 'image') {
+        console.log('🖼️ 이미지만 생성');
         return HttpResponse.json({
-          imageUrl: 'https://api.unicat.day/sample.png',
+          imageUrl: 'https://i.namu.wiki/i/S-GdCcwK7ejvPSJoSgXcdxvMbwDI3uX5_d4fM6nUH_9SaeaM-mWi-rLqNWmGaiiHuIBB9I_E9INrz0D0eTTw4g.webp',
           alt: `'${prompt}' 내용을 기반으로 AI가 생성한 이미지`,
           script: null
         });
       } else if (type === 'script') {
+        console.log('📝 스크립트만 생성');
         return HttpResponse.json({
           imageUrl: null,
           alt: null,
           script: 'AI를 통해 생성된 텍스트 내용'
         });
       } else {
-        // type이 없는 경우 (이미지 + 스크립트)
+        console.log('🔄 이미지 + 스크립트 생성');
         return HttpResponse.json({
-          imageUrl: 'https://api.unicat.day/sample.png',
+          imageUrl: 'https://i.namu.wiki/i/S-GdCcwK7ejvPSJoSgXcdxvMbwDI3uX5_d4fM6nUH_9SaeaM-mWi-rLqNWmGaiiHuIBB9I_E9INrz0D0eTTw4g.webp',
           alt: `'${prompt}' 내용을 기반으로 AI가 생성한 이미지`,
           script: 'AI를 통해 생성된 텍스트 내용'
         });
