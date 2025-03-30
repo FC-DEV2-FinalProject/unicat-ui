@@ -117,17 +117,17 @@ export const handlers = [
   http.post(`${API_URL}/projects/:projectId/sections/:sectionId`, async ({ request }) => {
     console.log('🔵 MSW Intercepted - POST /projects/:projectId/sections/:sectionId');
     console.log('Request URL:', request.url);
-    console.log('Request Headers:', Object.fromEntries(request.headers.entries()));
+    //console.log('Request Headers:', Object.fromEntries(request.headers.entries()));
     
     const contentType = request.headers.get('Content-Type');
     console.log('Content-Type:', contentType);
 
     if (contentType?.startsWith('multipart/form-data')) {
-      console.log('📤 FormData 요청 처리');
+      console.log('핸들러 로그 : 📤 FormData 요청 처리');
       const formData = await request.formData();
       const alt = formData.get('alt');
       const script = formData.get('script');
-
+      console.log('FormData:', formData.get('script'));
       return HttpResponse.json({
         imageUrl: 'https://i.imgur.com/P2ruiUz.jpeg',
         alt: alt || '고양이 사진',
@@ -135,7 +135,7 @@ export const handlers = [
       });
 
     } else {
-      console.log('📤 JSON 요청 처리');
+      console.log('핸들러 로그 : 📤 JSON 요청 처리');
       const { prompt } = await request.json() as { prompt: string };
       console.log('Prompt:', prompt);
       
