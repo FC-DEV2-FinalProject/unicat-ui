@@ -1,5 +1,3 @@
-import { Button } from "@/src/components/common/Button";
-
 interface ModalImageUploadAiButtonProps {
 	onClick: () => void;
 }

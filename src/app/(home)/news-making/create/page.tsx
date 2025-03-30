@@ -7,7 +7,6 @@ import { Button } from "@/src/components/news-making/button/CommonNewsMakingButt
 import { Card, CardContent } from "@/src/components/news-making/card/CreateCard";
 import { Checkbox } from "@/src/components/news-making/CreateCheckbox";
 import ArtStyleCard from "@/src/components/news-making/art-style/ArtStyleCard";
-import ThumbnailCard from "@/src/components/news-making/card/ThumbnailCard";
 import VoiceDropdown from "@/src/components/news-making/VoiceDropdown";
 import Link from "next/link";
 import { useProjectStore } from "@/src/store/useNewsMakingStore";
