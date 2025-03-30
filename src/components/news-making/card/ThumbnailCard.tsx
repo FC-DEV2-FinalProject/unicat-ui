@@ -39,14 +39,14 @@ const ThumbnailCard = forwardRef<
 			return new Promise<string>((resolve, reject) => {
 				img.onload = () => {
 					const canvas = document.createElement('canvas');
-					canvas.width = img.width;
-					canvas.height = img.height;
+					canvas.width = 268;  // 썸네일 카드 너비
+					canvas.height = 224; // 이미지 높이
 					const ctx = canvas.getContext('2d');
 					if (!ctx) {
 						reject(new Error('Canvas context not available'));
 						return;
 					}
-					ctx.drawImage(img, 0, 0);
+					ctx.drawImage(img, 0, 0, 268, 224);
 					resolve(canvas.toDataURL('image/png'));
 				};
 				img.onerror = reject;
@@ -60,7 +60,7 @@ const ThumbnailCard = forwardRef<
 
 	// AI 생성 이미지 URL이 변경될 때 base64로 변환
 	useEffect(() => {
-		if (imageSrc && imageSrc.startsWith('http')) {
+		if (imageSrc) {
 			convertUrlToBase64(imageSrc).then(base64 => {
 				setCapturedImage(base64);
 			});
