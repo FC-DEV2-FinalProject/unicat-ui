@@ -122,7 +122,7 @@ export const handlers = [
     const contentType = request.headers.get('Content-Type');
     console.log('Content-Type:', contentType);
 
-    if (contentType?.includes('multipart/form-data')) {
+    if (contentType?.startsWith('multipart/form-data')) {
       console.log('📤 FormData 요청 처리');
       const formData = await request.formData();
       const alt = formData.get('alt');
