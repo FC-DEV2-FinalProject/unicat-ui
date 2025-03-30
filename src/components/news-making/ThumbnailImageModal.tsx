@@ -8,12 +8,19 @@ import { useSearchParams } from "next/navigation";
 import apiClient from "@/src/utils/apiClient";
 
 interface ThumbnailImageModalProps {
+	// 모달의 열림/닫힘 상태를 제어하는 prop
 	isOpen: boolean;
+	// 모달을 닫을 때 호출되는 콜백 함수
 	onClose: () => void;
+	// 이미지가 업로드되거나 AI로 생성되었을 때 호출되는 콜백 함수
+	// imageSrc: 업로드된 이미지의 base64 문자열 또는 AI 생성 이미지의 URL
 	onImageUpload: (imageSrc: string) => void;
+	// 버튼 타입이 변경될 때 호출되는 콜백 함수
+	// type: 'self' | 'ai' - 'self': 직접 업로드, 'ai': AI 생성
+	onButtonTypeChange: (type: 'self' | 'ai') => void;
 }
 
-export default function ThumbnailImageModal({ isOpen, onClose, onImageUpload }: ThumbnailImageModalProps) {
+export default function ThumbnailImageModal({ isOpen, onClose, onImageUpload, onButtonTypeChange }: ThumbnailImageModalProps) {
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 	const [fileName, setFileName] = useState<string>("");
 	const [script, setScript] = useState<string>("");
@@ -38,6 +45,8 @@ export default function ThumbnailImageModal({ isOpen, onClose, onImageUpload }: 
 			const reader = new FileReader();
 			reader.onloadend = () => {
 				const imageSrc = reader.result as string;
+				// Case 1: 파일 직접 선택 시 (드래그 앤 드롭 또는 파일 선택)
+				onButtonTypeChange('self');
 				onImageUpload(imageSrc);
 				onClose();
 			};
@@ -47,17 +56,19 @@ export default function ThumbnailImageModal({ isOpen, onClose, onImageUpload }: 
 
 	const handleSelfUpload = () => {
 		fileInputRef.current?.click();
+		// Case 2: 셀프 업로드 버튼 클릭 시
+		onButtonTypeChange('self');
 	};
 
 	const handleAiGenerate = async () => {
 		try {
-			// 1. 섹션 ID 생성
-			const sectionResponse = await apiClient.post(`/api/projects/${projectId}/sections`);
-			const sectionId = sectionResponse.data.id;
-			console.log('클라이언트 섹션 생성 🎯 섹션 ID:', sectionId);
-			// 2. AI 이미지 생성
+			// Case 3: AI 생성 버튼 클릭 시
+			onButtonTypeChange('ai');
+
+			// 1. AI 이미지 생성
+			// 썸네일일의 경우 sectionId가 1로 고정되어 있음
 			const response = await apiClient.post(
-				`/api/projects/${projectId}/sections/${sectionId}`,
+				`/api/projects/${projectId}/sections/1`,
 				{ prompt: script },
 				{
 					headers: {
@@ -66,6 +77,7 @@ export default function ThumbnailImageModal({ isOpen, onClose, onImageUpload }: 
 				}
 			);
 			console.log('클라이언트 AI 이미지 생성 🎯 이미지 URL:', response.data.imageUrl);
+			
 			// 3. 생성된 이미지 URL을 썸네일 카드에 적용
 			if (response.data.imageUrl) {
 				onImageUpload(response.data.imageUrl);

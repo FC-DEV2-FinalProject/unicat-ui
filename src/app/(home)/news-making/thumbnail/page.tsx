@@ -10,6 +10,7 @@ import ThumbnailFontMenu from "@/src/components/news-making/ThumbnailFontMenu";
 import { useProjectStore } from "@/src/store/useNewsMakingStore";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PROJECT_STAGES } from "@/src/types/newsMakingTypes";
+import apiClient from "@/src/utils/apiClient";
 
 interface ProjectCard {
 	id: number;
@@ -37,6 +38,9 @@ const maxTextareaHeight = 108;
 const maxLines = Math.floor(maxTextareaHeight / lineHeight);
 
 export default function AiNewsAnima() {
+	const { projects, currentProjectId } = useProjectStore();
+	const currentProject = projects.find(p => p.id === currentProjectId);
+
 	return (
 		<Suspense fallback={<div>Loading...</div>}>
 			<ThumbnailContent />
@@ -49,6 +53,7 @@ function ThumbnailContent() {
 	const [projectCards, setProjectCards] = useState<ProjectCard[]>(initialProjectCards);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
+	const [lastClickedButton, setLastClickedButton] = useState<'self' | 'ai' | null>(null);
 	const { updateSelectedThumbnail, updateProjectStage } = useProjectStore();
 	const router = useRouter();
 	const searchParams = useSearchParams();
@@ -95,7 +100,21 @@ function ThumbnailContent() {
 		setSelectedCardId(id === selectedCardId ? null : id);
 	};
 
-	const handleNext = () => {
+	// Base64 문자열을 Blob으로 변환하는 함수
+	const base64ToBlob = (base64: string) => {
+		const byteString = atob(base64.split(',')[1]);
+		const mimeString = base64.split(',')[0].split(':')[1].split(';')[0];
+		const ab = new ArrayBuffer(byteString.length);
+		const ia = new Uint8Array(ab);
+		
+		for (let i = 0; i < byteString.length; i++) {
+			ia[i] = byteString.charCodeAt(i);
+		}
+		
+		return new Blob([ab], { type: mimeString });
+	};
+
+	const handleNext = async () => {
 		if (!selectedCardId) {
 			alert("썸네일을 선택해주세요!");
 			return;
@@ -115,7 +134,41 @@ function ThumbnailContent() {
 		}
 
 		// 선택된 썸네일 정보 저장
-		const handleCapture = (dataUrl: string) => {
+		const handleCapture = async (dataUrl: string) => {
+			if (projectId) {
+				try {
+					// AI 생성 이미지는 항상 JSON으로 전송
+					if (lastClickedButton === 'ai') {
+						await apiClient.post(`/api/projects/${projectId}/sections/1`, {
+							imageUrl: dataUrl,
+							alt: title,
+							script: ''
+						}, {
+							headers: {
+								'Content-Type': 'application/json',
+							},
+						});
+						console.log('썸네일 이미지 업로드 완료 🎯 (AI 생성 - JSON)');
+					} else {
+						// 직접 업로드한 이미지는 FormData로 전송
+						const formData = new FormData();
+						const imageBlob = base64ToBlob(dataUrl);
+						formData.append('multipartFile', imageBlob, 'thumbnail.png');
+						formData.append('alt', title);
+						formData.append('script', '');
+
+						await apiClient.post(`/api/projects/${projectId}/sections/1`, formData, {
+							headers: {
+								'Content-Type': 'multipart/form-data',
+							},
+						});
+						console.log('썸네일 이미지 업로드 완료 🎯 (직접 업로드 - FormData)');
+					}
+				} catch (error) {
+					console.error('썸네일 이미지 업로드 실패:', error);
+				}
+			}
+
 			updateSelectedThumbnail(
 				selectedCardId,
 				title,
@@ -207,7 +260,12 @@ function ThumbnailContent() {
 			<ThumbnailImageModal 
 				isOpen={isModalOpen} 
 				onClose={() => setIsModalOpen(false)} 
-				onImageUpload={updateAllCardImages}
+				onImageUpload={(imageSrc) => {
+					updateAllCardImages(imageSrc);
+				}}
+				onButtonTypeChange={(type) => {
+					setLastClickedButton(type);
+				}}
 			/>
 		</div>
 	);
