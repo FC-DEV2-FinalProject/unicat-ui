@@ -2,7 +2,7 @@
 
 // Lucide 아이콘 라이브러리에서 아이콘을 가져옴
 import { PlusIcon, XIcon } from "lucide-react";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Button } from "@/src/components/news-making/button/CommonNewsMakingButton";
 import { Card, CardContent } from "@/src/components/news-making/card/CreateCard";
 import { Checkbox } from "@/src/components/news-making/CreateCheckbox";
@@ -13,11 +13,22 @@ import { useProjectStore } from "@/src/store/useNewsMakingStore";
 import { ART_STYLES } from "@/src/constants/artStyles";
 import { useRouter } from "next/navigation";
 
+interface ContentSection {
+	title: string;
+	buttonText: string;
+	hasCheckbox: boolean;
+	script: string;
+}
+
 export default function Element() {
 	const router = useRouter();
 	const { projects, currentProjectId, updateThumbnailImage } = useProjectStore();
 	const currentProject = projects.find(p => p.id === currentProjectId);
 	const thumbnailRef = useRef<{ captureCard: (callback: (dataUrl: string) => void) => void }>(null);
+	const [contentSections, setContentSections] = useState<ContentSection[]>([
+		{ title: "컷 1", buttonText: "LLM 수정 버튼", hasCheckbox: true, script: "" }
+	]);
+	
 	let selectedStyle = ART_STYLES[0]; // 기본값으로 첫 번째 스타일 사용
 	
 	if (currentProject?.selectedArtStyleId) {
@@ -38,10 +49,26 @@ export default function Element() {
 		}
 	};
 
-	const contentSections = [
-		{ title: "썸네일", buttonText: "LLM 수정 버튼", hasCheckbox: true },
-		{ title: "컷 1", buttonText: "LLM 수정 버튼", hasCheckbox: true },
-	];
+	const handleAddContent = () => {
+		if (contentSections.length < 5) {
+			const nextCutNumber = contentSections.length + 1;
+			setContentSections(prev => [
+				...prev,
+				{ 
+					title: `컷 ${nextCutNumber}`, 
+					buttonText: "LLM 수정 버튼", 
+					hasCheckbox: true,
+					script: ""
+				}
+			]);
+		}
+	};
+
+	const handleScriptChange = (index: number, value: string) => {
+		setContentSections(prev => prev.map((section, i) => 
+			i === index ? { ...section, script: value } : section
+		));
+	};
 
 	return (
 		<div className="mt-[105px] bg-purple-6 flex flex-row justify-center w-full border-b-[30px] border-white">
@@ -126,14 +153,16 @@ export default function Element() {
 													<span className="text-gray-500">이미지 삽입</span>
 												</div>
 												<div className="w-2/3 bg-white p-4 flex flex-col justify-between">
-												<textarea
-													className="w-full h-full p-2 resize-none focus:outline-none"
-													placeholder="텍스트를 입력하세요..."
-												/>
-												{/* 카드 컨텐츠 별 버튼 텍스트 LLM 수정버튼 */}
-												<Button variant="outline" size="sm" className="w-[120px] h-[40px]">
-													{section.buttonText}
-												</Button>
+													<textarea
+														className="w-full h-full p-2 resize-none focus:outline-none"
+														placeholder="텍스트를 입력하세요..."
+														value={section.script}
+														onChange={(e) => handleScriptChange(index, e.target.value)}
+													/>
+													{/* 카드 컨텐츠 별 버튼 텍스트 LLM 수정버튼 */}
+													<Button variant="outline" size="sm" className="w-[120px] h-[40px]">
+														{section.buttonText}
+													</Button>
 												</div>
 											</div>
 										</div>
@@ -145,10 +174,17 @@ export default function Element() {
 						{/* 하단 컨트롤 버튼 */}
 						<div className="flex justify-between mt-6">
 							<VoiceDropdown/>
-							<Button variant="outline" size="sm" className="ml-2 p-0 w-full flex items-center gap-1">
-								<PlusIcon className="h-4 w-4" />
-								<span>콘텐츠 추가</span>
-							</Button>
+							{contentSections.length < 5 && (
+								<Button 
+									variant="outline" 
+									size="sm" 
+									className="ml-2 p-0 w-full flex items-center gap-1"
+									onClick={handleAddContent}
+								>
+									<PlusIcon className="h-4 w-4" />
+									<span>콘텐츠 추가</span>
+								</Button>
+							)}
 						</div>
 						<div className="w-full max-w-[1200px] flex justify-end gap-6">
 							<Link href="/news-making/thumbnail">

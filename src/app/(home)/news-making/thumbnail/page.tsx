@@ -137,8 +137,10 @@ function ThumbnailContent() {
 		const handleCapture = async (dataUrl: string) => {
 			if (projectId) {
 				try {
+					console.log('handleCapture 시작 🎯 lastClickedButton:', lastClickedButton);
 					// AI 생성 이미지는 항상 JSON으로 전송
 					if (lastClickedButton === 'ai') {
+						console.log('AI 생성 이미지 처리 시작 🎯');
 						await apiClient.post(`/api/projects/${projectId}/sections/1`, {
 							imageUrl: dataUrl,
 							alt: title,
@@ -150,6 +152,7 @@ function ThumbnailContent() {
 						});
 						console.log('썸네일 이미지 업로드 완료 🎯 (AI 생성 - JSON)');
 					} else {
+						console.log('직접 업로드 이미지 처리 시작 🎯');
 						// 직접 업로드한 이미지는 FormData로 전송
 						const formData = new FormData();
 						const imageBlob = base64ToBlob(dataUrl);
@@ -164,25 +167,24 @@ function ThumbnailContent() {
 						});
 						console.log('썸네일 이미지 업로드 완료 🎯 (직접 업로드 - FormData)');
 					}
+
+					// API 호출이 성공한 후에만 상태 업데이트 및 페이지 이동
+					updateSelectedThumbnail(
+						selectedCardId,
+						title,
+						selectedCard.textAlign,
+						selectedCard.fontColor,
+						selectedCard.fontSize,
+						selectedCard.fontFamily,
+						dataUrl
+					);
+
+					// 캡처 완료 후 프로젝트 단계 업데이트 및 페이지 이동
+					updateProjectStage(parseInt(projectId), PROJECT_STAGES.CREATING);
+					router.push(`/news-making/create?projectId=${projectId}`);
 				} catch (error) {
 					console.error('썸네일 이미지 업로드 실패:', error);
 				}
-			}
-
-			updateSelectedThumbnail(
-				selectedCardId,
-				title,
-				selectedCard.textAlign,
-				selectedCard.fontColor,
-				selectedCard.fontSize,
-				selectedCard.fontFamily,
-				dataUrl
-			);
-
-			// 캡처 완료 후 프로젝트 단계 업데이트 및 페이지 이동
-			if (projectId) {
-				updateProjectStage(parseInt(projectId), PROJECT_STAGES.CREATING);
-				router.push(`/news-making/create?projectId=${projectId}`);
 			}
 		};
 
