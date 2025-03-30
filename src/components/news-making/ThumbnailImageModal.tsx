@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import ModalImageUploadSelfButton from "@/src/components/news-making/button/ModalImageUploadSelfButton";
 import ModalImageUploadAiButton from "@/src/components/news-making/button/ModalImageUploadAiButton";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import apiClient from "@/src/utils/apiClient";
 
 interface ThumbnailImageModalProps {
 	isOpen: boolean;
@@ -12,10 +14,11 @@ interface ThumbnailImageModalProps {
 }
 
 export default function ThumbnailImageModal({ isOpen, onClose, onImageUpload }: ThumbnailImageModalProps) {
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [fileName, setFileName] = useState<string>("");
+	const [script, setScript] = useState<string>("");
+	const searchParams = useSearchParams();
+	const projectId = searchParams.get("projectId");
 
 	useEffect(() => {
 		const savedFileName = localStorage.getItem("selectedFileName");
@@ -41,6 +44,34 @@ export default function ThumbnailImageModal({ isOpen, onClose, onImageUpload }: 
 		}
 	};
 
+	const handleAiGenerate = async () => {
+		try {
+			// 1. 섹션 ID 생성
+			const sectionResponse = await apiClient.post(`/api/projects/${projectId}/sections`);
+			const sectionId = sectionResponse.data.id;
+			console.log('클라이언트 섹션 생성 🎯 섹션 ID:', sectionId);
+			// 2. AI 이미지 생성
+			const response = await apiClient.post(
+				`/api/projects/${projectId}/sections/${sectionId}`,
+				{ prompt: script },
+				{
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				}
+			);
+			console.log('클라이언트 AI 이미지 생성 🎯 이미지 URL:', response.data.imageUrl);
+			// 3. 생성된 이미지 URL을 썸네일 카드에 적용
+			if (response.data.imageUrl) {
+				onImageUpload(response.data.imageUrl);
+				onClose();
+			}
+		} catch (error) {
+			console.error("AI 이미지 생성 실패:", error);
+			alert("이미지 생성에 실패했습니다. 다시 시도해주세요.");
+		}
+	};
+
 	const handleClose = () => {
 		onClose();
 	};
@@ -55,11 +86,22 @@ export default function ThumbnailImageModal({ isOpen, onClose, onImageUpload }: 
 		<div className="fixed inset-0 flex items-center justify-center z-50">
 			<div className="absolute inset-0 bg-black opacity-40" onClick={handleClose}></div>
 			<div 
-				className="flex flex-col items-center justify-center gap-[25px] relative bg-white w-[390px] h-[300px] p-[30px] rounded-lg shadow-lg text-center"
+				className="flex flex-col items-center justify-center gap-[25px] relative bg-white w-[390px] h-[400px] p-[30px] rounded-lg shadow-lg text-center"
 				onClick={handleModalClick}
 			>
 				<h2 className="font-bold font-bold-24 text-2xl">이미지 업로드</h2>
 				<p className="text-gray-500">이미지를 업로드하세요.</p>
+				
+				{/* 스크립트 입력 영역 */}
+				<div className="w-full">
+					<textarea
+						value={script}
+						onChange={(e) => setScript(e.target.value)}
+						placeholder="생성할 썸네일에 대한 스크립트를 입력해주세요"
+						className="w-full h-[100px] p-2 border rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-purple-500"
+					/>
+				</div>
+
 				<div className="w-full relative">
 					<div className="absolute inset-0 pointer-events-none flex items-center pl-[120px]">
 					</div>
@@ -76,9 +118,12 @@ export default function ThumbnailImageModal({ isOpen, onClose, onImageUpload }: 
 					/>
 				</div>
 				<ModalImageUploadSelfButton></ModalImageUploadSelfButton>
-				<Link href="/news-making/create">
-					<ModalImageUploadAiButton></ModalImageUploadAiButton>
-				</Link>
+				<button 
+					onClick={handleAiGenerate}
+					className="w-full py-2 px-4 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+				>
+					AI로 생성하기
+				</button>
 				<button className="mt-4 px-4 py-2 bg-gray-300 rounded" onClick={handleClose}>
 					닫기
 				</button>
