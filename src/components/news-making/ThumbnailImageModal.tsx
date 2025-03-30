@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ModalImageUploadSelfButton from "@/src/components/news-making/button/ModalImageUploadSelfButton";
 import ModalImageUploadAiButton from "@/src/components/news-making/button/ModalImageUploadAiButton";
 import Link from "next/link";
@@ -17,6 +17,7 @@ export default function ThumbnailImageModal({ isOpen, onClose, onImageUpload }: 
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 	const [fileName, setFileName] = useState<string>("");
 	const [script, setScript] = useState<string>("");
+	const fileInputRef = useRef<HTMLInputElement>(null);
 	const searchParams = useSearchParams();
 	const projectId = searchParams.get("projectId");
 
@@ -42,6 +43,10 @@ export default function ThumbnailImageModal({ isOpen, onClose, onImageUpload }: 
 			};
 			reader.readAsDataURL(file);
 		}
+	};
+
+	const handleSelfUpload = () => {
+		fileInputRef.current?.click();
 	};
 
 	const handleAiGenerate = async () => {
@@ -86,21 +91,11 @@ export default function ThumbnailImageModal({ isOpen, onClose, onImageUpload }: 
 		<div className="fixed inset-0 flex items-center justify-center z-50">
 			<div className="absolute inset-0 bg-black opacity-40" onClick={handleClose}></div>
 			<div 
-				className="flex flex-col items-center justify-center gap-[25px] relative bg-white w-[390px] h-[400px] p-[30px] rounded-lg shadow-lg text-center"
+				className="flex flex-col items-center justify-center gap-[25px] relative bg-white w-[600px] h-[600px] pr-[30px] pl-[30px] rounded-lg shadow-lg text-center"
 				onClick={handleModalClick}
 			>
 				<h2 className="font-bold font-bold-24 text-2xl">이미지 업로드</h2>
 				<p className="text-gray-500">이미지를 업로드하세요.</p>
-				
-				{/* 스크립트 입력 영역 */}
-				<div className="w-full">
-					<textarea
-						value={script}
-						onChange={(e) => setScript(e.target.value)}
-						placeholder="생성할 썸네일에 대한 스크립트를 입력해주세요"
-						className="w-full h-[100px] p-2 border rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-purple-500"
-					/>
-				</div>
 
 				<div className="w-full relative">
 					<div className="absolute inset-0 pointer-events-none flex items-center pl-[120px]">
@@ -109,6 +104,7 @@ export default function ThumbnailImageModal({ isOpen, onClose, onImageUpload }: 
 						type="file"
 						accept="image/*"
 						onChange={handleFileChange}
+						ref={fileInputRef}
 						className={`block w-full text-sm text-gray-500
 							file:mr-4 file:py-2 file:px-4
 							file:rounded-full file:border-0
@@ -117,13 +113,17 @@ export default function ThumbnailImageModal({ isOpen, onClose, onImageUpload }: 
 							hover:file:bg-purple-100`}
 					/>
 				</div>
-				<ModalImageUploadSelfButton></ModalImageUploadSelfButton>
-				<button 
-					onClick={handleAiGenerate}
-					className="w-full py-2 px-4 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
-				>
-					AI로 생성하기
-				</button>
+				<ModalImageUploadSelfButton onClick={handleSelfUpload}></ModalImageUploadSelfButton>
+								{/* 스크립트 입력 영역 */}
+								<div className="w-full">
+					<textarea
+						value={script}
+						onChange={(e) => setScript(e.target.value)}
+						placeholder="생성할 썸네일에 대한 스크립트를 입력해주세요"
+						className="w-full h-[100px] p-2 border rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-purple-500"
+					/>
+				</div>
+				<ModalImageUploadAiButton onClick={handleAiGenerate} />
 				<button className="mt-4 px-4 py-2 bg-gray-300 rounded" onClick={handleClose}>
 					닫기
 				</button>

@@ -129,7 +129,7 @@ export const handlers = [
       const script = formData.get('script');
 
       return HttpResponse.json({
-        imageUrl: 'https://i.namu.wiki/i/S-GdCcwK7ejvPSJoSgXcdxvMbwDI3uX5_d4fM6nUH_9SaeaM-mWi-rLqNWmGaiiHuIBB9I_E9INrz0D0eTTw4g.webp',
+        imageUrl: 'https://i.imgur.com/P2ruiUz.jpeg',
         alt: alt || '고양이 사진',
         script: script || '고양이를 키울 때 알고 있어야 할 주의사항에 대해 알아보겠습니다.'
       });
@@ -147,7 +147,7 @@ export const handlers = [
       if (type === 'image') {
         console.log('🖼️ 이미지만 생성');
         return HttpResponse.json({
-          imageUrl: 'https://i.namu.wiki/i/S-GdCcwK7ejvPSJoSgXcdxvMbwDI3uX5_d4fM6nUH_9SaeaM-mWi-rLqNWmGaiiHuIBB9I_E9INrz0D0eTTw4g.webp',
+          imageUrl: 'https://i.imgur.com/P2ruiUz.jpeg',
           alt: `'${prompt}' 내용을 기반으로 AI가 생성한 이미지`,
           script: null
         });
@@ -161,7 +161,7 @@ export const handlers = [
       } else {
         console.log('🔄 이미지 + 스크립트 생성');
         return HttpResponse.json({
-          imageUrl: 'https://i.namu.wiki/i/S-GdCcwK7ejvPSJoSgXcdxvMbwDI3uX5_d4fM6nUH_9SaeaM-mWi-rLqNWmGaiiHuIBB9I_E9INrz0D0eTTw4g.webp',
+          imageUrl: 'https://i.imgur.com/P2ruiUz.jpeg',
           alt: `'${prompt}' 내용을 기반으로 AI가 생성한 이미지`,
           script: 'AI를 통해 생성된 텍스트 내용'
         });
