@@ -186,7 +186,7 @@ function ThumbnailContent() {
 			</div>
 
 			{/* ✅ 제목 입력 필드 */}
-			<div className="w-full max-w-[1200px] h-[108px] bg-white rounded-lg p-4">
+			<div className="w-full max-w-[1200px] h-[108px] bg-white rounded-lg p-4 border border-gray-200">
 				<textarea
 					className="w-full h-full border-none text-center focus:ring-0 focus:outline-none text-gray-700 text-lg resize-none"
 					placeholder="영상에서 사용할 제목을 적어주세요."

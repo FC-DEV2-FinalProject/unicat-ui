@@ -2,7 +2,7 @@
 
 // Lucide 아이콘 라이브러리에서 아이콘을 가져옴
 import { PlusIcon, XIcon } from "lucide-react";
-import React from "react";
+import React, { useRef } from "react";
 import { Button } from "@/src/components/news-making/button/CommonNewsMakingButton";
 import { Card, CardContent } from "@/src/components/news-making/card/CreateCard";
 import { Checkbox } from "@/src/components/news-making/CreateCheckbox";
@@ -12,10 +12,13 @@ import VoiceDropdown from "@/src/components/news-making/VoiceDropdown";
 import Link from "next/link";
 import { useProjectStore } from "@/src/store/useNewsMakingStore";
 import { ART_STYLES } from "@/src/constants/artStyles";
+import { useRouter } from "next/navigation";
 
 export default function Element() {
-	const { projects, currentProjectId } = useProjectStore();
+	const router = useRouter();
+	const { projects, currentProjectId, updateThumbnailImage } = useProjectStore();
 	const currentProject = projects.find(p => p.id === currentProjectId);
+	const thumbnailRef = useRef<{ captureCard: (callback: (dataUrl: string) => void) => void }>(null);
 	let selectedStyle = ART_STYLES[0]; // 기본값으로 첫 번째 스타일 사용
 	
 	if (currentProject?.selectedArtStyleId) {
@@ -24,6 +27,17 @@ export default function Element() {
 			selectedStyle = found;
 		}
 	}
+
+	const handleNextClick = () => {
+		if (thumbnailRef.current && currentProject) {
+			thumbnailRef.current.captureCard((dataUrl) => {
+				updateThumbnailImage(dataUrl);
+				router.push('/loading');
+			});
+		} else {
+			router.push('/loading');
+		}
+	};
 
 	const contentSections = [
 		{ title: "썸네일", buttonText: "LLM 수정 버튼", hasCheckbox: true },
@@ -47,8 +61,8 @@ export default function Element() {
 										artStyleId={selectedStyle.id}
 										imageSrc={selectedStyle.imageSrc}
 										altText={selectedStyle.alt}
-										isSelected={currentProject?.selectedArtStyleId === selectedStyle.id}
-										className="mx-auto"
+										isSelected={false}
+										className="mx-auto border-[10px] border-purple-500 shadow-lg"
 										width={200}
 										height={224}
 										applyBorderBox={true}
@@ -60,7 +74,7 @@ export default function Element() {
 						</div>
 						{/* 왼쪽 영역 하단: Thumbnail Card 적용 */}
 						<Card className="overflow-hidden border rounded-lg shadow-sm h-auto">
-							<CardContent className="flex flex-col justify-center items-center h-auto">
+							<CardContent className="p-3 flex flex-col justify-center items-center h-auto">
 								{/* 카드 제목 */}
 								<h3 className="text-3xl font-bold font-bold-32 mb-3 p-3 mt-3">
 									{"영상 썸네일"}
@@ -68,25 +82,20 @@ export default function Element() {
 
 								{/* 썸네일 카드 컨테이너 */}
 								<div className="w-full h-auto bg-gray-5 rounded-lg">
-									<div className="flex items-center justify-center">
-										{currentProject?.thumbnail ? (
-											<ThumbnailCard
-												artStyleId={currentProject.selectedArtStyleId || 1}
-												thumbnailId={1}
-												title={currentProject.thumbnail.title || ""}
-												imageSrc={currentProject.thumbnail.imageSrc || ""}
-												altText="썸네일 이미지"
-												textAlign={currentProject.thumbnail.textAlign || "left"}
-												fontColor={currentProject.thumbnail.fontColor || "#000000"}
-												fontSize={currentProject.thumbnail.fontSize || 20}
-												fontFamily={(currentProject.thumbnail.fontFamily as "Arial" | "Times New Roman" | "Courier New" | "Verdana") || "Arial"}
+									{currentProject?.thumbnail?.imageSrc ? (
+										<div className="flex justify-center">
+											{/* 캡처한 이미지를 사용 전체 배경까지 캡처 */}
+											<img 
+												src={currentProject.thumbnail.imageSrc}
+												alt="썸네일 이미지"
+												className="w-full h-auto rounded-lg"
 											/>
-										) : (
-											<div className="w-[268px] h-[480px] flex items-center justify-center text-gray-500 bg-gray-5 rounded-[8px]">
-												이미지가 없습니다
-											</div>
-										)}
-									</div>
+										</div>
+									) : (
+										<div className="w-[268px] h-[480px] mx-auto flex items-center justify-center text-gray-500">
+											이미지가 없습니다
+										</div>
+									)}
 								</div>
 							</CardContent>
 						</Card>
@@ -149,11 +158,9 @@ export default function Element() {
 								</Button>
 							</Link>
 
-							<Link href="/loading">
-								<Button variant="next" className="w-[200px] h-[60px]">
-									다음으로
-								</Button>
-							</Link>
+							<Button variant="next" className="w-[200px] h-[60px]" onClick={handleNextClick}>
+								다음으로
+							</Button>
 						</div>
 					</div>
 				</div>
