@@ -12,6 +12,7 @@ import Link from "next/link";
 import { useProjectStore } from "@/src/store/useNewsMakingStore";
 import { ART_STYLES } from "@/src/constants/artStyles";
 import { useRouter } from "next/navigation";
+import { SectionContent } from "@/src/components/news-making/section/SectionContent";
 
 interface ContentSection {
 	title: string;
@@ -99,7 +100,7 @@ export default function Element() {
 						<div className="md:col-span-1 space-y-6 overflow-hidden">
 						</div>
 						{/* 왼쪽 영역 하단: Thumbnail Card 적용 */}
-						<Card className="overflow-hidden border rounded-lg shadow-sm h-auto">
+						<Card className="w-[268px] h-[480px] overflow-hidden border rounded-lg shadow-sm h-auto">
 							<CardContent className="p-3 flex flex-col justify-center items-center h-auto">
 								{/* 카드 제목 */}
 								<h3 className="text-3xl font-bold font-bold-32 mb-3 p-3 mt-3">
@@ -107,7 +108,7 @@ export default function Element() {
 								</h3>
 
 								{/* 썸네일 카드 컨테이너 */}
-								<div className="w-full h-auto bg-gray-5 rounded-lg">
+								<div className="w-auto h-auto bg-gray-5 rounded-lg ">
 									{currentProject?.thumbnail?.imageSrc ? (
 										<div className="flex justify-center">
 											{/* 캡처한 이미지를 사용 전체 배경까지 캡처 */}
@@ -148,23 +149,12 @@ export default function Element() {
 											</div>
 
 											{/* 카드 내용 이미지 및 스크립트 영역 */}
-											<div className="flex w-full max-w-[773px] h-[300px] border rounded-lg shadow-sm overflow-hidden">
-												<div className="w-1/3 bg-gray-200 flex items-center justify-center">
-													<span className="text-gray-500">이미지 삽입</span>
-												</div>
-												<div className="w-2/3 bg-white p-4 flex flex-col justify-between">
-													<textarea
-														className="w-full h-full p-2 resize-none focus:outline-none"
-														placeholder="텍스트를 입력하세요..."
-														value={section.script}
-														onChange={(e) => handleScriptChange(index, e.target.value)}
-													/>
-													{/* 카드 컨텐츠 별 버튼 텍스트 LLM 수정버튼 */}
-													<Button variant="outline" size="sm" className="w-[120px] h-[40px]">
-														{section.buttonText}
-													</Button>
-												</div>
-											</div>
+											<SectionContent
+												index={index}
+												title={section.title}
+												script={section.script}
+												onScriptChange={handleScriptChange}
+											/>
 										</div>
 									</div>
 								</CardContent>

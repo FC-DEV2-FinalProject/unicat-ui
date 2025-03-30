@@ -23,7 +23,7 @@ export async function POST(
 
     // FormData 요청 처리 (직접 업로드)
     if (contentType.includes(CONTENT_TYPE.MULTIPART)) {
-      console.log('📤 FormData 요청 처리');
+      console.log('라우트 로그 : 📤 FormData 요청 처리');
       const formData = await req.formData();
       const response = await apiClient.post(`/projects/${projectId}/sections/${sectionId}`, formData, {
         headers: {
@@ -34,7 +34,7 @@ export async function POST(
     } 
     // JSON 요청 처리 (AI 생성)
     else if (contentType.includes(CONTENT_TYPE.JSON)) {
-      console.log('📤 JSON 요청 처리 (AI 생성)');
+      console.log('라우트 로그 : 📤 JSON 요청 처리 (AI 생성)');
       const body = await req.json();
       const response = await apiClient.post(
         `/projects/${projectId}/sections/${sectionId}`,

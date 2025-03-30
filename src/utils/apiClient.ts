@@ -11,7 +11,6 @@ const apiClient = axios.create({
     baseURL, // 환경에 맞는 baseURL 설정
     headers: {
         Accept: "application/json",
-        "Content-Type": "application/json",
     },
     withCredentials: true, // 쿠키를 자동으로 전송하도록 설정
     httpsAgent: createHttpsAgent(), // httpsAgent를 axios 인스턴스에 추가   
@@ -21,6 +20,11 @@ const apiClient = axios.create({
 // 요청 인터셉터
 apiClient.interceptors.request.use(
     (config) => {
+        // FormData 감지 및 Content-Type 설정
+        if (config.data instanceof FormData) {
+            config.headers['Content-Type'] = 'multipart/form-data';
+        }
+
         if (typeof window === 'undefined') {  // 서버사이드(Next.js API 라우트)에서만
             const cookieHeader = config.headers['Cookie'] || config.headers['cookie'];
             if (cookieHeader) {
