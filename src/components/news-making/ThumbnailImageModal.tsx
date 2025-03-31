@@ -80,7 +80,7 @@ const ThumbnailImageModal: React.FC<ThumbnailImageModalProps> = ({
 			// 1. AI 이미지 생성
 			// 썸네일일의 경우 sectionId가 1로 고정되어 있음
 			const response = await apiClient.post(
-				`/api/projects/${projectId}/sections/1`,
+				`/api/projects/${projectId}/sections/1/ai`,
 				{ prompt: prompt },
 				{
 					headers: {
