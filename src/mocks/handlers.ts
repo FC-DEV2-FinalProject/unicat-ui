@@ -118,7 +118,7 @@ export const handlers = [
     console.log('🔵 MSW Intercepted - POST /projects/:projectId/sections/:sectionId');
     console.log('Request URL:', request.url);
     //console.log('Request Headers:', Object.fromEntries(request.headers.entries()));
-    
+
     const contentType = request.headers.get('Content-Type');
     console.log('Content-Type:', contentType);
 
@@ -138,7 +138,7 @@ export const handlers = [
       console.log('핸들러 로그 : 📤 JSON 요청 처리');
       const { prompt } = await request.json() as { prompt: string };
       console.log('Prompt:', prompt);
-      
+
       const url = new URL(request.url);
       const type = url.searchParams.get('type');
       console.log('Type:', type);
@@ -167,5 +167,11 @@ export const handlers = [
         });
       }
     }
-  })
-]; 
+  }),
+
+  // 대시보드 프로젝트 목록 조회 API
+  http.get(`${API_URL}/dashboard`, async () => {
+    console.log("🔵 MSW Intercepted - GET /dashboard");
+    return HttpResponse.json(mockDashboardData);
+  }),
+];
