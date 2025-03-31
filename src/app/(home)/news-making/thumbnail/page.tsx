@@ -38,8 +38,9 @@ const maxTextareaHeight = 108;
 const maxLines = Math.floor(maxTextareaHeight / lineHeight);
 
 export default function AiNewsAnima() {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { projects, currentProjectId } = useProjectStore();
-	const currentProject = projects.find(p => p.id === currentProjectId);
+	//const currentProject = projects.find(p => p.id === currentProjectId);
 
 	return (
 		<Suspense fallback={<div>Loading...</div>}>
