@@ -54,7 +54,7 @@ export const handlers = [
       }
     );
   }),
-
+  // 섹션만 생성
   http.post(`${API_URL}/projects/:projectId/sections`, async ({ request }) => {
     console.log('🔵 MSW Intercepted - POST /projects/:projectId/sections');
     console.log('Request URL:', request.url);
@@ -70,7 +70,7 @@ export const handlers = [
         videoUrl: "string"
       }),
       {
-        status: 200,
+        status: 201,
         headers: {
           'Content-Type': 'application/json',
           'Set-Cookie': `Authorization=${headers.authorization}; Path=/; HttpOnly; SameSite=Lax`
@@ -122,57 +122,144 @@ export const handlers = [
 
     const contentType = request.headers.get('Content-Type');
     console.log('Content-Type:', contentType);
-
+    const headers = Object.fromEntries(request.headers.entries());
     if (contentType?.startsWith('multipart/form-data')) {
       console.log('핸들러 로그 : 📤 FormData 요청 처리');
       const formData = await request.formData();
       const alt = formData.get('alt');
       const script = formData.get('script');
+      const voiceModel = formData.get('voiceModel');
+      const transitionName = formData.get('transitionName');
       console.log('FormData:', formData.get('script'));
       return HttpResponse.json({
         imageUrl: 'https://i.imgur.com/P2ruiUz.jpeg',
         alt: alt || '고양이 사진',
-        script: script || '고양이를 키울 때 알고 있어야 할 주의사항에 대해 알아보겠습니다.'
+        script: script || '고양이를 키울 때 알고 있어야 할 주의사항에 대해 알아보겠습니다.',
+        voiceModel: voiceModel || '보이스 모델',
+        transitionName: transitionName || '전환 효과',
       });
 
     } else {
       console.log('핸들러 로그 : 📤 JSON 요청 처리');
-      const { prompt } = await request.json() as { prompt: string };
-      console.log('Prompt:', prompt);
-
-      const url = new URL(request.url);
-      const type = url.searchParams.get('type');
-      console.log('Type:', type);
-
-      // type에 따른 응답 분기
-      if (type === 'image') {
-        console.log('🖼️ 이미지만 생성');
-        return HttpResponse.json({
+      const bodyData = await request.json() as {
+        alt?: string;
+        script?: string;
+        voiceModel?: string;
+        transitionName?: string;
+      };
+      const { alt, script, voiceModel, transitionName } = bodyData;
+      
+      console.log('🔄 요청 바디 : ', bodyData);
+      return new HttpResponse(
+        JSON.stringify({
+          id: Math.floor(Math.random() * 1000) + 1,
           imageUrl: 'https://i.imgur.com/P2ruiUz.jpeg',
-          alt: `'${prompt}' 내용을 기반으로 AI가 생성한 이미지`,
-          script: null
-        });
-      } else if (type === 'script') {
-        console.log('📝 스크립트만 생성');
-        return HttpResponse.json({
-          imageUrl: null,
-          alt: null,
-          script: 'AI를 통해 생성된 텍스트 내용'
-        });
-      } else {
-        console.log('🔄 이미지 + 스크립트 생성');
-        return HttpResponse.json({
-          imageUrl: 'https://i.imgur.com/P2ruiUz.jpeg',
-          alt: `'${prompt}' 내용을 기반으로 AI가 생성한 이미지`,
-          script: 'AI를 통해 생성된 텍스트 내용'
-        });
-      }
+          alt: alt || '대체 텍스트',
+          script: `'${script}' 내용을 기반으로 AI가 생성한 이미지`,
+          voiceModel: voiceModel || '보이스 모델',
+          transitionName: transitionName || '전환 효과',
+        }),
+        {
+          status: 201,
+          headers: {
+            'Content-Type': 'application/json',
+            'Set-Cookie': `Authorization=${headers.authorization}; Path=/; HttpOnly; SameSite=Lax`
+          }
+        }
+      );
+
     }
+  }),
+
+  // 새로 변경된 엔드포인트
+  http.post(`${API_URL}/projects/:projectId/sections/:sectionId/ai`, async ({ request }) => {
+    console.log('🔵 MSW Intercepted - POST /projects/:projectId/sections/:sectionId/ai');
+    console.log('Request URL:', request.url);
+    //console.log('Request Headers:', Object.fromEntries(request.headers.entries()));
+
+    console.log('핸들러 로그 : 📤 AI 요청');
+    const bodyData = await request.json() as {
+        prompt?: string;
+      };
+      const { prompt } = bodyData;
+      
+      console.log('🔄 요청 바디 : ', bodyData);
+      return new HttpResponse(
+        JSON.stringify({
+          imageUrl: 'https://i.imgur.com/P2ruiUz.jpeg',
+          alt: '대체 텍스트',
+          script: `'${prompt}' 내용을 기반으로 AI가 생성한 이미지`,
+        }),
+        {
+          status: 201,
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }
+      );
   }),
 
   // 대시보드 프로젝트 목록 조회 API
   http.get(`${API_URL}/dashboard`, async () => {
     console.log("🔵 MSW Intercepted - GET /dashboard");
     return HttpResponse.json(mockDashboardData);
+  }),
+
+  // 섹션 업데이트 PATCH 핸들러
+  http.patch(`${API_URL}/projects/:projectId/sections/:sectionId`, async ({ request }) => {
+    console.log('🔵 MSW Intercepted - PATCH /projects/:projectId/sections/:sectionId');
+    console.log('Request URL:', request.url);
+    
+    const contentType = request.headers.get('Content-Type');
+    console.log('Content-Type:', contentType);
+
+    if (contentType?.startsWith('multipart/form-data')) {
+      console.log('핸들러 로그 : 📤 FormData 요청 처리');
+      const formData = await request.formData();
+      const alt = formData.get('alt');
+      const script = formData.get('script');
+      const voiceModel = formData.get('voiceModel');
+      const transitionName = formData.get('transitionName');
+      
+      console.log('FormData:', {
+        alt,
+        script,
+        voiceModel,
+        transitionName
+      });
+
+      // 204 No Content 응답 반환
+      return new HttpResponse(null, {
+        status: 204,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+    } 
+    else if (contentType?.includes('application/json')) {
+      console.log('핸들러 로그 : 📤 JSON 요청 처리');
+      const body = await request.json() as {
+        imageUrl?: string;
+        alt?: string;
+        script?: string;
+        voiceModel?: string;
+        transitionName?: string;
+      };
+      
+      console.log('🔄 JSON 요청 바디:', body);
+      
+      // 204 No Content 응답 반환
+      return new HttpResponse(null, {
+        status: 204,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+    }
+    
+    return new HttpResponse(
+      JSON.stringify({ error: '지원하지 않는 Content-Type입니다.' }),
+      { status: 400 }
+    );
   }),
 ];
