@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import ModalImageUploadSelfButton from "@/src/components/news-making/button/ModalImageUploadSelfButton";
 import ModalImageUploadAiButton from "@/src/components/news-making/button/ModalImageUploadAiButton";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import apiClient from "@/src/utils/apiClient";
 
@@ -16,14 +15,27 @@ interface ThumbnailImageModalProps {
 	// imageSrc: 업로드된 이미지의 base64 문자열 또는 AI 생성 이미지의 URL
 	onImageUpload: (imageSrc: string) => void;
 	// 버튼 타입이 변경될 때 호출되는 콜백 함수
-	// type: 'self' | 'ai' - 'self': 직접 업로드, 'ai': AI 생성
+	// type: 'upload' | 'ai' - 'upload': 직접 업로드, 'ai': AI 생성
 	onButtonTypeChange: (type: 'self' | 'ai') => void;
 }
 
-export default function ThumbnailImageModal({ isOpen, onClose, onImageUpload, onButtonTypeChange }: ThumbnailImageModalProps) {
+const ThumbnailImageModal: React.FC<ThumbnailImageModalProps> = ({
+	isOpen,
+	onClose,
+	onImageUpload,
+	onButtonTypeChange
+}) => {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const [isUploading, setIsUploading] = useState(false);
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const [isGenerating, setIsGenerating] = useState(false);
+	const [prompt, setPrompt] = useState("");
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const [lastClickedButton, setLastClickedButton] = useState<'self' | 'ai'>('self');
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [fileName, setFileName] = useState<string>("");
-	const [script, setScript] = useState<string>("");
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const searchParams = useSearchParams();
 	const projectId = searchParams.get("projectId");
@@ -69,7 +81,7 @@ export default function ThumbnailImageModal({ isOpen, onClose, onImageUpload, on
 			// 썸네일일의 경우 sectionId가 1로 고정되어 있음
 			const response = await apiClient.post(
 				`/api/projects/${projectId}/sections/1`,
-				{ prompt: script },
+				{ prompt: prompt },
 				{
 					headers: {
 						'Content-Type': 'application/json',
@@ -129,8 +141,8 @@ export default function ThumbnailImageModal({ isOpen, onClose, onImageUpload, on
 								{/* 스크립트 입력 영역 */}
 								<div className="w-full">
 					<textarea
-						value={script}
-						onChange={(e) => setScript(e.target.value)}
+						value={prompt}
+						onChange={(e) => setPrompt(e.target.value)}
 						placeholder="생성할 썸네일에 대한 스크립트를 입력해주세요"
 						className="w-full h-[100px] p-2 border rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-purple-500"
 					/>
@@ -143,3 +155,5 @@ export default function ThumbnailImageModal({ isOpen, onClose, onImageUpload, on
 		</div>
 	);
 }
+
+export default ThumbnailImageModal;

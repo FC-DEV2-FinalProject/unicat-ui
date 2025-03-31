@@ -23,10 +23,6 @@ export default function MyPage(): JSX.Element {
       }
     });
 
-    eventSource.onerror = (error) => {
-      eventSource.close();
-    };
-
     return () => {
       eventSource.close();
     };

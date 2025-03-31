@@ -10,7 +10,7 @@ import apiClient from "@/src/utils/apiClient";
 interface ArtStyleNextButtonProps {
 	onClick?: () => void;
 }
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function ArtStyleNextButton({ onClick }: ArtStyleNextButtonProps) {
 	const { projects, currentProjectId, updateProjectStage } = useProjectStore();
 	const currentProject = projects.find(p => p.id === currentProjectId);
