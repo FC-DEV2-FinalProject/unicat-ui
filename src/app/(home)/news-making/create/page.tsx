@@ -2,20 +2,34 @@
 
 // Lucide 아이콘 라이브러리에서 아이콘을 가져옴
 import { PlusIcon, XIcon } from "lucide-react";
-import React from "react";
+import React, { useRef, useState } from "react";
 import { Button } from "@/src/components/news-making/button/CommonNewsMakingButton";
 import { Card, CardContent } from "@/src/components/news-making/card/CreateCard";
 import { Checkbox } from "@/src/components/news-making/CreateCheckbox";
 import ArtStyleCard from "@/src/components/news-making/art-style/ArtStyleCard";
-import ThumbnailCard from "@/src/components/news-making/card/ThumbnailCard";
 import VoiceDropdown from "@/src/components/news-making/VoiceDropdown";
 import Link from "next/link";
 import { useProjectStore } from "@/src/store/useNewsMakingStore";
 import { ART_STYLES } from "@/src/constants/artStyles";
+import { useRouter } from "next/navigation";
+import { SectionContent } from "@/src/components/news-making/section/SectionContent";
+
+interface ContentSection {
+	title: string;
+	buttonText: string;
+	hasCheckbox: boolean;
+	script: string;
+}
 
 export default function Element() {
-	const { projects, currentProjectId } = useProjectStore();
+	const router = useRouter();
+	const { projects, currentProjectId, updateThumbnailImage } = useProjectStore();
 	const currentProject = projects.find(p => p.id === currentProjectId);
+	const thumbnailRef = useRef<{ captureCard: (callback: (dataUrl: string) => void) => void }>(null);
+	const [contentSections, setContentSections] = useState<ContentSection[]>([
+		{ title: "컷 1", buttonText: "LLM 수정 버튼", hasCheckbox: true, script: "" }
+	]);
+	
 	let selectedStyle = ART_STYLES[0]; // 기본값으로 첫 번째 스타일 사용
 	
 	if (currentProject?.selectedArtStyleId) {
@@ -25,17 +39,44 @@ export default function Element() {
 		}
 	}
 
-	const contentSections = [
-		{ title: "썸네일", buttonText: "LLM 수정 버튼", hasCheckbox: true },
-		{ title: "컷 1", buttonText: "LLM 수정 버튼", hasCheckbox: true },
-	];
+	const handleNextClick = () => {
+		if (thumbnailRef.current && currentProject) {
+			thumbnailRef.current.captureCard((dataUrl) => {
+				updateThumbnailImage(dataUrl);
+				router.push('/loading');
+			});
+		} else {
+			router.push('/loading');
+		}
+	};
+
+	const handleAddContent = () => {
+		if (contentSections.length < 5) {
+			const nextCutNumber = contentSections.length + 1;
+			setContentSections(prev => [
+				...prev,
+				{ 
+					title: `컷 ${nextCutNumber}`, 
+					buttonText: "LLM 수정 버튼", 
+					hasCheckbox: true,
+					script: ""
+				}
+			]);
+		}
+	};
+
+	const handleScriptChange = (index: number, value: string) => {
+		setContentSections(prev => prev.map((section, i) => 
+			i === index ? { ...section, script: value } : section
+		));
+	};
 
 	return (
 		<div className="mt-[105px] bg-purple-6 flex flex-row justify-center w-full border-b-[30px] border-white">
 			<div className="bg-purple-6 w-full max-w-[1920px] p-12 pl-6 pt-6 pr-6 relative">
 				<div className="grid grid-cols-1 md:grid-cols-4 gap-6">
 					{/* 왼쪽 컬럼: 비디오 스타일 & 썸네일 */}
-					<div className="md:col-span-1 space-y-6 overflow-hidden">
+					<div className="md:col-span-1 space-y-6 overflow-hidden sticky top-[105px] max-h-[calc(100vh-150px)]">
 						{/* 왼쪽 영역 상단: ArtStyleCard 적용 */}
 						<Card className="overflow-hidden border rounded-lg shadow-sm h-auto">
 							<CardContent className="bg-white flex flex-col justify-center items-center h-auto">
@@ -47,8 +88,8 @@ export default function Element() {
 										artStyleId={selectedStyle.id}
 										imageSrc={selectedStyle.imageSrc}
 										altText={selectedStyle.alt}
-										isSelected={currentProject?.selectedArtStyleId === selectedStyle.id}
-										className="mx-auto"
+										isSelected={false}
+										className="mx-auto border-[10px] border-purple-500 shadow-lg"
 										width={200}
 										height={224}
 										applyBorderBox={true}
@@ -59,34 +100,29 @@ export default function Element() {
 						<div className="md:col-span-1 space-y-6 overflow-hidden">
 						</div>
 						{/* 왼쪽 영역 하단: Thumbnail Card 적용 */}
-						<Card className="overflow-hidden border rounded-lg shadow-sm h-auto">
-							<CardContent className="flex flex-col justify-center items-center h-auto">
+						<Card className="w-[268px] h-[480px] overflow-hidden border rounded-lg shadow-sm h-auto">
+							<CardContent className="p-3 flex flex-col justify-center items-center h-auto">
 								{/* 카드 제목 */}
 								<h3 className="text-3xl font-bold font-bold-32 mb-3 p-3 mt-3">
 									{"영상 썸네일"}
 								</h3>
 
 								{/* 썸네일 카드 컨테이너 */}
-								<div className="w-full h-auto bg-gray-5 rounded-lg">
-									<div className="flex items-center justify-center">
-										{currentProject?.thumbnail ? (
-											<ThumbnailCard
-												artStyleId={currentProject.selectedArtStyleId || 1}
-												thumbnailId={1}
-												title={currentProject.thumbnail.title || ""}
-												imageSrc={currentProject.thumbnail.imageSrc || ""}
-												altText="썸네일 이미지"
-												textAlign={currentProject.thumbnail.textAlign || "left"}
-												fontColor={currentProject.thumbnail.fontColor || "#000000"}
-												fontSize={currentProject.thumbnail.fontSize || 20}
-												fontFamily={(currentProject.thumbnail.fontFamily as "Arial" | "Times New Roman" | "Courier New" | "Verdana") || "Arial"}
+								<div className="w-auto h-auto bg-gray-5 rounded-lg ">
+									{currentProject?.thumbnail?.imageSrc ? (
+										<div className="flex justify-center">
+											{/* 캡처한 이미지를 사용 전체 배경까지 캡처 */}
+											<img 
+												src={currentProject.thumbnail.imageSrc}
+												alt="썸네일 이미지"
+												className="w-full h-auto rounded-lg"
 											/>
-										) : (
-											<div className="w-[268px] h-[480px] flex items-center justify-center text-gray-500 bg-gray-5 rounded-[8px]">
-												이미지가 없습니다
-											</div>
-										)}
-									</div>
+										</div>
+									) : (
+										<div className="w-[268px] h-[480px] mx-auto flex items-center justify-center text-gray-500">
+											이미지가 없습니다
+										</div>
+									)}
 								</div>
 							</CardContent>
 						</Card>
@@ -113,21 +149,12 @@ export default function Element() {
 											</div>
 
 											{/* 카드 내용 이미지 및 스크립트 영역 */}
-											<div className="flex w-full max-w-[773px] h-[300px] border rounded-lg shadow-sm overflow-hidden">
-												<div className="w-1/3 bg-gray-200 flex items-center justify-center">
-													<span className="text-gray-500">이미지 삽입</span>
-												</div>
-												<div className="w-2/3 bg-white p-4 flex flex-col justify-between">
-												<textarea
-													className="w-full h-full p-2 resize-none focus:outline-none"
-													placeholder="텍스트를 입력하세요..."
-												/>
-												{/* 카드 컨텐츠 별 버튼 텍스트 LLM 수정버튼 */}
-												<Button variant="outline" size="sm" className="w-[120px] h-[40px]">
-													{section.buttonText}
-												</Button>
-												</div>
-											</div>
+											<SectionContent
+												index={index}
+												title={section.title}
+												script={section.script}
+												onScriptChange={handleScriptChange}
+											/>
 										</div>
 									</div>
 								</CardContent>
@@ -137,10 +164,17 @@ export default function Element() {
 						{/* 하단 컨트롤 버튼 */}
 						<div className="flex justify-between mt-6">
 							<VoiceDropdown/>
-							<Button variant="outline" size="sm" className="ml-2 p-0 w-full flex items-center gap-1">
-								<PlusIcon className="h-4 w-4" />
-								<span>콘텐츠 추가</span>
-							</Button>
+							{contentSections.length < 5 && (
+								<Button 
+									variant="outline" 
+									size="sm" 
+									className="ml-2 p-0 w-full flex items-center gap-1"
+									onClick={handleAddContent}
+								>
+									<PlusIcon className="h-4 w-4" />
+									<span>콘텐츠 추가</span>
+								</Button>
+							)}
 						</div>
 						<div className="w-full max-w-[1200px] flex justify-end gap-6">
 							<Link href="/news-making/thumbnail">
@@ -149,11 +183,9 @@ export default function Element() {
 								</Button>
 							</Link>
 
-							<Link href="/loading">
-								<Button variant="next" className="w-[200px] h-[60px]">
-									다음으로
-								</Button>
-							</Link>
+							<Button variant="next" className="w-[200px] h-[60px]" onClick={handleNextClick}>
+								다음으로
+							</Button>
 						</div>
 					</div>
 				</div>

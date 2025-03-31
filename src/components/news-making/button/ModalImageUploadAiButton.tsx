@@ -1,13 +1,14 @@
-import { Button } from "@/src/components/common/Button";
+interface ModalImageUploadAiButtonProps {
+	onClick: () => void;
+}
 
-export default function ModalImageUploadAiButton() {
-
+export default function ModalImageUploadAiButton({ onClick }: ModalImageUploadAiButtonProps) {
 	return (
-		<Button
-			className="w-[268px] h-[80px] rounded-[15px] text-white font-bold text-[24px]
-                        bg-purple-1 transition-colors "
+		<button 
+			onClick={onClick}
+			className="w-full py-2 px-4 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
 		>
-			ai로 생성
-		</Button>
+			AI로 생성하기
+		</button>
 	);
 }
