@@ -3,40 +3,25 @@ import { handleApiError } from '@/src/utils/apiErrorUtil';
 import { NextRequest } from 'next/server';
 import apiClient from '@/src/utils/apiClient';
 
-type SectionType = 'image' | 'script' | null;
-
-const CONTENT_TYPE = {
-  MULTIPART: 'multipart/form-data',
-  JSON: 'application/json'
-} as const;
-
 export async function POST(
   req: NextRequest,
   context: { params: Promise<{ projectId: string }> }
 ) {
   try {
     const { projectId } = await context.params;
-    console.log('🎯 POST /api/projects/${projectId}/sections');
+    console.log('🎯 POST 섹션 생성 /api/projects/${projectId}/sections');
 
-    const contentType = req.headers.get('content-type') || '';
-    const body = contentType.includes(CONTENT_TYPE.MULTIPART) 
-      ? await req.formData()
-      : await req.json();
-
-    const { sectionId, type, ...rest } = body;
-
-    const response = await apiClient(`/projects/${projectId}/sections/${sectionId}`, {
-      method: 'POST',
+    // 섹션 ID 생성 요청
+    const response = await apiClient.post(`/projects/${projectId}/sections`, {}, {
       headers: {
         Cookie: req.headers.get('cookie'),
-        'Content-Type': contentType,
       },
-      data: contentType.includes(CONTENT_TYPE.MULTIPART)
-        ? body
-        : { type: type as SectionType, ...rest },
     });
+    
+    console.log('Section Creation Response:', response.data);
     return NextResponse.json(response.data);
   } catch (error) {
+    console.error('❌ Section Creation Error:', error);
     return handleApiError(error);
   }
 } 

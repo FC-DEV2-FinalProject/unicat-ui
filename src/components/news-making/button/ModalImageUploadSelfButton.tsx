@@ -1,8 +1,14 @@
-export default function ModalImageUploadSelfButton() {
+interface ModalImageUploadSelfButtonProps {
+	onClick?: () => void;
+}
+
+export default function ModalImageUploadSelfButton({ onClick }: ModalImageUploadSelfButtonProps) {
 	return (
-		<div className="w-[268px] h-[80px] rounded-[15px] text-white font-bold text-[24px]
-						bg-purple-1 flex items-center justify-center">
+		<button
+			onClick={onClick}
+			className="w-full py-3 px-4 bg-purple-1 text-white rounded-lg hover:bg-purple-2 transition-colors"
+		>
 			직접 업로드
-		</div>
+		</button>
 	);
 }

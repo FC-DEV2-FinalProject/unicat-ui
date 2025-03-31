@@ -51,6 +51,7 @@ export interface ThumbnailCardProps {
   isSelected?: boolean;
   /** Optional click handler for the thumbnail. */
   onClick?: () => void;
+  className?: string;
 }
 
 
