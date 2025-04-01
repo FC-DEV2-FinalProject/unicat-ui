@@ -21,14 +21,14 @@ interface ProjectCard {
 	textAlign: "left" | "center" | "right";
 	fontColor: string;
 	fontSize: number;
-	fontFamily: "Arial" | "Times New Roman" | "Courier New" | "Verdana";
+	fontFamily: string;
 }
 
 const initialProjectCards: ProjectCard[] = [
-	{ id: 1, artStyleId: 1, thumbnailId: 101, imageSrc: "", altText: "스타일 1", textAlign: "left", fontColor: "#ff5733", fontSize: 20, fontFamily: "Arial" },
-	{ id: 2, artStyleId: 2, thumbnailId: 102, imageSrc: "", altText: "스타일 2", textAlign: "center", fontColor: "#33ff57", fontSize: 24, fontFamily: "Times New Roman" },
-	{ id: 3, artStyleId: 3, thumbnailId: 103, imageSrc: "", altText: "스타일 3", textAlign: "right", fontColor: "#3357ff", fontSize: 18, fontFamily: "Courier New" },
-	{ id: 4, artStyleId: 4, thumbnailId: 104, imageSrc: "", altText: "스타일 4", textAlign: "center", fontColor: "#ff33a1", fontSize: 22, fontFamily: "Verdana" }
+	{ id: 1, artStyleId: 1, thumbnailId: 101, imageSrc: "", altText: "스타일 1", textAlign: "left", fontColor: "#ff5733", fontSize: 20, fontFamily: "Dongle" },
+	{ id: 2, artStyleId: 2, thumbnailId: 102, imageSrc: "", altText: "스타일 2", textAlign: "center", fontColor: "#33ff57", fontSize: 24, fontFamily: "Gaegu" },
+	{ id: 3, artStyleId: 3, thumbnailId: 103, imageSrc: "", altText: "스타일 3", textAlign: "right", fontColor: "#3357ff", fontSize: 18, fontFamily: "Nanum Gothic" },
+	{ id: 4, artStyleId: 4, thumbnailId: 104, imageSrc: "", altText: "스타일 4", textAlign: "center", fontColor: "#ff33a1", fontSize: 22, fontFamily: "Pretendard" }
 ];
 
 // ✅ 가장 작은 폰트 크기 기준으로 `maxLines` 계산
@@ -55,6 +55,7 @@ function ThumbnailContent() {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
 	const [lastClickedButton, setLastClickedButton] = useState<'self' | 'ai' | null>(null);
+	const [fontsLoaded, setFontsLoaded] = useState(false);
 	const { updateSelectedThumbnail, updateProjectStage } = useProjectStore();
 	const router = useRouter();
 	const searchParams = useSearchParams();
@@ -71,6 +72,32 @@ function ThumbnailContent() {
 			}
 		});
 	}, [projectCards]);
+
+	// Google Fonts 스타일시트 로드
+	useEffect(() => {
+		const loadFonts = async () => {
+			// 이미 로드된 경우 스킵
+			if (document.querySelector('link[href*="fonts.googleapis.com"]')) {
+				setFontsLoaded(true);
+				return;
+			}
+
+			const link = document.createElement('link');
+			link.href = 'https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@400;500;700&family=Nanum+Gothic:wght@400;700;800&family=Nanum+Myeongjo:wght@400;700;800&family=Nanum+Pen+Script&family=Nanum+Brush+Script&family=Gaegu&family=Dongle&family=Jua&family=Poor+Story&family=Gowun+Dodum&family=Gowun+Batang&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Serif+KR:wght@400;500;600&family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600;700&family=Lato:wght@400;700&family=Montserrat:wght@400;500;600&family=Poppins:wght@400;500;600&family=Source+Sans+Pro:wght@400;600&family=Ubuntu:wght@400;500&family=Raleway:wght@400;500;600&family=Nunito:wght@400;600;700&display=swap';
+			link.rel = 'stylesheet';
+			
+			// 폰트 로드 완료 감지
+			const loadPromise = new Promise((resolve) => {
+				link.onload = resolve;
+			});
+
+			document.head.appendChild(link);
+			await loadPromise;
+			setFontsLoaded(true);
+		};
+
+		loadFonts();
+	}, []);
 
 	// ProjectCart에 맞게 key, value 선언
 	const updateCard = <K extends keyof ProjectCard>(id: number, key: K, value: ProjectCard[K]) => {
@@ -197,6 +224,17 @@ function ThumbnailContent() {
 		}
 	};
 
+	if (!fontsLoaded) {
+		return (
+			<div className="fixed inset-0 flex items-center justify-center bg-white">
+				<div className="flex flex-col items-center gap-4">
+					<div className="w-12 h-12 border-4 border-purple-1 border-t-transparent rounded-full animate-spin"></div>
+					<p className="text-gray-600">페이지를 불러오는 중...</p>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<div className="mt-[105px] flex flex-col items-center min-h-screen gap-[40px] bg-purple-6">
 			{/* 헤더 */}
@@ -237,6 +275,8 @@ function ThumbnailContent() {
 							fontColor={card.fontColor}
 							textAlign={card.textAlign}
 							onUpdate={(key, value) => updateCard(card.id, key as keyof ProjectCard, value)}
+							areaIndex={card.id - 1}
+							fontsLoaded={fontsLoaded}
 						/>
 					</div>
 				))}
