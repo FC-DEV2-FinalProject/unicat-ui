@@ -1,23 +1,15 @@
+// Logout.tsx 수정 버전
 "use client";
 
-import axios from "axios";
+import apiClient from "@/src/utils/apiClient"; // axios 대신 apiClient 임포트
 
-interface LogoutButtonProps {
-  token: string | number;
-}
-
-export default function LogoutButton({ token }: LogoutButtonProps) {
+export default function LogoutButton() {
   const handleLogout = async () => {
     const confirmed = window.confirm("정말 로그아웃 하시겠습니까?");
     if (!confirmed) return;
 
     try {
-      await axios.delete("https://api.unicat.day/auth/sign-out", {
-        headers: {
-          accept: "*/*",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await apiClient.delete("https://api.unicat.day/auth/sign-out", {}); // 헤더 생략
       alert("로그아웃이 완료되었습니다.");
       window.location.href = "/login";
     } catch (error) {
