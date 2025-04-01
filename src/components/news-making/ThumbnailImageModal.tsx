@@ -74,6 +74,12 @@ const ThumbnailImageModal: React.FC<ThumbnailImageModalProps> = ({
 
 	const handleAiGenerate = async () => {
 		try {
+			// 텍스트 길이 체크
+			if (prompt.length < 10) {
+				alert("스크립트를 10자 이상 입력해주세요.");
+				return;
+			}
+
 			// Case 3: AI 생성 버튼 클릭 시
 			onButtonTypeChange('ai');
 
