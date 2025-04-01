@@ -59,7 +59,7 @@ export const useArtStyleService = () => {
         } else {
             router.push('/');
         }
-    }, [projectId, projects, router]);
+    }, [projectId, projects, router, setCurrentProject]);
 
     const handleNext = (nextPath: string) => {
         const currentProject = projects.find(p => p.id === currentProjectId);

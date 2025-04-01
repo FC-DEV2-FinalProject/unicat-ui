@@ -140,9 +140,10 @@ function ThumbnailContent() {
 				try {
 					console.log('handleCapture 시작 🎯 lastClickedButton:', lastClickedButton);
 					// AI 생성 이미지는 항상 JSON으로 전송
+					// api가 변경되어서 양쪽 모두 sections/1에 대해 patch 요청
 					if (lastClickedButton === 'ai') {
 						console.log('AI 생성 이미지 처리 시작 🎯');
-						await apiClient.post(`/api/projects/${projectId}/sections/1`, {
+						await apiClient.patch(`/api/projects/${projectId}/sections/1`, {
 							imageUrl: dataUrl,
 							alt: title,
 							script: ''
@@ -160,8 +161,8 @@ function ThumbnailContent() {
 						formData.append('multipartFile', imageBlob, 'thumbnail.png');
 						formData.append('alt', title);
 						formData.append('script', '');
-
-						await apiClient.post(`/api/projects/${projectId}/sections/1`, formData, {
+						// 썸네일은 무조건 sectionId 1로 고정
+						await apiClient.patch(`/api/projects/${projectId}/sections/1`, formData, {
 							headers: {
 								'Content-Type': 'multipart/form-data',
 							},
