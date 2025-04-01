@@ -1,6 +1,5 @@
-import apiClient from '@/src/utils/apiClient';
 
-
+//todo 추후 api 클라이언트로 재 변경
 // interface CreateSectionResponse {
 //   id: number;
 // }
@@ -57,13 +56,53 @@ export const updateSection = async (
       body: body instanceof FormData ? body : JSON.stringify(body),
     });
 
-    if (!response.ok) {
-      throw new Error('Failed to update section');
-    }
-
     return response.json();
   } catch (error) {
     console.error('Error updating section:', error);
+    throw error;
+  }
+};
+
+export const createProject = async (projectId: string): Promise<void> => {
+  try {
+    const response = await fetch(`/api/projects/${projectId}?type=artifact`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to create project');
+    }
+
+    if (response.status !== 202) {
+      throw new Error('Unexpected response status');
+    }
+  } catch (error) {
+    console.error('Error creating project:', error);
+    throw error;
+  }
+};
+
+export const createProjectArtifact = async (projectId: string): Promise<void> => {
+  try {
+    const response = await fetch(`/api/projects/${projectId}?type=artifact`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to create project artifact');
+    }
+
+    if (response.status !== 202) {
+      throw new Error('Unexpected response status');
+    }
+  } catch (error) {
+    console.error('Error creating project artifact:', error);
     throw error;
   }
 }; 

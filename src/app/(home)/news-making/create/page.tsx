@@ -13,6 +13,7 @@ import { useProjectStore } from "@/src/store/useNewsMakingStore";
 import { ART_STYLES } from "@/src/constants/artStyles";
 import { useRouter } from "next/navigation";
 import { SectionContent } from "@/src/components/news-making/section/SectionContent";
+import { createProjectArtifact } from "@/src/components/news-making/api/CreateSectionAPI";
 
 interface ContentSection {
 	title: string;
@@ -40,14 +41,26 @@ export default function Element() {
 		}
 	}
 
-	const handleNextClick = () => {
-		if (thumbnailRef.current && currentProject) {
-			thumbnailRef.current.captureCard((dataUrl) => {
-				updateThumbnailImage(dataUrl);
+	const handleNextClick = async () => {
+		try {
+			if (!currentProjectId) {
+				console.error('No project ID available');
+				return;
+			}
+
+			if (thumbnailRef.current && currentProject) {
+				thumbnailRef.current.captureCard((dataUrl) => {
+					updateThumbnailImage(dataUrl);
+					createProjectArtifact(currentProjectId.toString()).then(() => {
+						router.push('/loading');
+					});
+				});
+			} else {
+				await createProjectArtifact(currentProjectId.toString());
 				router.push('/loading');
-			});
-		} else {
-			router.push('/loading');
+			}
+		} catch (error) {
+			console.error('Failed to create project artifact:', error);
 		}
 	};
 

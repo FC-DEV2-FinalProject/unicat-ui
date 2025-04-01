@@ -264,4 +264,16 @@ export const handlers = [
       { status: 400 }
     );
   }),
+
+  // 프로젝트 아티팩트 생성 API
+  http.post(`${API_URL}/projects/:projectId`, async ({ params, request }) => {
+    const { projectId } = params;
+    const url = new URL(request.url);
+    const type = url.searchParams.get('type');
+
+    console.log('🔵 MSW Intercepted - POST /projects/:projectId');
+    console.log('projectId:', projectId);
+    console.log('type:', type);
+    return new HttpResponse(null, { status: 202 });
+  }),
 ];
