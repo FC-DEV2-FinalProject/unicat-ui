@@ -14,8 +14,8 @@ export const ART_STYLES: ArtStyle[] = [
     },
     { 
         id: 3, 
-        imageSrc: "/images/news-making/news-style-3.png", 
-        alt: "스타일 3",
+        imageSrc: "/images/news-making/news-style-aivatar.png", 
+        alt: "AIVATAR 스타일",
     },
     { 
         id: 4, 
