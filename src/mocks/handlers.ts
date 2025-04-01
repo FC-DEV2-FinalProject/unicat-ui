@@ -181,7 +181,7 @@ export const handlers = [
           id: sectionId,
           imageUrl: imageUrl,
           alt: alt || '대체 텍스트',
-          script: responseScript,
+          script: responseScript || script,
           voiceModel: voiceModel || '보이스 모델',
           transitionName: transitionName || '전환 효과',
         }),

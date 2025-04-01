@@ -26,13 +26,24 @@ const ThumbnailCard = forwardRef<
 	const imageRef = useRef<HTMLImageElement>(null);
 	const captureCanvasRef = useRef<HTMLCanvasElement>(null);
 	const [capturedImage, setCapturedImage] = useState<string | null>(null);
+	const [isImageLoading, setIsImageLoading] = useState(false);
 
 	// 텍스트 상단 여백 (top-2 = 8px)
 	const TEXT_TOP_MARGIN = 8; // tailwind의 top-2에 해당하는 픽셀값
 
+	const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+		const img = e.target as HTMLImageElement;
+		// 이미지 로딩 완료 후 사이즈 조정
+		img.style.width = '268px';
+		img.style.height = '224px';
+		img.style.objectFit = 'cover';
+		img.style.objectPosition = 'center';
+	};
+
 	// AI 생성 이미지를 base64로 변환하는 함수
 	const convertUrlToBase64 = async (url: string) => {
 		try {
+			setIsImageLoading(true);
 			const img = new Image();
 			img.crossOrigin = 'anonymous';
 			
@@ -47,13 +58,21 @@ const ThumbnailCard = forwardRef<
 						return;
 					}
 					ctx.drawImage(img, 0, 0, 268, 224);
-					resolve(canvas.toDataURL('image/png'));
+					const resizedImageUrl = canvas.toDataURL('image/png');
+					setCapturedImage(resizedImageUrl);
+					setIsImageLoading(false);
+					resolve(resizedImageUrl);
 				};
-				img.onerror = reject;
+				img.onerror = (error) => {
+					console.error('이미지 변환 실패:', error);
+					setIsImageLoading(false);
+					reject(error);
+				};
 				img.src = url;
 			});
 		} catch (error) {
 			console.error('이미지 변환 실패:', error);
+			setIsImageLoading(false);
 			return null;
 		}
 	};
@@ -61,9 +80,7 @@ const ThumbnailCard = forwardRef<
 	// AI 생성 이미지 URL이 변경될 때 base64로 변환
 	useEffect(() => {
 		if (imageSrc) {
-			convertUrlToBase64(imageSrc).then(base64 => {
-				setCapturedImage(base64);
-			});
+			convertUrlToBase64(imageSrc);
 		}
 	}, [imageSrc]);
 
@@ -204,14 +221,20 @@ const ThumbnailCard = forwardRef<
 				className="absolute inset-0 overflow-hidden rounded-[8px] flex flex-col items-center justify-center bg-[#1a1a1a]"
 				onClick={onClick}
 			>
-				{/* ✅ 이미지 */}
+				{/* 이미지 */}
 				{imageSrc ? (
 					<div className={`absolute top-[128px] left-0 right-0 mx-auto w-[268px] h-[224px] overflow-hidden ${className || ''}`}>
+						{isImageLoading && (
+							<div className="absolute inset-0 flex items-center justify-center bg-[#1a1a1a]">
+								<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+							</div>
+						)}
 						<img
 							ref={imageRef}
 							src={capturedImage || imageSrc}
 							alt={altText}
-							className="w-[268px] h-[224px] object-cover object-center"
+							className={`w-[268px] h-[224px] object-cover object-center ${isImageLoading ? 'opacity-0' : 'opacity-100'}`}
+							onLoad={handleImageLoad}
 						/>
 						<AnimatePresence>
 							{isSelected && (
@@ -243,8 +266,8 @@ const ThumbnailCard = forwardRef<
 					<div className="absolute top-[128px] left-0 right-0 mx-auto w-[268px] h-[224px] bg-[rgb(189,188,189)]" />
 				)}
 
-				{/* ✅ 캔버스를 제목 텍스트로 사용 */}
-				<canvas 
+				{/* 캔버스를 제목 텍스트로 사용 */}
+				<canvas
 					ref={canvasRef} 
 					className="absolute left-0 w-full h-[118px] pointer-events-none"
 					style={{ top: `${TEXT_TOP_MARGIN}px` }}
