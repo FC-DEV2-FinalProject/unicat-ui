@@ -19,7 +19,7 @@ const dummyAnalyticsData = {
   datasets: [
     {
       label: "조회수",
-      data: [120, 190, 300, 500, 220, 330, 410, 290, 370, 450, 390, 480],
+      data: [120, 190, 300, 482, 220, 330, 410, 290, 370, 450, 390, 480],
       backgroundColor: "rgba(75, 192, 192, 0.5)",
     },
     {
@@ -37,15 +37,14 @@ const dummyAnalyticsData = {
 
 export default function YoutubeAnalytics() {
   return (
-    <div className="flex flex-col items-center min-h-screen mt-[205px] gap-[40px]">
+    <div className="flex flex-col items-center min-h-screen mt-10 gap-[40px]">
       <header className="flex w-full items-center justify-between">
         <h1 className="text-gray-5 font-bold-24 text-[24px] font-bold leading-[28px]">
           YouTube 통계
         </h1>
       </header>
 
-      {/* 그래프 */}
-      <div className="w-full max-w-[800px]">
+      <div className="w-[1000px] h-[400px]">
         <Bar
           data={dummyAnalyticsData}
           options={{ responsive: true, maintainAspectRatio: false }}

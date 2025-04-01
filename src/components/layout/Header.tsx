@@ -14,10 +14,9 @@ import Link from "next/link";
 interface HeaderProps {
   className?: string; // ✅ className을 props로 받을 수 있도록 추가
 }
-
 const navigationItems = [
-  { id: "dashboard", label: "대시보드", active: true },
-  { id: "statistics", label: "통계", active: false },
+  { id: "dashboard", label: "대시보드", href: "/" },
+  { id: "statistics", label: "통계", href: "/statistics" },
 ];
 
 const Header: React.FC<HeaderProps> = ({ className }) => {
@@ -27,16 +26,16 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
         <div className="container flex items-center justify-between h-full max-w-[1200px] mx-auto px-4">
           <div className="flex items-center gap-11">
             {/* Logo */}
-              <Link href="/">
-                <Image
-                  alt="AINEWS"
-                  src="/images/logo.png"
-                  width={127}
-                  height={24}
-                  priority
-                  className="cursor-pointer"
-                />
-              </Link>
+            <Link href="/">
+              <Image
+                alt="AINEWS"
+                src="/images/logo.png"
+                width={127}
+                height={24}
+                priority
+                className="cursor-pointer"
+              />
+            </Link>
 
             {/* Navigation */}
             <NavigationMenu>
@@ -46,7 +45,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
                     key={item.id}
                     className="relative">
                     <NavigationMenuLink
-                      href={`#${item.id}`}
+                      href={item.href}
                       className="text-gray-5 font-bold text-[24px]">
                       {item.label}
                     </NavigationMenuLink>
