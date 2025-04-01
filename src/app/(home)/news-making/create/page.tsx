@@ -13,12 +13,14 @@ import { useProjectStore } from "@/src/store/useNewsMakingStore";
 import { ART_STYLES } from "@/src/constants/artStyles";
 import { useRouter } from "next/navigation";
 import { SectionContent } from "@/src/components/news-making/section/SectionContent";
+import { createProjectArtifact } from "@/src/components/news-making/api/CreateSectionAPI";
 
 interface ContentSection {
 	title: string;
 	buttonText: string;
 	hasCheckbox: boolean;
 	script: string;
+	backendSectionId?: number;
 }
 
 export default function Element() {
@@ -39,14 +41,26 @@ export default function Element() {
 		}
 	}
 
-	const handleNextClick = () => {
-		if (thumbnailRef.current && currentProject) {
-			thumbnailRef.current.captureCard((dataUrl) => {
-				updateThumbnailImage(dataUrl);
+	const handleNextClick = async () => {
+		try {
+			if (!currentProjectId) {
+				console.error('No project ID available');
+				return;
+			}
+
+			if (thumbnailRef.current && currentProject) {
+				thumbnailRef.current.captureCard((dataUrl) => {
+					updateThumbnailImage(dataUrl);
+					createProjectArtifact(currentProjectId.toString()).then(() => {
+						router.push('/loading');
+					});
+				});
+			} else {
+				await createProjectArtifact(currentProjectId.toString());
 				router.push('/loading');
-			});
-		} else {
-			router.push('/loading');
+			}
+		} catch (error) {
+			console.error('Failed to create project artifact:', error);
 		}
 	};
 
@@ -68,6 +82,12 @@ export default function Element() {
 	const handleScriptChange = (index: number, value: string) => {
 		setContentSections(prev => prev.map((section, i) => 
 			i === index ? { ...section, script: value } : section
+		));
+	};
+
+	const handleSectionIdUpdate = (index: number, backendSectionId: number) => {
+		setContentSections(prev => prev.map((section, i) => 
+			i === index ? { ...section, backendSectionId: backendSectionId } : section
 		));
 	};
 
@@ -154,6 +174,7 @@ export default function Element() {
 												title={section.title}
 												script={section.script}
 												onScriptChange={handleScriptChange}
+												onSectionIdUpdate={handleSectionIdUpdate}
 											/>
 										</div>
 									</div>
