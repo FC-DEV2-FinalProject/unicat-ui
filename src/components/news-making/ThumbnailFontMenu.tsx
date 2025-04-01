@@ -6,19 +6,70 @@ interface ThumbnailFontMenuProps {
 	fontColor: string;
 	textAlign: "left" | "center" | "right";
 	onUpdate: (key: string, value: number | string) => void;
+	areaIndex: number; // 영역 인덱스 추가 (0-3)
+	fontsLoaded: boolean; // 폰트 로드 상태 prop 추가
 }
 
-const ThumbnailFontMenu: React.FC<ThumbnailFontMenuProps> = ({ fontSize, fontFamily, fontColor, textAlign, onUpdate }) => {
+// Google Fonts 목록 정의
+const GOOGLE_FONTS = [
+	{ name: "Dongle", label: "동글", category: "한글" },
+	{ name: "Gaegu", label: "개구쟁이", category: "한글" },
+	{ name: "Nanum Gothic", label: "나눔고딕", category: "한글" },
+	{ name: "Pretendard", label: "프리텐다드", category: "한글" },
+	{ name: "Roboto", label: "Roboto", category: "영문" },
+	{ name: "Open Sans", label: "Open Sans", category: "영문" },
+	{ name: "Lato", label: "Lato", category: "영문" },
+	{ name: "Montserrat", label: "Montserrat", category: "영문" },
+	{ name: "Poppins", label: "Poppins", category: "영문" },
+	{ name: "Source Sans Pro", label: "Source Sans Pro", category: "영문" },
+	{ name: "Ubuntu", label: "Ubuntu", category: "영문" },
+	{ name: "Raleway", label: "Raleway", category: "영문" },
+	{ name: "Nunito", label: "Nunito", category: "영문" },
+	{ name: "Noto Sans KR", label: "Noto Sans KR", category: "한글" },
+	{ name: "Nanum Myeongjo", label: "나눔명조", category: "한글" },
+	{ name: "Nanum Pen Script", label: "나눔펜", category: "한글" },
+	{ name: "Nanum Brush Script", label: "나눔브러시", category: "한글" },
+	{ name: "Jua", label: "주아", category: "한글" },
+	{ name: "Poor Story", label: "푸른이야기", category: "한글" },
+	{ name: "Gowun Dodum", label: "고운돋움", category: "한글" },
+	{ name: "Gowun Batang", label: "고운바탕", category: "한글" },
+	{ name: "IBM Plex Sans KR", label: "IBM Plex Sans KR", category: "한글" },
+	{ name: "IBM Plex Serif KR", label: "IBM Plex Serif KR", category: "한글" },
+	{ name: "Noto Serif KR", label: "Noto Serif KR", category: "한글" },
+];
+
+const DEFAULT_FONTS = ["Dongle", "Gaegu", "Nanum Gothic", "Pretendard"];
+
+const ThumbnailFontMenu: React.FC<ThumbnailFontMenuProps> = ({ 
+	fontSize, 
+	fontFamily, 
+	fontColor, 
+	textAlign, 
+	onUpdate, 
+	areaIndex,
+	fontsLoaded 
+}) => {
 	const [customFontSize, setCustomFontSize] = useState(fontSize);
 	const [isEditing, setIsEditing] = useState(false);
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 	const inputRef = useRef<HTMLInputElement>(null);
 
+	// 컴포넌트 마운트 시 기본 폰트 설정
+	useEffect(() => {
+		if (!fontFamily) {
+			const defaultFont = DEFAULT_FONTS[areaIndex] || "Dongle";
+			onUpdate("fontFamily", defaultFont);
+		}
+	}, [fontFamily, areaIndex, onUpdate]);
+
+	// 현재 선택된 폰트 또는 영역별 기본 폰트
+	const currentFont = fontFamily || DEFAULT_FONTS[areaIndex] || "Dongle";
+
 	const FONT_SIZES = [10, 11, 12, 13, 14, 15, 16, 20, 24, 28, 32, 36, 40, 48, 64, 96, 128];
 
 	// ✅ 입력 값이 숫자인지 확인 & 범위 제한 적용 (10 ~ 128)
 	const handleFontSizeChange = (value: string) => {
-		let newSize = Number(value);
+		const newSize = Number(value);
 		if (isNaN(newSize)) return;
 		setCustomFontSize(newSize);
 	};
@@ -107,6 +158,15 @@ const ThumbnailFontMenu: React.FC<ThumbnailFontMenuProps> = ({ fontSize, fontFam
 		</div>
 	);
 
+	// 폰트 카테고리별 그룹화
+	const groupedFonts = GOOGLE_FONTS.reduce((acc, font) => {
+		if (!acc[font.category]) {
+			acc[font.category] = [];
+		}
+		acc[font.category].push(font);
+		return acc;
+	}, {} as Record<string, typeof GOOGLE_FONTS>);
+
 	return (
 		<div className="flex flex-col gap-2 w-[250px] p-3 bg-gray-100 rounded-lg shadow">
 			{/* 🔹 폰트 크기 선택 (드롭다운 + 직접 입력) */}
@@ -153,15 +213,31 @@ const ThumbnailFontMenu: React.FC<ThumbnailFontMenuProps> = ({ fontSize, fontFam
 			{/* 🔹 폰트 종류 선택 */}
 			<label className="text-sm font-semibold">폰트</label>
 			<select
-				className="border p-1 rounded"
-				value={fontFamily}
+				className="border p-1 rounded w-full"
+				value={currentFont}
 				onChange={(e) => onUpdate("fontFamily", e.target.value)}
+				style={{ 
+					fontFamily: currentFont,
+					visibility: fontsLoaded ? 'visible' : 'hidden' // 폰트 로드 전까지 숨김
+				}}
 			>
-				<option value="Arial">Arial</option>
-				<option value="Times New Roman">Times New Roman</option>
-				<option value="Courier New">Courier New</option>
-				<option value="Verdana">Verdana</option>
+				{Object.entries(groupedFonts).map(([category, fonts]) => (
+					<optgroup key={category} label={category}>
+						{fonts.map((font) => (
+							<option 
+								key={font.name} 
+								value={font.name} 
+								style={{ fontFamily: font.name }}
+							>
+								{font.label}
+							</option>
+						))}
+					</optgroup>
+				))}
 			</select>
+			{!fontsLoaded && (
+				<div className="border p-1 rounded w-full h-[32px] bg-gray-100 animate-pulse" />
+			)}
 
 			{/* 🔹 색상 선택 */}
 			<label className="text-sm font-semibold">색상</label>

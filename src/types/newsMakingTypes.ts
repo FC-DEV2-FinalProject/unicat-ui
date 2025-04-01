@@ -46,7 +46,7 @@ export interface ThumbnailCardProps {
   /** Font size for the thumbnail title */
   fontSize: number;
   /** Font family for the thumbnail title */
-  fontFamily: "Arial" | "Times New Roman" | "Courier New" | "Verdana";
+  fontFamily: string;
   /** Indicates whether the thumbnail is selected. */
   isSelected?: boolean;
   /** Optional click handler for the thumbnail. */
@@ -95,7 +95,7 @@ export interface ThumbnailProjectCard {
     textAlign: "left" | "center" | "right";
     fontColor: string;
     fontSize: number;
-    fontFamily: "Arial" | "Times New Roman" | "Courier New" | "Verdana";
+    fontFamily: string;
 }
 
 // Project stage type
@@ -128,6 +128,6 @@ export interface Project {
     textAlign: "left" | "center" | "right";
     fontColor: string;
     fontSize: number;
-    fontFamily: "Arial" | "Times New Roman" | "Courier New" | "Verdana";
+    fontFamily: string;
   };
 }
