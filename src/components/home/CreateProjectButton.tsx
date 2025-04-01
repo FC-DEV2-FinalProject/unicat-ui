@@ -11,7 +11,7 @@ export const CreateProjectButton: React.FC = () => {
     <div className="relative">
       <Image
         src="/images/news-making-button.png"
-        alt="뉴스 제작하기 버튼"
+        alt="영상 제작하기 버튼"
         width={185}
         height={52}
         className="cursor-pointer"

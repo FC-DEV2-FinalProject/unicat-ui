@@ -38,11 +38,11 @@ export default function AiNews(): JSX.Element {
             <div className="absolute top-[50px] left-[32px] flex flex-col">
               {/* "뉴스에 대한 어떠한 의견"과 "뉴스만들기" 사이 간격 12px */}
               <div className="text-gray-5 font-bold-18 font-semibold mb-[12px]">
-                뉴스에 대한 어떠한 의견
+                AI 기술로 만드는 나만의 맞춤 영상
               </div>
               {/* "뉴스만들기"와 버튼 사이 간격 42px */}
               <div className="text-gray-5 font-bold text-[length:var(--bold-32-font-size)]  mb-[32px]">
-                뉴스만들기
+                영상만들기
               </div>
               {/* 프로젝트 생성 버튼 */}
               <CreateProjectButton />
