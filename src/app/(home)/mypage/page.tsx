@@ -1,49 +1,65 @@
 "use client";
 
 import React, { JSX, useEffect, useState } from "react";
-import Cookies from "js-cookie";
 import { Card, CardContent } from "@/src/components/common/Card";
 import TossPaymentButton from "@/src/components/toss/Payment";
 import LogoutButton from "@/src/components/auth/Logout";
+import EditProfileButton from "@/src/components/auth/EditProfile";
+import apiClient from "@/src/utils/apiClient";
 
 interface MemberData {
   name: string;
   phoneNumber: string;
 }
 
-const dummyToken =
-  "eyJraWQiOiJyc2EtcHJvZC1rZXktaWQiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzQzODQxMDM1LCJpYXQiOjE3NDMyMzYyMzUsInBsYW4iOiJCQVNJQyIsImVtYWlsIjoia216MDQxNDAxQGdtYWlsLmNvbSJ9.KwAsjfUofsMi-5MbsdqAohSAWC3tEHd521s9kc6xRGnSVHWQcGJnxzOvuVJQfc5974HTDGVt0saGewSSFxHbaefzh7FacZ5T3NVpk7SRDuwBFrPqnenp8QWW_rYyjq_FrjjYAFb-oZZeEdN3w02Jq51bq6OGVwBAK7PKxjD2S2XjXhvLZcUmd2eZbLteQ7LAPKtLe4Ir50xCLwTU-0fcWBx-2TuqbMevFXfPgtb8Y9aTqIieC_0YmyG6MAFTv4gW-OFoy6m8jJSBpuJ8gtSgos1P6yruYBisAfC4_r2wYwJVCnWCUDVCLs_GvtuhIlCGMvpyyFZOM-QHJ-LMGXCD3A";
-
 export default function MyPage(): JSX.Element {
   const [memberData, setMemberData] = useState<MemberData>({
     name: "정보없음",
     phoneNumber: "정보없음",
   });
-  const token = Cookies.get("Authorization") ? 0 : dummyToken;
 
   useEffect(() => {
-    fetch("https://api.unicat.day/members", {
-      method: "GET",
-      headers: {
-        Accept: "*/*",
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
+    apiClient
+      .get("https://api.unicat.day/members", {})
+      .then((response) => {
+        const data = response.data;
+        console.log(data);
         setMemberData({
-          name: data.name ? data.name : "정보없음",
-          phoneNumber: data.phoneNumber ? data.phoneNumber : "정보없음",
+          name: data.name || "정보없음",
+          phoneNumber: data.phoneNumber || "정보없음",
         });
+      })
+      .catch((error) => {
+        console.error("멤버 정보 가져오기 실패:", error);
       });
-  }, [token]);
+  }, []);
+
+  const fetchMemberData = () => {
+    apiClient
+      .get("https://api.unicat.day/members", {})
+      .then((response) => {
+        const data = response.data;
+        setMemberData({
+          name: data.name || "정보없음",
+          phoneNumber: data.phoneNumber || "정보없음",
+        });
+      })
+      .catch((error) => {
+        console.error("멤버 정보 가져오기 실패:", error);
+      });
+  };
+
+  useEffect(() => {
+    fetchMemberData();
+  }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center gap-[90px] relative bg-purple-6 min-h-screen">
+    <div className="flex flex-col items-center justify-center gap-[90px] relative mt-10">
       <main className="flex flex-col w-full max-w-[700px] items-center gap-6 relative flex-[0_0_auto]">
         <h1 className="font-bold-24 text-gray-5 font-bold text-[length:var(--bold-24-font-size)] tracking-[var(--bold-24-letter-spacing)] leading-[var(--bold-24-line-height)] self-start">
           마이페이지
         </h1>
+
         <Card className="w-[700px] bg-white rounded-2xl border border-solid border-gray-1 shadow-[0px_1px_8px_2px_#0000000a] mx-auto">
           <CardContent className="flex flex-col w-full px-6 py-6">
             <div className="flex flex-col mb-10">
@@ -76,7 +92,14 @@ export default function MyPage(): JSX.Element {
               </button>
             </div>
             <div className="w-full h-px bg-gray-4 my-4"></div>
-            <LogoutButton token={token} />
+            <div className="flex items-center ">
+              <LogoutButton />
+              <EditProfileButton
+                initialName={memberData.name}
+                initialPhoneNumber={memberData.phoneNumber}
+                onUpdate={fetchMemberData}
+              />
+            </div>
           </CardContent>
         </Card>
       </main>
