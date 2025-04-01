@@ -35,3 +35,16 @@ export async function DELETE(req: NextRequest, context: { params: Promise<{ proj
     return handleApiError(error);
   }
 }
+
+// POST 요청 (아티팩트 생성)
+export async function POST(req: NextRequest, context: { params: Promise<{ projectId: string }> }) {
+  const { projectId } = await context.params;
+  try {
+    //const type = req.nextUrl.searchParams.get('type');
+
+    const response = await apiClient.post(`/projects/${projectId}?type=artifact`);
+    return new NextResponse(response.data, { status: 202 });
+  } catch (error) {
+    return handleApiError(error);
+  }
+}
