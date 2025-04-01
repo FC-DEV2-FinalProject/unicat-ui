@@ -55,29 +55,29 @@ export const handlers = [
     );
   }),
   // 섹션만 생성
-  http.post(`${API_URL}/projects/:projectId/sections`, async ({ request }) => {
-    console.log('🔵 MSW Intercepted - POST /projects/:projectId/sections');
-    console.log('Request URL:', request.url);
-    console.log('Request Headers:', Object.fromEntries(request.headers.entries()));
-    const headers = Object.fromEntries(request.headers.entries());
-    return new HttpResponse(
-      JSON.stringify({ 
-        id: getNextSectionId(),
-        script: "string",
-        sortOrder: 1,
-        resourceUrl: "string",
-        audioUrl: "string",
-        videoUrl: "string"
-      }),
-      {
-        status: 201,
-        headers: {
-          'Content-Type': 'application/json',
-          'Set-Cookie': `Authorization=${headers.authorization}; Path=/; HttpOnly; SameSite=Lax`
-        }
-      }
-    );
-  }),
+  // http.post(`${API_URL}/projects/:projectId/sections`, async ({ request }) => {
+  //   console.log('🔵 MSW Intercepted - POST /projects/:projectId/sections');
+  //   console.log('Request URL:', request.url);
+  //   console.log('Request Headers:', Object.fromEntries(request.headers.entries()));
+  //   const headers = Object.fromEntries(request.headers.entries());
+  //   return new HttpResponse(
+  //     JSON.stringify({ 
+  //       id: getNextSectionId(),
+  //       script: "string",
+  //       sortOrder: 1,
+  //       resourceUrl: "string",
+  //       audioUrl: "string",
+  //       videoUrl: "string"
+  //     }),
+  //     {
+  //       status: 201,
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Set-Cookie': `Authorization=${headers.authorization}; Path=/; HttpOnly; SameSite=Lax`
+  //       }
+  //     }
+  //   );
+  // }),
 
   // 프로젝트 생성 API
   http.post(`${API_URL}/projects`, async ({ request }) => {
@@ -115,8 +115,8 @@ export const handlers = [
     );
   }),
 
-  http.post(`${API_URL}/projects/:projectId/sections/:sectionId`, async ({ request }) => {
-    console.log('🔵 MSW Intercepted - POST /projects/:projectId/sections/:sectionId');
+  http.post(`${API_URL}/projects/:projectId/sections`, async ({ request }) => {
+    console.log('🔵 MSW Intercepted - POST /projects/:projectId/sections');
     console.log('Request URL:', request.url);
     //console.log('Request Headers:', Object.fromEntries(request.headers.entries()));
 
@@ -132,6 +132,7 @@ export const handlers = [
       const transitionName = formData.get('transitionName');
       console.log('FormData:', formData.get('script'));
       return HttpResponse.json({
+        id: getNextSectionId(),
         imageUrl: 'https://i.imgur.com/P2ruiUz.jpeg',
         alt: alt || '고양이 사진',
         script: script || '고양이를 키울 때 알고 있어야 할 주의사항에 대해 알아보겠습니다.',
@@ -142,6 +143,7 @@ export const handlers = [
     } else {
       console.log('핸들러 로그 : 📤 JSON 요청 처리');
       const bodyData = await request.json() as {
+        id: number;
         alt?: string;
         script?: string;
         voiceModel?: string;
@@ -152,7 +154,7 @@ export const handlers = [
       console.log('🔄 요청 바디 : ', bodyData);
       return new HttpResponse(
         JSON.stringify({
-          id: Math.floor(Math.random() * 1000) + 1,
+          id: getNextSectionId(),
           imageUrl: 'https://i.imgur.com/P2ruiUz.jpeg',
           alt: alt || '대체 텍스트',
           script: `'${script}' 내용을 기반으로 AI가 생성한 이미지`,

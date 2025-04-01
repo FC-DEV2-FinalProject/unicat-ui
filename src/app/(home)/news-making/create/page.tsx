@@ -19,6 +19,7 @@ interface ContentSection {
 	buttonText: string;
 	hasCheckbox: boolean;
 	script: string;
+	backendSectionId?: number;
 }
 
 export default function Element() {
@@ -68,6 +69,12 @@ export default function Element() {
 	const handleScriptChange = (index: number, value: string) => {
 		setContentSections(prev => prev.map((section, i) => 
 			i === index ? { ...section, script: value } : section
+		));
+	};
+
+	const handleSectionIdUpdate = (index: number, backendSectionId: number) => {
+		setContentSections(prev => prev.map((section, i) => 
+			i === index ? { ...section, backendSectionId: backendSectionId } : section
 		));
 	};
 
@@ -154,6 +161,7 @@ export default function Element() {
 												title={section.title}
 												script={section.script}
 												onScriptChange={handleScriptChange}
+												onSectionIdUpdate={handleSectionIdUpdate}
 											/>
 										</div>
 									</div>

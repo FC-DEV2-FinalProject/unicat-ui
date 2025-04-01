@@ -1,25 +1,24 @@
 import React, { useRef, useState } from 'react';
 import { Button } from '../button/CommonNewsMakingButton';
-import { createSection, updateSection } from '../api/CreateSectionAPI';
+//import { createSection, updateSection } from '../api/CreateSectionAPI';
+import { updateSection } from '../api/CreateSectionAPI';
 import { useProjectStore } from '@/src/store/useNewsMakingStore';
+import { VOICE_TYPES } from '@/src/types/voiceTypes';
+import { TRANSITION_TYPES } from '@/src/types/transitionTypes';
 
 interface SectionContentProps {
   index: number;
   title: string;
   script: string;
   onScriptChange: (index: number, value: string) => void;
-}
-
-interface UpdateSectionResponse {
-  imageUrl?: string;
-  alt?: string;
-  script: string | null;
+  onSectionIdUpdate: (index: number, id: number) => void;
 }
 
 export const SectionContent: React.FC<SectionContentProps> = ({
   index,
   script,
   onScriptChange,
+  onSectionIdUpdate,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -61,13 +60,14 @@ export const SectionContent: React.FC<SectionContentProps> = ({
       if (!currentProjectId) return;
 
       // 1. 섹션 생성 API 호출
-      const response = await createSection(currentProjectId.toString());
-      if (!response?.id) {
-        throw new Error('Failed to create section: No id received');
-      }
+      // const response = await createSection(currentProjectId.toString());
+      // if (!response?.id) {
+      //   throw new Error('Failed to create section: No id received');
+      // }
 
+      // api 변경으로 인한 함수 변경
       // 2. 섹션 업데이트 API 호출
-      let updateResponse: UpdateSectionResponse;
+      let updateResponse;
       if (selectedImage) {
         // 이미지를 PNG 파일로 변환
         const imageFile = dataURLtoFile(selectedImage, 'image.png');
@@ -75,10 +75,15 @@ export const SectionContent: React.FC<SectionContentProps> = ({
         formData.append('image', imageFile);
         formData.append('script', script);
         formData.append('alt', '');
-        updateResponse = await updateSection(currentProjectId.toString(), response.id.toString(), formData);
+        updateResponse = await updateSection(currentProjectId.toString(),  formData);
       } else {
         // 이미지가 없는 경우 JSON으로 전송
-        updateResponse = await updateSection(currentProjectId.toString(), response.id.toString(), { prompt: script });
+        updateResponse = await updateSection(currentProjectId.toString(), {
+          voiceModel: VOICE_TYPES[0].name,
+          alt: "Image alt text",
+          script: script,
+          transitionName: TRANSITION_TYPES[0].name
+        });
       }
 
       // 3. UI 업데이트
@@ -86,6 +91,9 @@ export const SectionContent: React.FC<SectionContentProps> = ({
       setProcessedScript(updateResponse.script || script);
       if (updateResponse.imageUrl) {
         setSelectedImage(updateResponse.imageUrl);
+      }
+      if (updateResponse.id) {
+        onSectionIdUpdate(index, updateResponse.id);
       }
     } catch (error) {
       console.error('Failed to process section:', error);
