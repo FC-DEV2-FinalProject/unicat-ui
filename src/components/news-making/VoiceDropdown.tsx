@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { ChevronDownIcon } from "lucide-react";
 import { Button } from "@/src/components/news-making/button/CommonNewsMakingButton";
 
