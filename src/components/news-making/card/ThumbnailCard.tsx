@@ -95,7 +95,7 @@ const ThumbnailCard = forwardRef<
 		console.log('캔버스 설정 완료');
 
 		// 🎨 배경색 채우기 (전체 영역)
-		ctx.fillStyle = 'rgba(58, 58, 58, 1)'; // --gray-5 색상
+		ctx.fillStyle = '#1a1a1a'; // 검정색
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 		console.log('배경색 채우기 완료');
 
@@ -201,7 +201,7 @@ const ThumbnailCard = forwardRef<
 			
 			{/* 실제 컨텐츠 - 캡처 영역 */}
 			<div
-				className="absolute inset-0 overflow-hidden rounded-[8px] flex flex-col items-center justify-center bg-gray-5"
+				className="absolute inset-0 overflow-hidden rounded-[8px] flex flex-col items-center justify-center bg-[#1a1a1a]"
 				onClick={onClick}
 			>
 				{/* ✅ 이미지 */}
