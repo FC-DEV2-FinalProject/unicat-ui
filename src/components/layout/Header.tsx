@@ -7,9 +7,11 @@ import {
   NavigationMenuList,
 } from "@/src/components/common/navigation-menu";
 import SubscribeButton from "@/src/components/news-making/button/SubscribeButton";
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import apiClient from "@/src/utils/apiClient";
 
 interface HeaderProps {
   className?: string; // ✅ className을 props로 받을 수 있도록 추가
@@ -20,6 +22,19 @@ const navigationItems = [
 ];
 
 const Header: React.FC<HeaderProps> = ({ className }) => {
+  const router = useRouter();
+  useEffect(() => {
+    apiClient
+      .get("https://api.unicat.day/members", {})
+      .then((response) => {
+        console.log("로그인 확인 성공:", response.data);
+      })
+      .catch((error) => {
+        console.error("로그인 확인 실패:", error);
+        router.replace("/login");
+      });
+  }, [router]);
+
   return (
     <header className={`flex flex-col items-center w-full border-b border-[#ECECEC] ${className}`}>
       <div className="w-full h-[100px] bg-white border-b border-[#ECECEC]">
