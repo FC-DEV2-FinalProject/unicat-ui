@@ -14,7 +14,10 @@ const API_URL = process.env.API_URL;
 let currentSectionId = 1;
 
 const getNextSectionId = () => {
-  currentSectionId = currentSectionId >= 4 ? 1 : currentSectionId + 1;
+  if(currentSectionId >= 4){
+    currentSectionId = 1;
+  }
+  currentSectionId = currentSectionId + 1;
   return currentSectionId;
 };
 
@@ -160,16 +163,16 @@ export const handlers = [
       
       switch(sectionId) {
         case 2:
+          imageUrl = 'https://bhqvrnbzzqzqlwwrcgbm.supabase.co/storage/v1/object/image/upload-9060809286912031668.png';
+          responseScript = '복잡한 편집 없이, 클릭 한 번이면 충분합니다.\n지금 이 순간에도 많은 사람들이 유니캣으로\n새로운 콘텐츠를 만들어가고 있습니다.\n창작의 자유, 그 중심에 유니캣이 있습니다.\n창작의 자유, 그 중심에 유니캣이 있습니다.';
+          break;
+        case 3:
           imageUrl = 'https://bhqvrnbzzqzqlwwrcgbm.supabase.co/storage/v1/object/image/upload-8096234655908682540.png';
           responseScript = '안녕하십니까.\n이제 영상 제작은 전문가만의 영역이 아닙니다.\n누구나 단 몇 초 만에 숏폼 영상을 만들 수 있는 시대입니다.';
           break;
-        case 3:
+        case 4:
           imageUrl = 'https://bhqvrnbzzqzqlwwrcgbm.supabase.co/storage/v1/object/image/upload-1297454704645980027.png';
           responseScript = '유니캣은 AI 기술로 키워드 하나만 입력하면\n이미지, 음악, 템플릿까지 자동으로 구성된 영상을 완성합니다.';
-          break;
-        case 4:
-          imageUrl = 'https://bhqvrnbzzqzqlwwrcgbm.supabase.co/storage/v1/object/image/upload-9060809286912031668.png';
-          responseScript = '복잡한 편집 없이, 클릭 한 번이면 충분합니다.\n지금 이 순간에도 많은 사람들이 유니캣으로\n새로운 콘텐츠를 만들어가고 있습니다.\n창작의 자유, 그 중심에 유니캣이 있습니다.\n창작의 자유, 그 중심에 유니캣이 있습니다.';
           break;
         default:
           imageUrl = 'https://bhqvrnbzzqzqlwwrcgbm.supabase.co/storage/v1/object/image/upload-8096234655908682540.png';
