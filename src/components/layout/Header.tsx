@@ -15,13 +15,15 @@ interface HeaderProps {
   className?: string; // ✅ className을 props로 받을 수 있도록 추가
 }
 const navigationItems = [
-  { id: "dashboard", label: "대시보드", href: "/" },
+  { id: "dashboard", label: "대시보드", href: "/dashboard" },
   { id: "statistics", label: "통계", href: "/statistics" },
 ];
 
 const Header: React.FC<HeaderProps> = ({ className }) => {
   return (
-    <header className={`flex flex-col items-center w-full border-b border-[#ECECEC] ${className}`}>
+    <header
+      className={`flex flex-col items-center w-full border-b border-[#ECECEC] ${className}`}
+    >
       <div className="w-full h-[100px] bg-white border-b border-[#ECECEC]">
         <div className="container flex items-center justify-between h-full max-w-[1200px] mx-auto px-4">
           <div className="flex items-center gap-11">
@@ -41,12 +43,11 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
             <NavigationMenu>
               <NavigationMenuList className="flex gap-11 flex-nowrap">
                 {navigationItems.map((item) => (
-                  <NavigationMenuItem
-                    key={item.id}
-                    className="relative">
+                  <NavigationMenuItem key={item.id} className="relative">
                     <NavigationMenuLink
                       href={item.href}
-                      className="text-gray-5 font-bold text-[24px]">
+                      className="text-gray-5 font-bold text-[24px]"
+                    >
                       {item.label}
                     </NavigationMenuLink>
                   </NavigationMenuItem>
