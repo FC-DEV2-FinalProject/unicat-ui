@@ -1,5 +1,5 @@
 import VoiceDropdown from "@/src/components/news-making/VoiceDropdown";
-import type { DashboardDetail } from "@/src/types/dashboardDetailTypes";
+//import type { DashboardDetail } from "@/src/types/dashboardDetailTypes";
 
 interface PageProps {
   params: Promise<{
