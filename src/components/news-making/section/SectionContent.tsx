@@ -153,16 +153,14 @@ export const SectionContent: React.FC<SectionContentProps> = ({
             onChange={(e) => onScriptChange(index, e.target.value)}
           />
         )}
-        {!isProcessed && (
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="w-[120px] h-[40px]"
-            onClick={handleLLMButtonClick}
-          >
-            LLM 수정 버튼
-          </Button>
-        )}
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="w-[120px] h-[40px]"
+          onClick={handleLLMButtonClick}
+        >
+          LLM 수정 버튼
+        </Button>
       </div>
     </div>
   );
