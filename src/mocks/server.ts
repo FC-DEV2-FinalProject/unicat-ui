@@ -1,6 +1,9 @@
 import { setupServer } from 'msw/node';
 import { handlers } from './handlers';
 
+// 이벤트 리스너 제한 증가
+process.setMaxListeners(20);
+
 console.log('🚀 Starting MSW Server...');
 
 // 서버 사이드 MSW 설정
@@ -19,6 +22,11 @@ const cleanupServer = () => {
   server.close();
   process.exit(0);
 };
+
+// 이벤트 리스너 등록 전 기존 리스너 제거
+process.removeAllListeners('SIGINT');
+process.removeAllListeners('SIGTERM');
+process.removeAllListeners('exit');
 
 process.on('SIGINT', cleanupServer);
 process.on('SIGTERM', cleanupServer);
