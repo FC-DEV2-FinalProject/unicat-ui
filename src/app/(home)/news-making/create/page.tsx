@@ -29,7 +29,7 @@ export default function Element() {
 	const currentProject = projects.find(p => p.id === currentProjectId);
 	const thumbnailRef = useRef<{ captureCard: (callback: (dataUrl: string) => void) => void }>(null);
 	const [contentSections, setContentSections] = useState<ContentSection[]>([
-		{ title: "컷 1", buttonText: "LLM 수정 버튼", hasCheckbox: true, script: "" }
+		{ title: "썸네일", buttonText: "LLM 수정 버튼", hasCheckbox: true, script: "" }
 	]);
 	
 	let selectedStyle = ART_STYLES[0]; // 기본값으로 첫 번째 스타일 사용
@@ -66,7 +66,7 @@ export default function Element() {
 
 	const handleAddContent = () => {
 		if (contentSections.length < 5) {
-			const nextCutNumber = contentSections.length + 1;
+			const nextCutNumber = (contentSections.length -1) + 1;
 			setContentSections(prev => [
 				...prev,
 				{ 
@@ -96,7 +96,7 @@ export default function Element() {
 			<div className="bg-purple-6 w-full max-w-[1920px] p-12 pl-6 pt-6 pr-6 relative">
 				<div className="grid grid-cols-1 md:grid-cols-4 gap-6">
 					{/* 왼쪽 컬럼: 비디오 스타일 & 썸네일 */}
-					<div className="md:col-span-1 space-y-6 overflow-hidden sticky top-[105px] max-h-[calc(100vh-150px)]">
+					<div className="md:col-span-1 space-y-6 sticky top-[105px]">
 						{/* 왼쪽 영역 상단: ArtStyleCard 적용 */}
 						<Card className="overflow-hidden border rounded-lg shadow-sm h-auto">
 							<CardContent className="bg-white flex flex-col justify-center items-center h-auto">
@@ -117,18 +117,18 @@ export default function Element() {
 								</div>
 							</CardContent>
 						</Card>
-						<div className="md:col-span-1 space-y-6 overflow-hidden">
+						<div className="md:col-span-1 space-y-6">
 						</div>
 						{/* 왼쪽 영역 하단: Thumbnail Card 적용 */}
-						<Card className="w-[268px] h-[480px] overflow-hidden border rounded-lg shadow-sm h-auto">
+						<Card className="w-[268px] h-[480px] min-h-[543px] border rounded-lg shadow-sm h-auto">
 							<CardContent className="p-3 flex flex-col justify-center items-center h-auto">
 								{/* 카드 제목 */}
 								<h3 className="text-3xl font-bold font-bold-32 mb-3 p-3 mt-3">
-									{"영상 썸네일"}
+									{"선택한 썸네일"}
 								</h3>
 
 								{/* 썸네일 카드 컨테이너 */}
-								<div className="w-auto h-auto bg-gray-5 rounded-lg ">
+								<div className="w-auto h-auto bg-gray-5 rounded-lg min-h-[436px]">
 									{currentProject?.thumbnail?.imageSrc ? (
 										<div className="flex justify-center">
 											{/* 캡처한 이미지를 사용 전체 배경까지 캡처 */}
