@@ -1,4 +1,3 @@
-
 //todo 추후 api 클라이언트로 재 변경
 // interface CreateSectionResponse {
 //   id: number;
@@ -39,21 +38,25 @@ interface UpdateSectionResponse {
 
 export const updateSection = async (
   projectId: string, 
-  body: UpdateSectionBody | FormData
+  body: UpdateSectionBody
 ): Promise<UpdateSectionResponse> => {
   try {
     const headers: HeadersInit = {
       'Accept': 'application/json',
+      'Content-Type': 'application/json',
     };
 
-    if (!(body instanceof FormData)) {
-      headers['Content-Type'] = 'application/json';
-    }
+    console.log('API 요청 정보:', {
+      url: `/api/projects/${projectId}/sections`,
+      method: 'POST',
+      headers,
+      body
+    });
 
     const response = await fetch(`/api/projects/${projectId}/sections`, {
       method: 'POST',
       headers,
-      body: body instanceof FormData ? body : JSON.stringify(body),
+      body: JSON.stringify(body),
     });
 
     return response.json();

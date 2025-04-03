@@ -165,10 +165,11 @@ function ThumbnailContent() {
 		const handleCapture = async (dataUrl: string) => {
 			if (projectId) {
 				try {
+					//todo 추후 self 요청일시 수정 폼데이터 작동 X self else로 내리기
 					console.log('handleCapture 시작 🎯 lastClickedButton:', lastClickedButton);
 					// AI 생성 이미지는 항상 JSON으로 전송
 					// api가 변경되어서 양쪽 모두 sections/1에 대해 patch 요청
-					if (lastClickedButton === 'ai') {
+					if (lastClickedButton === 'self' || lastClickedButton === 'ai') {
 						console.log('AI 생성 이미지 처리 시작 🎯');
 						await apiClient.patch(`/api/projects/${projectId}/sections/1`, {
 							imageUrl: dataUrl,
@@ -180,7 +181,7 @@ function ThumbnailContent() {
 							},
 						});
 						console.log('썸네일 이미지 업로드 완료 🎯 (AI 생성 - JSON)');
-					} else {
+					} else if (lastClickedButton === 'selfxxx') {
 						console.log('직접 업로드 이미지 처리 시작 🎯');
 						// 직접 업로드한 이미지는 FormData로 전송
 						const formData = new FormData();

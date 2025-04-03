@@ -54,42 +54,27 @@ export const SectionContent: React.FC<SectionContentProps> = ({
     }
   };
 
-  const dataURLtoFile = (dataurl: string, filename: string): File => {
-    const arr = dataurl.split(',');
-    const mime = arr[0].match(/:(.*?);/)?.[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new File([u8arr], filename, { type: mime });
-  };
-
   const handleLLMButtonClick = async () => {
     try {
       if (!currentProjectId) return;
 
       setIsImageLoading(true);
-      let updateResponse;
-      if (selectedImage) {
-        const imageFile = dataURLtoFile(selectedImage, 'image.png');
-        const formData = new FormData();
-        formData.append('image', imageFile);
-        formData.append('script', script);
-        formData.append('alt', '');
-        updateResponse = await updateSection(currentProjectId.toString(), formData);
-      } else {
-        updateResponse = await updateSection(currentProjectId.toString(), {
-          voiceModel: VOICE_TYPES[0].name,
-          alt: "Image alt text",
-          script: script,
-          transitionName: TRANSITION_TYPES[0].name
-        });
-      }
+      
+      // TODO: 나중에 FormData 처리 다시 추가 필요
+      // 서버에 이미지 첨부 시 이미지 전달이 필요함
+      // 현재는 JSON 요청만 처리하도록 임시로 수정됨
+      
+      // 이미지 첨부 여부와 관계없이 항상 JSON으로 요청
+      const updateResponse = await updateSection(currentProjectId.toString(), {
+        voiceModel: VOICE_TYPES[0].name,
+        alt: "Image alt text",
+        script: script,
+        transitionName: TRANSITION_TYPES[0].name
+      });
 
       setIsProcessed(true);
       setProcessedScript(updateResponse.script || script);
+      // 이미지 URL이 있으면 업데이트 (서버에서 반환된 경우)
       if (updateResponse.imageUrl) {
         setSelectedImage(updateResponse.imageUrl);
       }

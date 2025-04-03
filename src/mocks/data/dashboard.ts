@@ -4,7 +4,7 @@ export const mockDashboardData: DashboardResponse = {
   content: [
     {
       id: 1,
-      title: "유니캣 영상 제작 소개",
+      title: "UNICAT",
       subtitle: "",
       thumbnailUrl: "/images/news-mock2.png",
       artifactUrl: "/images/news-mock2.png",
@@ -35,10 +35,10 @@ export const mockDashboardData: DashboardResponse = {
     },
     {
       id: 4,
-      title: "해변에서 인생샷 찍는 방법",
+      title: "Fastcampus",
       subtitle: "",
-      thumbnailUrl: "/images/news-mock4.png",
-      artifactUrl: "/images/news-mock4.png",
+      thumbnailUrl: "/images/news-making/thumbnail_full.png",
+      artifactUrl: "/images/news-making/thumbnail_full.png",
       scriptTone: "casual",
       imageStyle: "realistic",
       createdAt: "2025-04-03T00:00:00.000Z",
