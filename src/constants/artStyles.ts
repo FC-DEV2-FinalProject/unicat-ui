@@ -4,8 +4,8 @@ import { ArtStyle } from '@/src/types/newsMakingTypes';
 export const ART_STYLES: ArtStyle[] = [
     { 
         id: 1, 
-        imageSrc: "/images/news-making/news-style-1.png", 
-        alt: "스타일 1",
+        imageSrc: "/images/news-making/news-style-aivatar.png", 
+        alt: "AIVATAR 스타일",
     },
     { 
         id: 2, 
@@ -14,8 +14,8 @@ export const ART_STYLES: ArtStyle[] = [
     },
     { 
         id: 3, 
-        imageSrc: "/images/news-making/news-style-aivatar.png", 
-        alt: "AIVATAR 스타일",
+        imageSrc: "/images/news-making/news-style-1.png", 
+        alt: "스타일 1",
     },
     { 
         id: 4, 

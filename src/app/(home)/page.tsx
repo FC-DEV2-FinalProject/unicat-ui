@@ -10,7 +10,8 @@ import { CreateProjectButton } from "@/src/components/home/CreateProjectButton";
 const dummyMovies: DummyMovie[] = [
   { id: 1, image: "/images/news-mock.png", title: "악어의 하루", description: " ", date: "2025.04.03" },
   { id: 2, image: "/images/news-mock3.png", title: "쇼츠에 썸네일 넣는 방법", description: " ", date: "2025.04.03" },
-  { id: 3, image: "/images/news-mock.png", title: "악어의 하루", description: " ", date: "2025.04.02" },
+  { id: 3, image: "/images/news-mock.png", title: "악어의 하루", description: " ", date: "2025.04.03" },
+  { id: 4, image: "/images/news-mock4.png", title: "해변에서 인생샷 찍는 방법", description: " ", date: "2025.04.03" },
 ];
 
 const homeDashboardMovies = groupMoviesByDate(dummyMovies, { maxItemsPerDate: 3, sortByDate: "desc" });
