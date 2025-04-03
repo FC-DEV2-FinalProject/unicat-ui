@@ -31,7 +31,7 @@ export default function MyPage(): JSX.Element {
 
   const fetchMemberData = async () => {
     try {
-      const response = await apiClient.get("https://api.unicat.day/members", {});
+      const response = await apiClient.get("/api/members", {});
       const data = response.data;
       setMemberData({
         name: data.name || "정보없음",

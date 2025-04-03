@@ -338,4 +338,16 @@ export const handlers = [
     console.log('type:', type);
     return new HttpResponse(null, { status: 202 });
   }),
+
+  // 마이페이지 핸들러
+  http.get(`${API_URL}/members`, () => {
+    console.log('🎯 MSW - GET /members');
+    return new HttpResponse(
+      JSON.stringify({
+        name: "패스트캠퍼스",
+        phoneNumber: "01012345678"
+      }),
+      { status: 200 }
+    );
+  }),
 ];
