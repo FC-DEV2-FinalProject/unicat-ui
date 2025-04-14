@@ -50,7 +50,7 @@ export default function HomeLayout({
                   href="mailto:your-email@example.com"
                   className="text-blue-500 hover:underline"
                 >
-                  your-email@example.com
+                  unicat-day@gmail.com
                 </a>
               </p>
             </div>

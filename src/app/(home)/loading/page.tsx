@@ -2,13 +2,14 @@
 
 import React, { JSX, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Cookies from 'js-cookie';
 
 export default function MyPage(): JSX.Element {
   const [progress, setProgress] = useState(0);
   const router = useRouter();
 
   useEffect(() => {
+    // 기존 API 호출 코드 (주석 처리)
+    /*
     const token = Cookies.get('token');
     const eventSource = new EventSource(`https://api.unicat.day/projects/1/progress?token=${token}`, {
       withCredentials: true
@@ -26,6 +27,22 @@ export default function MyPage(): JSX.Element {
     return () => {
       eventSource.close();
     };
+    */
+
+    // 더미 데이터로 진행률 시뮬레이션 (4배 속도)
+    const interval = setInterval(() => {
+      setProgress((prevProgress) => {
+        if (prevProgress >= 100) {
+          clearInterval(interval);
+          return 100;
+        }
+        return prevProgress + 20; // 5% -> 20%로 증가
+      });
+    }, 125); // 500ms -> 125ms로 감소 (4배 속도)
+
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   const handlePlay = () => {
@@ -39,7 +56,7 @@ export default function MyPage(): JSX.Element {
           방금 만든 이야기로 뉴스를 만들고 있어요!
         </h1>
         <h2 className="text-gray-600 font-normal">
-          약 1분정도 소요될 예정이니, 화면을 끄지 말고 기다려주세요.
+          약 15초정도 소요될 예정이니, 화면을 끄지 말고 기다려주세요.
         </h2>
         
         <div className="w-full max-w-md bg-gray-200 rounded-full h-2.5">

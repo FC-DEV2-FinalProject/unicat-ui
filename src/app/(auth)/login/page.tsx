@@ -13,12 +13,12 @@ export default function LoginPage() {
     // 이미 로그인된 상태인지 확인
     const token = getCookie("Authorization");
     if (token) {
-      router.replace("/dashboard");
+      router.replace("/");
     }
   }, []);
 
   const handleLoginSuccess = () => {
-    router.replace("/dashboard");
+    router.replace("/");
   };
 
   return (

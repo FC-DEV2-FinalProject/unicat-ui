@@ -3,7 +3,7 @@
 import React from "react";
 
 const dummyVideoUrl =
-  "https://bhqvrnbzzqzqlwwrcgbm.supabase.co/storage/v1/object/video/unicat_uploads1378179665791900146.mp4";
+  "https://bhqvrnbzzqzqlwwrcgbm.supabase.co/storage/v1/object/video/unicat_uploads5062518131803051835.mp4";
 
 export default function VideoPlayer() {
   return (
