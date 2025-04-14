@@ -6,10 +6,12 @@ import apiClient from "@/src/utils/apiClient";
 import { setCookie } from "cookies-next";
 
 interface EmailLoginFormProps {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onLoginSuccess: () => void;
 }
 
 export default function EmailLoginForm({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onLoginSuccess,
 }: EmailLoginFormProps) {
   const [formData, setFormData] = useState<LoginForm>({
@@ -79,18 +81,19 @@ export default function EmailLoginForm({
     }
 
     try {
-      const response = await apiClient.post("/auth/sign-in", {
+      const response = await apiClient.post("/api/auth/sign-in", {
         email: formData.email.trim(),
         password: formData.password,
       });
 
       // API 명세서에 따라 200 OK 체크
       if (response.status === 200) {
-        const token = response.data.token;
+        const token = response.data.data.token;
         setCookie("Authorization", token, {
           maxAge: keepLogin ? 60 * 60 * 24 * 30 : undefined,
         });
-        onLoginSuccess();
+        // 로그인 성공 후 메인 페이지로 리다이렉트
+        window.location.href = "/";
       }
     } catch (error: unknown) {
       const axiosError = error as ApiError;
