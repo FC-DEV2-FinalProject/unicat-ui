@@ -2,10 +2,12 @@
 
 import { MovieList } from "@/src/components/home/MovieList";
 import { groupMoviesByDate } from "@/src/components/home/MovieCardGroup";
-import React, { JSX } from "react";
+import React, { JSX, useEffect, useState } from "react";
 import Image from "next/image";
 import { DummyMovie } from '@/src/types/newsMakingTypes';
 import { CreateProjectButton } from "@/src/components/home/CreateProjectButton";
+import { useRouter } from "next/navigation";
+import { getCookie } from "cookies-next";
 
 const dummyMovies: DummyMovie[] = [
   { id: 1, image: "/images/news-mock.png", title: "악어의 하루", description: " ", date: "2025.04.03" },
@@ -16,7 +18,30 @@ const dummyMovies: DummyMovie[] = [
 
 const homeDashboardMovies = groupMoviesByDate(dummyMovies, { maxItemsPerDate: 3, sortByDate: "desc" });
 
-export default function AiNews(): JSX.Element {
+export default function AiNews(): JSX.Element | null {
+  const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    // 토큰 확인
+    const authToken = getCookie("Authorization");
+    const tokenCookie = getCookie("token");
+    const authTokenLower = getCookie("authorization");
+    
+    const hasToken = authToken || tokenCookie || authTokenLower;
+    
+    if (!hasToken) {
+      router.replace("/login");
+    } else {
+      setIsAuthenticated(true);
+    }
+  }, [router]);
+
+  // 인증되지 않은 경우 아무것도 렌더링하지 않음
+  if (!isAuthenticated) {
+    return null;
+  }
+
   return (
     <div className="mt-[105px] flex flex-col items-center justify-center gap-[90px] relative bg-purple-6 min-h-screen">
       {/* Main Content */}
