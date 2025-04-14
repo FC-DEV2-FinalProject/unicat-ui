@@ -9,8 +9,12 @@ export const metadata: Metadata = {
 
 // 환경 변수에 따라 모킹 실행
 if (process.env.NEXT_PUBLIC_API_MOCKING === "enabled") {
+  console.log('🚀 MSW 초기화 시작 - 환경:', process.env.NODE_ENV);
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   require("../mocks");
+  console.log('✅ MSW 초기화 완료');
+} else {
+  console.log('⏭️ MSW 비활성화됨 - NEXT_PUBLIC_API_MOCKING:', process.env.NEXT_PUBLIC_API_MOCKING);
 }
 
 export default function RootLayout({
