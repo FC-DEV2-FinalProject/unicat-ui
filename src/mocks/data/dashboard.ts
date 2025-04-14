@@ -10,7 +10,7 @@ export const mockDashboardData: DashboardResponse = {
       artifactUrl: "/images/news-mock2.png",
       scriptTone: "casual",
       imageStyle: "realistic",
-      createdAt: "2025-03-02T00:00:00.000Z",
+      createdAt: "2025-04-03T00:00:00.000Z",
     },
     {
       id: 2,
@@ -20,7 +20,7 @@ export const mockDashboardData: DashboardResponse = {
       artifactUrl: "/images/news-mock3.png",
       scriptTone: "casual",
       imageStyle: "realistic",
-      createdAt: "2025-03-02T00:00:00.000Z",
+      createdAt: "2025-04-03T00:00:00.000Z",
 
     },
     {
@@ -31,7 +31,7 @@ export const mockDashboardData: DashboardResponse = {
       artifactUrl: "/images/news-mock.png",
       scriptTone: "casual",
       imageStyle: "realistic",
-      createdAt: "2025-03-02T00:00:00.000Z",
+      createdAt: "2025-04-03T00:00:00.000Z",
     },
     {
       id: 4,
@@ -41,7 +41,7 @@ export const mockDashboardData: DashboardResponse = {
       artifactUrl: "/images/news-mock4.png",
       scriptTone: "casual",
       imageStyle: "realistic",
-      createdAt: "2025-03-02T00:00:00.000Z",
+      createdAt: "2025-04-03T00:00:00.000Z",
     },
   ],
   totalElements: 4,

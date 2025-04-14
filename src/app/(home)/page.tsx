@@ -2,24 +2,46 @@
 
 import { MovieList } from "@/src/components/home/MovieList";
 import { groupMoviesByDate } from "@/src/components/home/MovieCardGroup";
-import React, { JSX } from "react";
+import React, { JSX, useEffect, useState } from "react";
 import Image from "next/image";
 import { DummyMovie } from '@/src/types/newsMakingTypes';
 import { CreateProjectButton } from "@/src/components/home/CreateProjectButton";
+import { useRouter } from "next/navigation";
+import { getCookie } from "cookies-next";
 
 const dummyMovies: DummyMovie[] = [
-  { id: 1, image: "/images/dummy-thumbnail.png", title: "피겨스케이팅 2025", description: "입상했습니다.", date: "2025.03.02" },
-  { id: 2, image: "/images/dummy-thumbnail.png", title: "다큐멘터리 제작", description: "AI 기술을 활용한 다큐멘터리", date: "2025.03.02" },
-  { id: 3, image: "/images/dummy-thumbnail.png", title: "뉴스 보도", description: "최근 이슈 뉴스 보도", date: "2025.03.02" },
-  { id: 4, image: "/images/dummy-thumbnail.png", title: "스포츠 뉴스", description: "국제 스포츠 경기 소식", date: "2025.02.26" },
-  { id: 5, image: "/images/dummy-thumbnail.png", title: "경제 뉴스", description: "금융 시장 업데이트", date: "2025.02.26" },
-  { id: 6, image: "/images/dummy-thumbnail.png", title: "연예 뉴스", description: "최신 연예 뉴스", date: "2025.02.26" },
-  { id: 7, image: "/images/dummy-thumbnail.png", title: "테크 뉴스", description: "최신 기술 동향", date: "2025.02.25" },
+  { id: 1, image: "/images/news-mock.png", title: "악어의 하루", description: " ", date: "2025.04.03" },
+  { id: 2, image: "/images/news-mock3.png", title: "쇼츠에 썸네일 넣는 방법", description: " ", date: "2025.04.03" },
+  { id: 3, image: "/images/news-mock.png", title: "악어의 하루", description: " ", date: "2025.04.03" },
+  { id: 4, image: "/images/news-mock4.png", title: "해변에서 인생샷 찍는 방법", description: " ", date: "2025.04.03" },
 ];
 
 const homeDashboardMovies = groupMoviesByDate(dummyMovies, { maxItemsPerDate: 3, sortByDate: "desc" });
 
-export default function AiNews(): JSX.Element {
+export default function AiNews(): JSX.Element | null {
+  const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    // 토큰 확인
+    const authToken = getCookie("Authorization");
+    const tokenCookie = getCookie("token");
+    const authTokenLower = getCookie("authorization");
+    
+    const hasToken = authToken || tokenCookie || authTokenLower;
+    
+    if (!hasToken) {
+      router.replace("/login");
+    } else {
+      setIsAuthenticated(true);
+    }
+  }, [router]);
+
+  // 인증되지 않은 경우 아무것도 렌더링하지 않음
+  if (!isAuthenticated) {
+    return null;
+  }
+
   return (
     <div className="mt-[105px] flex flex-col items-center justify-center gap-[90px] relative bg-purple-6 min-h-screen">
       {/* Main Content */}

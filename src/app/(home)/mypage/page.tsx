@@ -12,46 +12,49 @@ interface MemberData {
   phoneNumber: string;
 }
 
+const formatPhoneNumber = (phone: string) => {
+  if (!phone || phone === "정보없음") return phone;
+  const cleaned = phone.replace(/\D/g, "");
+  const match = cleaned.match(/^(\d{3})(\d{4})(\d{4})$/);
+  if (match) {
+    return `${match[1]}-${match[2]}-${match[3]}`;
+  }
+  return phone;
+};
+
 export default function MyPage(): JSX.Element {
   const [memberData, setMemberData] = useState<MemberData>({
-    name: "정보없음",
-    phoneNumber: "정보없음",
+    name: " ",
+    phoneNumber: " ",
   });
+  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    apiClient
-      .get("https://api.unicat.day/members", {})
-      .then((response) => {
-        const data = response.data;
-        console.log(data);
-        setMemberData({
-          name: data.name || "정보없음",
-          phoneNumber: data.phoneNumber || "정보없음",
-        });
-      })
-      .catch((error) => {
-        console.error("멤버 정보 가져오기 실패:", error);
+  const fetchMemberData = async () => {
+    try {
+      const response = await apiClient.get("https://api.unicat.day/members", {});
+      const data = response.data;
+      setMemberData({
+        name: data.name || "정보없음",
+        phoneNumber: data.phoneNumber || "정보없음",
       });
-  }, []);
-
-  const fetchMemberData = () => {
-    apiClient
-      .get("https://api.unicat.day/members", {})
-      .then((response) => {
-        const data = response.data;
-        setMemberData({
-          name: data.name || "정보없음",
-          phoneNumber: data.phoneNumber || "정보없음",
-        });
-      })
-      .catch((error) => {
-        console.error("멤버 정보 가져오기 실패:", error);
-      });
+    } catch (error) {
+      console.error("멤버 정보 가져오기 실패:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
     fetchMemberData();
   }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-[30vh]">
+        <div className="text-gray-5 text-lg">로딩중...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center justify-center gap-[90px] relative mt-10">
@@ -68,7 +71,7 @@ export default function MyPage(): JSX.Element {
             </div>
             <div className="flex flex-col mb-10">
               <div className="text-gray-5 font-bold mb-2">전화번호</div>
-              <div className="text-gray-5">{memberData.phoneNumber}</div>
+              <div className="text-gray-5">{formatPhoneNumber(memberData.phoneNumber)}</div>
             </div>
             <div className="flex flex-col mb-10">
               <div className="text-gray-5 font-bold mb-2">구독정보</div>

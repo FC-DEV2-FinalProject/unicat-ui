@@ -8,21 +8,94 @@ interface ProjectBody {
   imageStyle: string;
 }
 
+interface LoginRequest {
+  email: string;
+  password: string;
+}
+
 // 실제 백엔드 API URL을 모킹
 const API_URL = process.env.API_URL;
 
 let currentSectionId = 1;
 
 const getNextSectionId = () => {
-  if(currentSectionId >= 4){
+  if(currentSectionId >= 5){
     currentSectionId = 1;
   }
   currentSectionId = currentSectionId + 1;
   return currentSectionId;
 };
 
+// 로그인 핸들러
+
+
 // MSW를 사용할 API 엔드포인트만 여기에 정의
 export const handlers = [
+  http.post(`${API_URL}/auth/sign-in`, async ({ request }) => {
+    console.log('🔵 MSW Intercepted - POST /auth/sign-in');
+    const { email, password } = await request.json() as LoginRequest;
+    
+    // 필수 필드 검증
+    if (!email || !password) {
+      return new HttpResponse(
+        JSON.stringify({
+          success: false,
+          message: '이메일과 비밀번호를 모두 입력해주세요.',
+        }),
+        { 
+          status: 400,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+    }
+  
+    // 테스트 계정
+    const testAccount = {
+      email: 'test@example.com',
+      password: 'password123',
+    };
+  
+    if (email === testAccount.email && password === testAccount.password) {
+      const token = 'eyJraWQiOiJyc2EtcHJvZC1rZXktaWQiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIxMCIsImV4cCI6MTc0MzY0OTAzOCwiaWF0IjoxNzQzMDQ0MjM4LCJwbGFuIjoiQkFTSUMiLCJlbWFpbCI6Indod2pkYW5AZ21haWwuY29tIn0.eMUDIp2i-zWDKO6D77RAsDRASXwMc7hdgfo0aVRq6bORUB8GO45S5kzqypoHl9CrqGH9gm07s6Hsea7jtxX2Jbn0fLf2yj2ovGSbAxnEm5I3uk5XI999SH_wEjlCeuCMNF2X2iR5Uwtsh4uQIJTqU_sSSNr9agk0G6lfUirSP0ht_3OHlvE2nXW2fGQmKKcYCFE66edpwnB22uM8CNpIffcEcZ7JX5oU2hXLozfDXJqdcFA6830YdQtVRRvx8HVncPAnDELrZdVbjagCXlMt2YWJliBOHsy1Sp-k9MMzp450fyo1YhqZuLqveqgl9AWaR2fKeipjPrdUgDa4KyMfIA';
+      
+      // 응답에 토큰을 포함하고, 클라이언트에서 setCookie 함수를 사용하도록 함
+      return new HttpResponse(
+        JSON.stringify({
+          success: true,
+          data: {
+            user: {
+              id: 1,
+              email: testAccount.email,
+              name: '테스트 사용자',
+            },
+            token: token,
+          },
+        }),
+        { 
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+    }
+  
+    // 인증 실패
+    return new HttpResponse(
+      JSON.stringify({
+        success: false,
+        message: '이메일 또는 비밀번호가 올바르지 않습니다.',
+      }),
+      { 
+        status: 401,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+  }),
   // 프로젝트 목록 조회 API
   http.get(`${API_URL}/projects`, async ({  }) => {
 
@@ -135,11 +208,40 @@ export const handlers = [
       const voiceModel = formData.get('voiceModel');
       const transitionName = formData.get('transitionName');
       console.log('FormData:', formData.get('script'));
+      
+      const sectionId = getNextSectionId();
+      console.log('sectionId:', sectionId);
+      let imageUrl;
+      let responseScript;
+      
+      switch(sectionId) {
+        case 4:
+          imageUrl = 'https://bhqvrnbzzqzqlwwrcgbm.supabase.co/storage/v1/object/image/upload-5944168497568437387.jpeg';
+          responseScript = '단 12주 만에 취업이 가능하다고?! 믿기 어렵겠지만, 진짜입니다!\n패스트캠퍼스의 혁신적인 부트캠프, 커널이 드디어 오픈했습니다!';
+          break;
+          //썸네일
+        case 3:
+          imageUrl = '/images/news-making/thumbnail_full.png';
+          responseScript = ' ';
+          break;
+        case 5:
+          imageUrl = 'https://bhqvrnbzzqzqlwwrcgbm.supabase.co/storage/v1/object/image/upload-5697023503459755461.jpeg';
+          responseScript = '모집기간은 2025년 3월 24일부터 2025년 4월 16일까지라는데\n심지어 전액 무료';
+          break;
+        case 2:
+          imageUrl = 'https://bhqvrnbzzqzqlwwrcgbm.supabase.co/storage/v1/object/image/upload-1206089953825404836.png';
+          responseScript = '업계 최고의 멘토 이민석 강사님과 함께\n실무 중심의 커리큘럼으로 취업까지 완벽하게 준비할 수 있는 기회!\n지금 바로 지원하세요! 이 기회를 놓치면 후회할지도 모릅니다!';
+          break;
+        default:
+          imageUrl = 'https://bhqvrnbzzqzqlwwrcgbm.supabase.co/storage/v1/object/image/upload-8096234655908682540.png';
+          responseScript = '';
+      }
+
       return HttpResponse.json({
-        id: getNextSectionId(),
-        imageUrl: 'https://i.imgur.com/P2ruiUz.jpeg',
+        id: sectionId,
+        imageUrl: imageUrl,
         alt: alt || '고양이 사진',
-        script: script || '고양이를 키울 때 알고 있어야 할 주의사항에 대해 알아보겠습니다.',
+        script: responseScript || script || '스크립트 없음',
         voiceModel: voiceModel || '보이스 모델',
         transitionName: transitionName || '전환 효과',
       });
@@ -158,27 +260,32 @@ export const handlers = [
       console.log('🔄 요청 바디 : ', bodyData);
       
       const sectionId = getNextSectionId();
+      console.log('json 요청 sectionId:', sectionId);
       let imageUrl;
       let responseScript;
       
       switch(sectionId) {
-        case 2:
-          imageUrl = 'https://bhqvrnbzzqzqlwwrcgbm.supabase.co/storage/v1/object/image/upload-9060809286912031668.png';
-          responseScript = '복잡한 편집 없이, 클릭 한 번이면 충분합니다.\n지금 이 순간에도 많은 사람들이 유니캣으로\n새로운 콘텐츠를 만들어가고 있습니다.\n창작의 자유, 그 중심에 유니캣이 있습니다.\n창작의 자유, 그 중심에 유니캣이 있습니다.';
-          break;
-        case 3:
-          imageUrl = 'https://bhqvrnbzzqzqlwwrcgbm.supabase.co/storage/v1/object/image/upload-8096234655908682540.png';
-          responseScript = '안녕하십니까.\n이제 영상 제작은 전문가만의 영역이 아닙니다.\n누구나 단 몇 초 만에 숏폼 영상을 만들 수 있는 시대입니다.';
-          break;
         case 4:
-          imageUrl = 'https://bhqvrnbzzqzqlwwrcgbm.supabase.co/storage/v1/object/image/upload-1297454704645980027.png';
-          responseScript = '유니캣은 AI 기술로 키워드 하나만 입력하면\n이미지, 음악, 템플릿까지 자동으로 구성된 영상을 완성합니다.';
+          imageUrl = 'https://bhqvrnbzzqzqlwwrcgbm.supabase.co/storage/v1/object/image/upload-5944168497568437387.jpeg';
+          responseScript = '단 12주 만에 취업이 가능하다고?! 믿기 어렵겠지만, 진짜입니다!\n패스트캠퍼스의 혁신적인 부트캠프, 커널이 드디어 오픈했습니다!';
+          break;
+          //썸네일
+        case 3:
+          imageUrl = '/images/news-making/thumbnail_full.png';
+          responseScript = ' ';
+          break;
+        case 5:
+          imageUrl = 'https://bhqvrnbzzqzqlwwrcgbm.supabase.co/storage/v1/object/image/upload-5697023503459755461.jpeg';
+          responseScript = '모집기간은 2025년 3월 24일부터 2025년 4월 16일까지라는데 심지어 전액 무료';
+          break;
+        case 2:
+          imageUrl = 'https://bhqvrnbzzqzqlwwrcgbm.supabase.co/storage/v1/object/image/upload-1206089953825404836.png';
+          responseScript = '업계 최고의 멘토 이민석 강사님과 함께\n실무 중심의 커리큘럼으로 취업까지 완벽하게 준비할 수 있는 기회!\n지금 바로 지원하세요! 이 기회를 놓치면 후회할지도 모릅니다!';
           break;
         default:
           imageUrl = 'https://bhqvrnbzzqzqlwwrcgbm.supabase.co/storage/v1/object/image/upload-8096234655908682540.png';
           responseScript = '';
       }
-
       return new HttpResponse(
         JSON.stringify({
           id: sectionId,

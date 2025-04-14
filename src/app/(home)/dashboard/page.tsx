@@ -45,9 +45,9 @@ export default async function Dashboard(): Promise<JSX.Element> {
               className="relative w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] h-[380px] min-w-[280px]"
             >
               <div className="flex flex-col h-full bg-slate-50 rounded-xl overflow-hidden hover:bg-slate-100 transition-colors">
-                <div className="w-full bg-[#1A1A1A] min-h-[320px] rounded-xl overflow-hidden flex items-center justify-center">
+                <div className="w-full bg-[#000000] min-h-[320px] rounded-xl overflow-hidden flex items-center justify-center">
                   <img
-                    className="w-full h-full object-contain bg-[#1A1A1A]"
+                    className="w-full h-full object-contain bg-[#000000]"
                     alt="Project thumbnail"
                     src={project.thumbnailUrl}
                   />
