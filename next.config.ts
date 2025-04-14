@@ -1,14 +1,18 @@
-import type { NextConfig } from "next";
+import { NextConfig } from 'next';
 
-const nextConfig: NextConfig = {
-  // webpack: (config, { isServer, dev }) => {
-  //   // 개발 환경에서 MSW 서버 시작
-  //   if (isServer && dev) {
-  //     require('./src/mocks/server.ts');
-  //     console.log('🚀 MSW Server started with Next.js');
-  //   }
-  //   return config;
-  // },
+const config: NextConfig = {
+  webpack: (config, { isServer }) => {
+    // MSW 설정
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+      };
+    }
+    return config;
+  },
 };
 
-export default nextConfig;
+export default config;

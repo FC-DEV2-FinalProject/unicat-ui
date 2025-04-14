@@ -29,9 +29,13 @@ async function initMocks() {
   }
 }
 
-// MSW 초기화 실행 - 프로덕션 환경에서도 자동으로 실행
-if (process.env.NODE_ENV === 'production' || process.env.NEXT_PUBLIC_API_MOCKING === "enabled") {
-  console.log('🚀 MSW 활성화됨 - 환경:', process.env.NODE_ENV);
+// MSW 초기화 실행 - Vercel 환경에서도 자동으로 실행
+if (process.env.VERCEL_ENV === 'production' || process.env.NEXT_PUBLIC_API_MOCKING === "enabled") {
+  console.log('🚀 MSW 활성화됨 - 환경:', process.env.VERCEL_ENV);
+  console.log('📍 MSW 초기화 조건:', {
+    isProduction: process.env.VERCEL_ENV === 'production',
+    isMockingEnabled: process.env.NEXT_PUBLIC_API_MOCKING === "enabled"
+  });
   initMocks().catch(error => {
     console.error('❌ MSW 초기화 실패:', error);
   });
