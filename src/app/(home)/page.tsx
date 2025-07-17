@@ -2,11 +2,14 @@
 
 import { MovieList } from "@/src/components/home/MovieList";
 import { groupMoviesByDate } from "@/src/components/home/MovieCardGroup";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import React, { JSX, useEffect, useState } from "react";
 import Image from "next/image";
 import { DummyMovie } from '@/src/types/newsMakingTypes';
 import { CreateProjectButton } from "@/src/components/home/CreateProjectButton";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { useRouter } from "next/navigation";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { getCookie } from "cookies-next";
 
 const dummyMovies: DummyMovie[] = [
@@ -19,7 +22,9 @@ const dummyMovies: DummyMovie[] = [
 const homeDashboardMovies = groupMoviesByDate(dummyMovies, { maxItemsPerDate: 3, sortByDate: "desc" });
 
 export default function AiNews(): JSX.Element | null {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   // const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // TODO: 인증 체크 복구
@@ -39,6 +44,7 @@ export default function AiNews(): JSX.Element | null {
   // }, [router]);
 
   // 인증 체크 임시 비활성화 (항상 true)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const isAuthenticated = true;
 
   // 인증되지 않은 경우 아무것도 렌더링하지 않음
