@@ -35,11 +35,11 @@ function CallbackContent() {
             Object.fromEntries(searchParams.entries())
           );
           // 토큰이 없으면 로그인 페이지로
-          router.replace("/login");
+          // router.replace("/login");
         }
       } catch (error) {
         console.error("콜백 처리 중 오류 발생:", error);
-        router.replace("/login");
+        // router.replace("/login");
       }
     };
 

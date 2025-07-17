@@ -11,7 +11,7 @@ export default function LogoutButton() {
     try {
       await apiClient.delete("https://api.unicat.day/auth/sign-out", {}); // 헤더 생략
       alert("로그아웃이 완료되었습니다.");
-      window.location.href = "/login";
+      // window.location.href = "/login";
     } catch (error) {
       console.error("로그아웃 에러:", error);
     }

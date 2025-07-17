@@ -20,27 +20,31 @@ const homeDashboardMovies = groupMoviesByDate(dummyMovies, { maxItemsPerDate: 3,
 
 export default function AiNews(): JSX.Element | null {
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  useEffect(() => {
-    // 토큰 확인
-    const authToken = getCookie("Authorization");
-    const tokenCookie = getCookie("token");
-    const authTokenLower = getCookie("authorization");
-    
-    const hasToken = authToken || tokenCookie || authTokenLower;
-    
-    if (!hasToken) {
-      router.replace("/login");
-    } else {
-      setIsAuthenticated(true);
-    }
-  }, [router]);
+  // TODO: 인증 체크 복구
+  // useEffect(() => {
+  //   // 토큰 확인
+  //   const authToken = getCookie("Authorization");
+  //   const tokenCookie = getCookie("token");
+  //   const authTokenLower = getCookie("authorization");
+  //   
+  //   const hasToken = authToken || tokenCookie || authTokenLower;
+  //   
+  //   if (!hasToken) {
+  //     router.replace("/login");
+  //   } else {
+  //     setIsAuthenticated(true);
+  //   }
+  // }, [router]);
+
+  // 인증 체크 임시 비활성화 (항상 true)
+  const isAuthenticated = true;
 
   // 인증되지 않은 경우 아무것도 렌더링하지 않음
-  if (!isAuthenticated) {
-    return null;
-  }
+  // if (!isAuthenticated) {
+  //   return null;
+  // }
 
   return (
     <div className="mt-[105px] flex flex-col items-center justify-center gap-[90px] relative bg-purple-6 min-h-screen">
